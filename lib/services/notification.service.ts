@@ -13,18 +13,21 @@ interface EnqueueParams {
 }
 
 export async function enqueueNotification(params: EnqueueParams): Promise<void> {
-  await notificationQueue.add(
-    params.eventType,
-    {
-      ...params,
-    },
-    {
-      // Deduplicate notifications for the same event + application within 5 minutes
-      jobId: params.applicationId
-        ? `notif-${params.eventType}-${params.applicationId}-${Math.floor(Date.now() / 300000)}`
-        : undefined,
-    }
-  );
+  try {
+    await notificationQueue.add(
+      params.eventType,
+      { ...params },
+      {
+        // Deduplicate notifications for the same event + application within 5 minutes
+        jobId: params.applicationId
+          ? `notif-${params.eventType}-${params.applicationId}-${Math.floor(Date.now() / 300000)}`
+          : undefined,
+      }
+    );
+  } catch (err) {
+    // Notifications are non-critical — log and continue if Redis is unavailable
+    console.warn("[enqueueNotification] Failed to enqueue (Redis unavailable?):", (err as Error).message);
+  }
 }
 
 // ─── Email Templates ──────────────────────────────────────────────────────────

@@ -7,6 +7,8 @@ import { ArrowLeft, Upload, CreditCard, CheckCircle2, Circle, AlertCircle } from
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 interface Props { params: { id: string } }
 export const metadata: Metadata = { title: "Application Details" };
 

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowRight, Search } from "lucide-react";
 import type { CaseFilters } from "@/types";
 
+export const dynamic = "force-dynamic";
+
 interface Props { searchParams: CaseFilters }
 
 export default async function AdminCasesPage({ searchParams }: Props) {

@@ -11,6 +11,8 @@ import { ArrowLeft, FileText, ExternalLink } from "lucide-react";
 import { CaseActions } from "@/components/admin/CaseActions";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 interface Props { params: { id: string } }
 export const metadata: Metadata = { title: "Case Detail" };
 

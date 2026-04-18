@@ -5,6 +5,8 @@ import { authOptions } from "@/lib/auth/config";
 import { Shield, User } from "lucide-react";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Team" };
 
 const ROLE_CONFIG = {

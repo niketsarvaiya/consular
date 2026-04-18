@@ -20,8 +20,8 @@ export async function generateChecklist(
     }),
   ]);
 
-  const requiredDocs = (policy.requiredDocuments as DocumentTemplate[]) ?? [];
-  const optionalDocs = (policy.optionalDocuments as DocumentTemplate[]) ?? [];
+  const requiredDocs = (policy.requiredDocuments as unknown as DocumentTemplate[]) ?? [];
+  const optionalDocs = (policy.optionalDocuments as unknown as DocumentTemplate[]) ?? [];
 
   const allDocs: (DocumentTemplate & { isRequired: boolean })[] = [
     ...requiredDocs.map((d) => ({ ...d, isRequired: true })),

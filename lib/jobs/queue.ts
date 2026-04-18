@@ -1,9 +1,11 @@
 import { Queue, Worker, QueueEvents } from "bullmq";
 import IORedis from "ioredis";
 
-// Shared Redis connection for BullMQ
+// Shared Redis connection for BullMQ — lazyConnect so build doesn't fail without Redis
 export const redisConnection = new IORedis(process.env.REDIS_URL ?? "redis://localhost:6379", {
   maxRetriesPerRequest: null, // Required by BullMQ
+  lazyConnect: true,
+  enableOfflineQueue: false,
 });
 
 // ─── Queue Definitions ────────────────────────────────────────────────────────

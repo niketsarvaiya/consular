@@ -3,6 +3,8 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { FolderOpen, Clock, CreditCard, CheckCircle2, TrendingUp, AlertTriangle, Globe, Users } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 function MetricCard({ title, value, sub, icon: Icon, href, highlight }: {
   title: string; value: string | number; sub?: string;
   icon: React.ComponentType<{ className?: string }>;

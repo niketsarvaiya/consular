@@ -7,6 +7,8 @@ import { ArrowLeft, RefreshCw, Clock, CheckCircle2, XCircle } from "lucide-react
 import { PolicyRefreshButton } from "@/components/admin/PolicyRefreshButton";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 interface Props { params: { country: string; visaType: string } }
 export const metadata: Metadata = { title: "Policy Editor" };
 

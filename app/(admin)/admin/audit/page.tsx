@@ -1,6 +1,8 @@
 import { getAuditLogs } from "@/lib/services/audit.service";
 import { PageHeader } from "@/components/shared/PageHeader";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminAuditPage() {
   const { items, total } = await getAuditLogs({ page: 1, pageSize: 50 });
 

@@ -5,10 +5,13 @@ import { logAction } from "@/lib/services/audit.service";
 import { updateApplicationStatus } from "@/lib/services/application.service";
 import { enqueueNotification } from "@/lib/services/notification.service";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+// Lazy-init so build doesn't fail without env vars
+function getRazorpay() {
+  return new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID!,
+    key_secret: process.env.RAZORPAY_KEY_SECRET!,
+  });
+}
 
 /**
  * Creates a Razorpay payment order for an application.
@@ -40,7 +43,7 @@ export async function createPaymentOrder(applicationId: string) {
   const totalPaise = totalINR * 100; // Razorpay uses smallest currency unit
 
   // Create Razorpay order
-  const rzpOrder = await razorpay.orders.create({
+  const rzpOrder = await getRazorpay().orders.create({
     amount: totalPaise,
     currency: "INR",
     receipt: `cons_${applicationId.slice(-8)}`,

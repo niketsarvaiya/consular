@@ -3,6 +3,8 @@ import { prisma } from "@/lib/db/prisma";
 import { ArrowRight, Clock } from "lucide-react";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Destinations" };
 
 const VISA_CATEGORY_LABELS: Record<string, string> = {

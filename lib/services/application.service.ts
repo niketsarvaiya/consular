@@ -3,7 +3,8 @@ import { logAction } from "@/lib/services/audit.service";
 import { generateChecklist } from "@/lib/services/checklist.service";
 import { enqueueNotification } from "@/lib/services/notification.service";
 import type { ApplicationStatus, VisaType } from "@prisma/client";
-import type { CreateApplicationInput, CaseFilters } from "@/types";
+import type { CreateApplicationInput } from "@/lib/utils/validators";
+import type { CaseFilters } from "@/types";
 
 export async function createApplication(
   input: CreateApplicationInput,

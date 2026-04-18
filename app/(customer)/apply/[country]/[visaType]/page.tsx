@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowRight, Check, Clock, CreditCard, FileText, Info } from "lucide-react";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 interface Props { params: { country: string; visaType: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

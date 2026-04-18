@@ -7,6 +7,8 @@ import { ArrowRight, Plus } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "My Applications" };
 
 export default async function DashboardPage() {

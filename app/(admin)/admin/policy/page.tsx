@@ -4,6 +4,8 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import Link from "next/link";
 import { ArrowRight, RefreshCw, AlertTriangle } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPolicyPage() {
   const policies = await getPolicies();
 
