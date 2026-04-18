@@ -62,13 +62,12 @@ export async function uploadChecklistDocument(params: {
   });
 
   await logAction({
-    actorId: customerId,
     actorType: "customer",
     action: "CREATE",
     resourceType: "document",
     resourceId: document.id,
     newValue: { checklistItemId, fileName: params.originalName },
-  });
+  }).catch((e) => console.warn("[uploadDoc] audit log failed:", e.message));
 
   return document;
 }

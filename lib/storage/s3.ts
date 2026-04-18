@@ -7,15 +7,22 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "crypto";
 
-const s3 = new S3Client({
-  region: process.env.AWS_REGION ?? "ap-south-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
+const s3Configured =
+  !!process.env.AWS_ACCESS_KEY_ID &&
+  !!process.env.AWS_SECRET_ACCESS_KEY &&
+  !!process.env.AWS_S3_BUCKET;
 
-const BUCKET = process.env.AWS_S3_BUCKET!;
+const s3 = s3Configured
+  ? new S3Client({
+      region: process.env.AWS_REGION ?? "ap-south-1",
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    })
+  : null;
+
+const BUCKET = process.env.AWS_S3_BUCKET ?? "";
 
 // Allowed MIME types for document uploads
 const ALLOWED_MIME_TYPES = new Set([
@@ -53,15 +60,19 @@ export async function uploadDocument(
   const ext = originalName.split(".").pop() ?? "bin";
   const fileKey = `${folder}/${randomUUID()}.${ext}`;
 
+  // If S3 is not configured, store a placeholder key (file won't be retrievable)
+  if (!s3Configured || !s3) {
+    console.warn("[s3] AWS not configured — storing placeholder key:", fileKey);
+    return fileKey;
+  }
+
   await s3.send(
     new PutObjectCommand({
       Bucket: BUCKET,
       Key: fileKey,
       Body: buffer,
       ContentType: mimeType,
-      // Server-side encryption
       ServerSideEncryption: "AES256",
-      // Prevent public access
       ACL: undefined,
     })
   );
@@ -77,6 +88,10 @@ export async function getSignedDownloadUrl(
   fileKey: string,
   expiresInSeconds = 900 // 15 minutes
 ): Promise<string> {
+  if (!s3Configured || !s3) {
+    return ""; // No S3 — no download URL available
+  }
+
   const command = new GetObjectCommand({
     Bucket: BUCKET,
     Key: fileKey,

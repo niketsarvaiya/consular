@@ -75,6 +75,11 @@ export default function DocumentsPage() {
         <p className="mt-1 text-sm text-slate-500">{application.country.name} visa application</p>
       </div>
 
+      <div className="mb-4 flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700">
+        <AlertCircle className="h-4 w-4 shrink-0" />
+        You can upload documents below. File previews are unavailable until cloud storage is configured — your uploads are still recorded.
+      </div>
+
       {error && (
         <div className="mb-4 flex items-center gap-2 rounded-xl bg-red-50 p-4 text-sm text-red-700">
           <AlertCircle className="h-4 w-4 shrink-0" />{error}
