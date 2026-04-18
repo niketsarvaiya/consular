@@ -104,6 +104,7 @@ export async function getSignedDownloadUrl(
  * Deletes a file from S3.
  */
 export async function deleteDocument(fileKey: string): Promise<void> {
+  if (!s3Configured || !s3) return;
   await s3.send(
     new DeleteObjectCommand({
       Bucket: BUCKET,
