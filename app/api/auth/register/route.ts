@@ -42,13 +42,14 @@ export async function POST(req: NextRequest) {
     });
 
     await logAction({
-      actorId: customer.id,
+      // actorId intentionally omitted: AuditLog.actorId FK points to OpsUser, not Customer
       actorType: "customer",
+      actorEmail: customer.email,
       action: "CREATE",
       resourceType: "customer",
       resourceId: customer.id,
       ipAddress: req.headers.get("x-forwarded-for") ?? undefined,
-    });
+    }).catch((e) => console.warn("[register] audit log failed:", e.message));
 
     await enqueueNotification({
       eventType: "welcome",

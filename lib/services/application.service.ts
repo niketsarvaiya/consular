@@ -78,13 +78,12 @@ export async function createApplication(
   });
 
   await logAction({
-    actorId: customerId,
     actorType: "customer",
     action: "CREATE",
     resourceType: "application",
     resourceId: application.id,
     newValue: { countryId: input.countryId, visaType: input.visaType },
-  });
+  }).catch((e) => console.warn("[createApplication] audit log failed:", e.message));
 
   return application.id;
 }
