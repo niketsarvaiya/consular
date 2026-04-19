@@ -18,10 +18,9 @@ interface ChecklistItem {
 interface Props {
   applicationId: string;
   items: ChecklistItem[];
-  onRefresh: () => void;
 }
 
-export function ChecklistSection({ applicationId, items, onRefresh }: Props) {
+export function ChecklistSection({ applicationId, items }: Props) {
   const [uploading, setUploading] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successes, setSuccesses] = useState<Set<string>>(new Set());
@@ -50,9 +49,8 @@ export function ChecklistSection({ applicationId, items, onRefresh }: Props) {
     setSuccesses((s) => new Set(s).add(itemId));
     setTimeout(() => {
       setSuccesses((s) => { const n = new Set(s); n.delete(itemId); return n; });
-      onRefresh();
     }, 1500);
-  }, [applicationId, onRefresh]);
+  }, [applicationId]);
 
   return (
     <div className="space-y-2">

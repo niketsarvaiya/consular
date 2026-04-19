@@ -100,7 +100,6 @@ export default async function ApplicationDetailPage({ params }: Props) {
             <ChecklistSection
               applicationId={app.id}
               items={checklistItems}
-              onRefresh={() => {}}
             />
 
             {isMinimumMet && app.status === "PAYMENT_PENDING" && (
