@@ -3,8 +3,9 @@ import { authOptions } from "@/lib/auth/config";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
 import Link from "next/link";
-import { ArrowLeft, Upload, CreditCard, CheckCircle2, Circle, AlertCircle } from "lucide-react";
+import { ArrowLeft, CreditCard, CheckCircle2 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+import { ChecklistSection } from "@/components/customer/ChecklistSection";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -38,6 +39,18 @@ export default async function ApplicationDetailPage({ params }: Props) {
   const isMinimumMet = approvedRequired === requiredItems.length && requiredItems.length > 0;
 
   const currentStepIndex = STATUS_STEPS.indexOf(app.status);
+
+  const checklistItems = app.checklistItems.map((i) => ({
+    id: i.id,
+    title: i.title,
+    description: i.description,
+    isRequired: i.isRequired,
+    acceptedFormats: i.acceptedFormats as string[],
+    maxFileSizeMb: i.maxFileSizeMb,
+    status: i.status,
+    rejectionReason: i.rejectionReason,
+    customerNote: i.customerNote,
+  }));
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
@@ -81,42 +94,22 @@ export default async function ApplicationDetailPage({ params }: Props) {
           <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-sm font-semibold text-slate-900">Documents</h2>
-              <Link href={`/dashboard/application/${app.id}/documents`} className="text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center gap-1">
-                <Upload className="h-3.5 w-3.5" /> Upload documents
-              </Link>
+              <span className="text-xs text-slate-400">{approvedRequired}/{requiredItems.length} required approved</span>
             </div>
 
-            <div className="space-y-2">
-              {app.checklistItems.map((item) => (
-                <div key={item.id} className="flex items-center justify-between rounded-lg border border-slate-100 p-3">
-                  <div className="flex items-center gap-2">
-                    {item.status === "APPROVED" ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> :
-                     item.status === "REJECTED" ? <AlertCircle className="h-4 w-4 text-red-400" /> :
-                     <Circle className="h-4 w-4 text-slate-300" />}
-                    <div>
-                      <p className="text-sm text-slate-700">{item.title}</p>
-                      {item.rejectionReason && <p className="text-xs text-red-500 mt-0.5">{item.rejectionReason}</p>}
-                      {item.customerNote && <p className="text-xs text-slate-400 mt-0.5">{item.customerNote}</p>}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {!item.isRequired && <span className="text-[10px] text-slate-400">Optional</span>}
-                    <StatusBadge status={item.status} type="checklist" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ChecklistSection
+              applicationId={app.id}
+              items={checklistItems}
+              onRefresh={() => {}}
+            />
 
-            <div className="mt-4 pt-4 border-t border-slate-100">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">{approvedRequired}/{requiredItems.length} required documents approved</span>
-                {isMinimumMet && app.status === "PAYMENT_PENDING" && (
-                  <Link href={`/dashboard/application/${app.id}/payment`} className="flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800">
-                    <CreditCard className="h-3.5 w-3.5" /> Proceed to payment
-                  </Link>
-                )}
+            {isMinimumMet && app.status === "PAYMENT_PENDING" && (
+              <div className="mt-4 pt-4 border-t border-slate-100">
+                <Link href={`/dashboard/application/${app.id}/payment`} className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">
+                  <CreditCard className="h-4 w-4" /> Proceed to payment
+                </Link>
               </div>
-            </div>
+            )}
           </div>
 
           {app.notes.length > 0 && (
@@ -151,7 +144,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
             <div className="mt-3 space-y-2">
               {app.statusHistory.slice(-5).map((h, i) => (
                 <div key={i} className="flex gap-2 text-xs">
-                  <span className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300 mt-1.5" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-300" />
                   <div>
                     <span className="font-medium text-slate-700">{h.toStatus.replace(/_/g, " ")}</span>
                     <span className="ml-2 text-slate-400">{new Date(h.changedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
