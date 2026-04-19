@@ -41,10 +41,10 @@ export default async function DestinationsPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {countries.map((country) => {
           const policies = country.policies;
-          if (policies.length === 0) return null;
+          const hasPolicy = policies.length > 0;
 
           return (
-            <div key={country.id} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+            <div key={country.id} className={`rounded-2xl border bg-white p-6 shadow-sm transition-shadow ${hasPolicy ? "border-slate-100 hover:shadow-md" : "border-slate-100 opacity-60"}`}>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   {country.flagUrl && (
@@ -53,49 +53,53 @@ export default async function DestinationsPage() {
                   )}
                   <div>
                     <h2 className="font-semibold text-slate-900">{country.name}</h2>
-                    <p className="text-xs text-slate-400">{policies.length} visa type{policies.length > 1 ? "s" : ""} available</p>
+                    <p className="text-xs text-slate-400">
+                      {hasPolicy ? `${policies.length} visa type${policies.length > 1 ? "s" : ""} available` : "Coming soon"}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 space-y-3">
-                {policies.map((policy) => {
-                  const fee = policy.feeDetails as { governmentFeeINR: number; serviceFeeINR: number } | null;
-                  const totalFee = fee ? fee.governmentFeeINR + fee.serviceFeeINR : 0;
-                  return (
-                    <Link
-                      key={policy.visaType}
-                      href={`/apply/${country.code.toLowerCase()}/${policy.visaType.toLowerCase()}`}
-                      className="group flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-3 transition-colors hover:border-slate-300 hover:bg-white"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-slate-900">{VISA_TYPE_LABELS[policy.visaType]} Visa</span>
-                          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-medium text-slate-600">{VISA_CATEGORY_LABELS[policy.visaCategory]}</span>
+              {hasPolicy && (
+                <div className="mt-4 space-y-3">
+                  {policies.map((policy) => {
+                    const fee = policy.feeDetails as { governmentFeeINR: number; serviceFeeINR: number } | null;
+                    const totalFee = fee ? fee.governmentFeeINR + fee.serviceFeeINR : 0;
+                    return (
+                      <Link
+                        key={policy.visaType}
+                        href={`/apply/${country.code.toLowerCase()}/${policy.visaType.toLowerCase()}`}
+                        className="group flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-3 transition-colors hover:border-slate-300 hover:bg-white"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-slate-900">{VISA_TYPE_LABELS[policy.visaType]} Visa</span>
+                            <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-medium text-slate-600">{VISA_CATEGORY_LABELS[policy.visaCategory]}</span>
+                          </div>
+                          <div className="mt-1 flex items-center gap-3 text-xs text-slate-400">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {policy.processingTimeMin && policy.processingTimeMax
+                                ? `${policy.processingTimeMin}–${policy.processingTimeMax} days`
+                                : "Varies"}
+                            </span>
+                            {totalFee > 0 && <span>From ₹{totalFee.toLocaleString("en-IN")}</span>}
+                            {totalFee === 0 && <span className="text-emerald-600">No visa fee</span>}
+                          </div>
                         </div>
-                        <div className="mt-1 flex items-center gap-3 text-xs text-slate-400">
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {policy.processingTimeMin && policy.processingTimeMax
-                              ? `${policy.processingTimeMin}–${policy.processingTimeMax} days`
-                              : "Varies"}
-                          </span>
-                          {totalFee > 0 && <span>From ₹{totalFee.toLocaleString("en-IN")}</span>}
-                          {totalFee === 0 && <span className="text-emerald-600">No visa fee</span>}
-                        </div>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-slate-300 transition-colors group-hover:text-slate-600" />
-                    </Link>
-                  );
-                })}
-              </div>
+                        <ArrowRight className="h-4 w-4 text-slate-300 transition-colors group-hover:text-slate-600" />
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
 
       <p className="mt-12 text-center text-xs text-slate-400">
-        More destinations are added regularly. All policies are for Indian passport holders only.
+        All policies are for Indian passport holders only. More visa types are added regularly.
       </p>
     </div>
   );
