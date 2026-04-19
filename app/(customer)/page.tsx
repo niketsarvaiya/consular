@@ -65,56 +65,66 @@ export default function HomePage() {
   return (
     <div className="bg-white">
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white">
-        {/* Soft background accent blobs */}
-        <div className="pointer-events-none absolute -top-24 right-0 h-[480px] w-[480px] rounded-full bg-indigo-100/40 blur-3xl" />
-        <div className="pointer-events-none absolute left-0 top-32 h-64 w-64 rounded-full bg-amber-50/60 blur-3xl" />
+      <section className="relative h-[620px] overflow-hidden">
+        {/* Background image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1920&q=85"
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        {/* Layered gradient: dark at bottom for text, subtle indigo tint at top */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/40 to-slate-950/80" />
+        {/* Soft indigo tint */}
+        <div className="absolute inset-0 bg-indigo-950/20" />
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-28 pt-20 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            {/* Trust pill */}
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-4 py-1.5 text-xs font-medium text-slate-600 shadow-sm">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              </span>
-              Trusted by 10,000+ Indian travellers
+        <div className="relative flex h-full items-center">
+          <div className="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              {/* Trust pill */}
+              <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur-sm">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                </span>
+                Trusted by 10,000+ Indian travellers
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Your visa,{" "}
+                <span className="bg-gradient-to-r from-indigo-300 to-violet-300 bg-clip-text text-transparent">
+                  handled with care.
+                </span>
+              </h1>
+
+              {/* Subtext */}
+              <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/75">
+                We guide Indian passport holders through every step — so you can
+                focus on the journey ahead, not the paperwork.
+              </p>
+
+              {/* CTAs */}
+              <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                <Link
+                  href="/destinations"
+                  className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all hover:bg-indigo-500"
+                >
+                  Browse destinations <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className="flex items-center gap-2 rounded-2xl border border-white/25 bg-white/10 px-8 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20"
+                >
+                  Create free account
+                </Link>
+              </div>
+
+              {/* Trust micro-line */}
+              <p className="mt-5 text-xs text-white/50">
+                Free to start · No card required · 25+ countries covered
+              </p>
             </div>
-
-            {/* Headline */}
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-              Your visa,{" "}
-              <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">
-                handled with care.
-              </span>
-            </h1>
-
-            {/* Subtext */}
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-slate-500">
-              We guide Indian passport holders through every step — so you can
-              focus on the journey ahead, not the paperwork.
-            </p>
-
-            {/* CTAs */}
-            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Link
-                href="/destinations"
-                className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-indigo-300"
-              >
-                Browse destinations <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/auth/register"
-                className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-8 py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
-              >
-                Create free account
-              </Link>
-            </div>
-
-            {/* Trust micro-line */}
-            <p className="mt-5 text-xs text-slate-400">
-              Free to start · No card required · 25+ countries covered
-            </p>
           </div>
         </div>
       </section>
