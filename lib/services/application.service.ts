@@ -277,57 +277,67 @@ export async function addCaseNote(
 }
 
 export async function getDashboardMetrics() {
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  const [
-    totalCases,
-    newToday,
-    pendingDocReview,
-    pendingPayment,
-    approvedThisMonth,
-    revenueResult,
-    avgProcessingResult,
-    policiesNeedingReview,
-  ] = await Promise.all([
-    prisma.application.count(),
-    prisma.application.count({ where: { createdAt: { gte: startOfToday } } }),
-    prisma.application.count({ where: { status: "DOCS_UNDER_REVIEW" } }),
-    prisma.application.count({ where: { status: "PAYMENT_PENDING" } }),
-    prisma.application.count({
-      where: { status: "APPROVED", updatedAt: { gte: startOfMonth } },
-    }),
-    prisma.paymentOrder.aggregate({
-      _sum: { amount: true },
-      where: { status: "PAID", paidAt: { gte: startOfMonth } },
-    }),
-    prisma.$queryRaw<{ avg_days: number }[]>`
-      SELECT AVG(EXTRACT(EPOCH FROM (updated_at - created_at)) / 86400) as avg_days
-      FROM applications
-      WHERE status IN ('APPROVED', 'REJECTED', 'CLOSED')
-      AND created_at >= ${startOfMonth}
-    `,
-    prisma.visaPolicy.count({ where: { status: "NEEDS_REVIEW" } }),
-  ]);
-
-  const activeCases = await prisma.application.count({
-    where: {
-      status: {
-        notIn: ["APPROVED", "REJECTED", "CLOSED"],
-      },
-    },
-  });
-
-  return {
-    totalCases,
-    newToday,
-    pendingDocReview,
-    pendingPayment,
-    activeCases,
-    approvedThisMonth,
-    revenueThisMonth: Math.round((revenueResult._sum.amount ?? 0) / 100), // convert paise to INR
-    avgProcessingDays: Math.round(avgProcessingResult[0]?.avg_days ?? 0),
-    policiesNeedingReview,
+  const defaultMetrics = {
+    totalCases: 0, newToday: 0, pendingDocReview: 0, pendingPayment: 0,
+    activeCases: 0, approvedThisMonth: 0, revenueThisMonth: 0,
+    avgProcessingDays: 0, policiesNeedingReview: 0,
   };
+
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const [
+      totalCases,
+      newToday,
+      pendingDocReview,
+      pendingPayment,
+      approvedThisMonth,
+      revenueResult,
+      policiesNeedingReview,
+    ] = await Promise.all([
+      prisma.application.count(),
+      prisma.application.count({ where: { createdAt: { gte: startOfToday } } }),
+      prisma.application.count({ where: { status: "DOCS_UNDER_REVIEW" } }),
+      prisma.application.count({ where: { status: "PAYMENT_PENDING" } }),
+      prisma.application.count({
+        where: { status: "APPROVED", updatedAt: { gte: startOfMonth } },
+      }),
+      prisma.paymentOrder.aggregate({
+        _sum: { amount: true },
+        where: { status: "PAID", paidAt: { gte: startOfMonth } },
+      }),
+      prisma.visaPolicy.count({ where: { status: "NEEDS_REVIEW" } }),
+    ]);
+
+    // Run raw query separately so a failure doesn't crash all metrics
+    let avgProcessingDays = 0;
+    try {
+      const avgResult = await prisma.$queryRaw<{ avg_days: number }[]>`
+        SELECT AVG(EXTRACT(EPOCH FROM (updated_at - created_at)) / 86400) as avg_days
+        FROM applications
+        WHERE status IN ('APPROVED', 'REJECTED', 'CLOSED')
+        AND created_at >= ${startOfMonth}
+      `;
+      avgProcessingDays = Math.round(avgResult[0]?.avg_days ?? 0);
+    } catch (e) {
+      console.warn("[getDashboardMetrics] avgProcessingDays query failed:", (e as Error).message);
+    }
+
+    const activeCases = await prisma.application.count({
+      where: { status: { notIn: ["APPROVED", "REJECTED", "CLOSED"] } },
+    });
+
+    return {
+      totalCases, newToday, pendingDocReview, pendingPayment, activeCases,
+      approvedThisMonth,
+      revenueThisMonth: Math.round((revenueResult._sum.amount ?? 0) / 100),
+      avgProcessingDays,
+      policiesNeedingReview,
+    };
+  } catch (e) {
+    console.error("[getDashboardMetrics] failed:", (e as Error).message);
+    return defaultMetrics;
+  }
 }

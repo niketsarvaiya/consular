@@ -4,7 +4,13 @@ import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions);
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch (e) {
+    console.error("[AdminLayout] getServerSession failed:", (e as Error).message);
+    redirect("/admin-login");
+  }
   if (!session || session.user.userType !== "ops") redirect("/admin-login");
   return (
     <div className="flex h-screen bg-slate-50">
