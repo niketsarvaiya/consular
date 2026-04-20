@@ -12,8 +12,8 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1568168765363-3f1db0b48c9a?w=1200&q=80", // Banff lake
     "https://images.unsplash.com/photo-1526397751294-331021109fbd?w=600&q=80",  // Toronto
     "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=600&q=80",    // Niagara
-    "https://images.unsplash.com/photo-1535041422672-8c3254ab4a03?w=600&q=80", // Vancouver
     "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80", // wilderness
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80", // mountains
   ],
   NZ: [
     "https://images.unsplash.com/photo-1589196728870-3f5fbcac8f54?w=1200&q=80", // Milford Sound
@@ -25,7 +25,7 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
   EG: [
     "https://images.unsplash.com/photo-1539768942893-daf069ae0b33?w=1200&q=80",
     "https://images.unsplash.com/photo-1543269865-0a740d43b90c?w=600&q=80",
-    "https://images.unsplash.com/photo-1562128850-9b649bd3f03d?w=600&q=80",
+    "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",
     "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600&q=80",
     "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",
   ],
@@ -68,7 +68,7 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
     "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80",
     "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=600&q=80",
-    "https://images.unsplash.com/photo-1547720974-88bfda756b3d?w=600&q=80",
+    "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=600&q=80",
     "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=600&q=80",
   ],
 };
