@@ -23,11 +23,11 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // mountains
   ],
   EG: [
-    "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=1200&q=80",  // Egypt desert/pyramids
-    "https://images.unsplash.com/photo-1543269865-0a740d43b90c?w=600&q=80",     // Cairo
-    "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",  // Red Sea
-    "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600&q=80",  // Luxor
-    "https://images.unsplash.com/photo-1491904768633-2b7e3e7fede5?w=600&q=80",  // Nile/landscape
+    "https://images.unsplash.com/photo-1594732832278-abd644401426?w=1200&q=80",  // Egypt pyramids
+    "https://images.unsplash.com/photo-1543269865-0a740d43b90c?w=600&q=80",      // Cairo
+    "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",   // Red Sea
+    "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600&q=80",   // Luxor
+    "https://images.unsplash.com/photo-1491904768633-2b7e3e7fede5?w=600&q=80",   // Nile/landscape
   ],
   AE: [
     "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80",
@@ -93,11 +93,11 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
   ],
   TR: [
-    "https://images.unsplash.com/photo-1570939274717-7eda259b50ed?w=1200&q=80", // Cappadocia balloons
+    "https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1200&q=80", // Cappadocia balloons
     "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80",  // Istanbul Blue Mosque
     "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=600&q=80",  // Istanbul street
-    "https://images.unsplash.com/photo-1570939274717-7eda259b50ed?w=600&q=80",  // Cappadocia
-    "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80",  // Istanbul
+    "https://images.unsplash.com/photo-1569691105751-88df003de7a4?w=600&q=80",  // Cappadocia valley
+    "https://images.unsplash.com/photo-1549144511-f099e773c147?w=600&q=80",     // Turkey landscape
   ],
   KE: [
     "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1200&q=80",    // Masai Mara wildlife
