@@ -23,11 +23,11 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // mountains
   ],
   EG: [
-    "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=1200&q=80",  // Egypt pyramids/desert
-    "https://images.unsplash.com/photo-1543269865-0a740d43b90c?w=600&q=80",
-    "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",
-    "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600&q=80",
-    "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",
+    "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=1200&q=80",  // Egypt desert/pyramids
+    "https://images.unsplash.com/photo-1543269865-0a740d43b90c?w=600&q=80",     // Cairo
+    "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",  // Red Sea
+    "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600&q=80",  // Luxor
+    "https://images.unsplash.com/photo-1491904768633-2b7e3e7fede5?w=600&q=80",  // Nile/landscape
   ],
   AE: [
     "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200&q=80",
@@ -52,7 +52,7 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
   ],
   JP: [
     "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1200&q=80",
-    "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=80",
+    "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=600&q=80",
     "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=600&q=80",
     "https://images.unsplash.com/photo-1492571350019-22de08371fd3?w=600&q=80",
     "https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=600&q=80",
@@ -68,7 +68,7 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
     "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=600&q=80",
     "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=600&q=80",
-    "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=600&q=80",
+    "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&q=80",
     "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=600&q=80",
   ],
 };
