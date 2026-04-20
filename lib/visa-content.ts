@@ -9,21 +9,21 @@ export interface CountryInfo { tagline: string; description: string; highlights:
 // First image = main large panel. 2–5 = mosaic thumbnails.
 export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
   CA: [
-    "https://images.unsplash.com/photo-1568168765363-3f1db0b48c9a?w=1200&q=80", // Banff lake
+    "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=1200&q=80", // Banff lake
     "https://images.unsplash.com/photo-1526397751294-331021109fbd?w=600&q=80",  // Toronto
     "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=600&q=80",    // Niagara
     "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80", // wilderness
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80", // mountains
   ],
   NZ: [
-    "https://images.unsplash.com/photo-1589196728870-3f5fbcac8f54?w=1200&q=80", // Milford Sound
+    "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1200&q=80", // Milford Sound / NZ mountains
     "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=600&q=80",  // NZ countryside
     "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Auckland harbour
     "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // travel
     "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // mountains
   ],
   EG: [
-    "https://images.unsplash.com/photo-1539768942893-daf069ae0b33?w=1200&q=80",
+    "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=1200&q=80",  // Egypt pyramids/desert
     "https://images.unsplash.com/photo-1543269865-0a740d43b90c?w=600&q=80",
     "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=600&q=80",
     "https://images.unsplash.com/photo-1568322445389-f64ac2515020?w=600&q=80",
