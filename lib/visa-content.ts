@@ -71,6 +71,69 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&q=80",
     "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=600&q=80",
   ],
+  VN: [
+    "https://images.unsplash.com/photo-1528127269322-539801943592?w=1200&q=80", // Ha Long Bay
+    "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=600&q=80",  // Ho Chi Minh City
+    "https://images.unsplash.com/photo-1528127269322-539801943592?w=600&q=80",  // Ha Long Bay
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // mountains
+  ],
+  ID: [
+    "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&q=80", // Bali rice terraces
+    "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=600&q=80",     // Bali temple
+    "https://images.unsplash.com/photo-1596742578443-7682ef5251cd?w=600&q=80",  // Bali beach
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",     // Borobudur
+    "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80",  // rice terraces
+  ],
+  MY: [
+    "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1200&q=80", // Petronas Towers
+    "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=600&q=80",  // KL skyline
+    "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&q=80",  // Petronas
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+  ],
+  TR: [
+    "https://images.unsplash.com/photo-1570939274717-7eda259b50ed?w=1200&q=80", // Cappadocia balloons
+    "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80",  // Istanbul Blue Mosque
+    "https://images.unsplash.com/photo-1527838832700-5059252407fa?w=600&q=80",  // Istanbul street
+    "https://images.unsplash.com/photo-1570939274717-7eda259b50ed?w=600&q=80",  // Cappadocia
+    "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80",  // Istanbul
+  ],
+  KE: [
+    "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1200&q=80",    // Masai Mara wildlife
+    "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80",  // Kenya landscape
+    "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",     // safari
+    "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80",  // savannah
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+  ],
+  FR: [
+    "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=80", // Eiffel Tower
+    "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80",  // Paris streets
+    "https://images.unsplash.com/photo-1431274172761-fca41d930114?w=600&q=80",  // Louvre
+    "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80",  // Eiffel
+    "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80",  // Paris
+  ],
+  DE: [
+    "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=1200&q=80", // Neuschwanstein Castle
+    "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=600&q=80",     // Berlin
+    "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&q=80",  // castle
+    "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=600&q=80",     // Berlin
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+  ],
+  IT: [
+    "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&q=80",    // Rome Colosseum
+    "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80",  // Venice
+    "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=600&q=80",  // Amalfi Coast
+    "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&q=80",     // Colosseum
+    "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80",  // Venice
+  ],
+  US: [
+    "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1200&q=80", // NYC skyline
+    "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=600&q=80",  // NYC
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // mountains
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // mountains
+  ],
 };
 
 const FALLBACK_IMAGES = [
