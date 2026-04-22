@@ -106,6 +106,12 @@ model Country {
   isActive    Boolean @default(true)
   sortOrder   Int     @default(0)
 
+  // Verified launch dataset fields
+  priorityRank   Int?    // 1 = highest priority
+  launchBucket   String? // e.g. "low_friction_volume", "premium_vac"
+  refreshPriority String? // "high" | "medium" | "low"
+  refreshCadence  String? // "weekly" | "biweekly" | "monthly"
+
   policies     VisaPolicy[]
   applications Application[]
 
@@ -138,6 +144,25 @@ model VisaPolicy {
   embassyLinks         Json   // array of { label, url }
   vacNotes             String?
   internalOpsNotes     String?
+
+  // Verified launch dataset fields (source-of-truth layer)
+  productLabel          String? // human-readable label, separate from enum (e.g. "Singapore entry visa via authorised agent")
+  officialSourceUrl     String?
+  officialSourceSummary String?
+  applyMode             String? // how customer actually applies
+  stayValiditySummary   String?
+  coreCustomerInputs    Json?   // string[]
+  coreChecklist         Json?   // string[]
+  opsRouting            String? // "digital_processing_case" | "manual_ops_with_partner_or_agent" etc.
+  paymentModelHint      String?
+  caseComplexity        String? // "low" | "medium" | "medium_high" | "high"
+  humanReviewRequired   Boolean @default(false)
+  sourceConfidence      String? // "high" | "medium" | "low"
+  lastVerifiedAt        DateTime?
+  nextRefreshDueAt      DateTime?
+  freshnessStatus       String  @default("unverified") // "fresh" | "stale" | "needs_review" | "unverified"
+  // Branch flow support (e.g. UAE has regular tourist route AND VOA-eligibility branch)
+  flowBranches          Json?   // { id, label, description, conditions, checklist }[]
 
   versionNumber        Int      @default(1)
   status               PolicyStatus @default(DRAFT)

@@ -39,13 +39,35 @@ export function CustomerNav() {
               href="/destinations"
               className={cn(
                 "relative rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:text-indigo-600",
-                pathname.startsWith("/destinations")
-                  ? "text-indigo-600"
-                  : "text-slate-500"
+                pathname.startsWith("/destinations") ? "text-indigo-600" : "text-slate-500"
               )}
             >
               Destinations
               {pathname.startsWith("/destinations") && (
+                <span className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-indigo-600" />
+              )}
+            </Link>
+            <Link
+              href="/about"
+              className={cn(
+                "relative rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:text-indigo-600",
+                pathname === "/about" ? "text-indigo-600" : "text-slate-500"
+              )}
+            >
+              About
+              {pathname === "/about" && (
+                <span className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-indigo-600" />
+              )}
+            </Link>
+            <Link
+              href="/contact"
+              className={cn(
+                "relative rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:text-indigo-600",
+                pathname === "/contact" ? "text-indigo-600" : "text-slate-500"
+              )}
+            >
+              Contact
+              {pathname === "/contact" && (
                 <span className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-indigo-600" />
               )}
             </Link>

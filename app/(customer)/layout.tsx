@@ -42,29 +42,20 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 Navigate
               </p>
               <nav className="flex flex-col items-start gap-2.5 sm:items-center">
-                <Link
-                  href="/destinations"
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
-                >
+                <Link href="/destinations" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
                   Destinations
                 </Link>
-                <Link
-                  href="/privacy"
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
-                >
+                <Link href="/about" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
+                  About Us
+                </Link>
+                <Link href="/contact" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
+                  Contact Us
+                </Link>
+                <Link href="/privacy" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
                   Privacy Policy
                 </Link>
-                <Link
-                  href="/terms"
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
-                >
+                <Link href="/terms" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
                   Terms of Service
-                </Link>
-                <Link
-                  href="/contact"
-                  className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600"
-                >
-                  Contact Us
                 </Link>
               </nav>
             </div>

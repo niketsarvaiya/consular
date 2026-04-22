@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight, Clock, Search, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Clock, Search, SlidersHorizontal, CheckCircle2, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { COUNTRY_HERO_IMAGES } from "@/lib/visa-content";
 
@@ -23,9 +23,13 @@ const VISA_CATEGORY_COLORS: Record<string, string> = {
 type Policy = {
   visaType: string;
   visaCategory: string;
+  productLabel: string | null;
   processingTimeMin: number | null;
   processingTimeMax: number | null;
   feeDetails: { governmentFeeINR: number; serviceFeeINR: number } | null;
+  lastVerifiedAt: string | null;
+  nextRefreshDueAt: string | null;
+  freshnessStatus: string;
 };
 
 type Country = {
@@ -43,8 +47,30 @@ const FILTER_TABS = [
   { label: "Visa-free", value: "VISA_EXEMPT" },
 ];
 
-// Preferred display order — most popular for Indian travellers first
-const SORT_ORDER = ["AE","TH","SG","NZ","GB","US","CA","AU","JP","FR","DE","IT","VN","ID","MY","TR","EG","KE"];
+const SORT_ORDER = ["AE","TH","SG","NZ","CA","JP","VN","ID","MY","TR","EG","KE"];
+
+function FreshnessBadge({ status, lastVerifiedAt }: { status: string; lastVerifiedAt: string | null }) {
+  if (!lastVerifiedAt || status === "unverified") return null;
+
+  const verified = new Date(lastVerifiedAt);
+  const label = verified.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+
+  if (status === "fresh") {
+    return (
+      <div className="flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 backdrop-blur-sm">
+        <CheckCircle2 className="h-2.5 w-2.5 text-emerald-300" />
+        <span className="text-[9px] font-semibold text-emerald-200">Verified {label}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1 rounded-full bg-amber-500/20 px-2 py-0.5 backdrop-blur-sm">
+      <AlertCircle className="h-2.5 w-2.5 text-amber-300" />
+      <span className="text-[9px] font-semibold text-amber-200">Check freshness</span>
+    </div>
+  );
+}
 
 export default function DestinationsPage() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -71,7 +97,6 @@ export default function DestinationsPage() {
   }, []);
 
   const q = query.toLowerCase().trim();
-
   const available = countries.filter((c) => c.policies.length > 0);
   const comingSoon = countries.filter((c) => c.policies.length === 0);
 
@@ -118,7 +143,6 @@ export default function DestinationsPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-
         {loading ? (
           <div className="flex items-center justify-center py-32">
             <div className="h-7 w-7 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600" />
@@ -150,7 +174,7 @@ export default function DestinationsPage() {
               </div>
             )}
 
-            {/* ── AVAILABLE DESTINATIONS — IMAGE CARDS ── */}
+            {/* ── AVAILABLE DESTINATIONS ── */}
             {filteredAvailable.length > 0 && (
               <section className="mb-14">
                 {!q && (
@@ -160,14 +184,13 @@ export default function DestinationsPage() {
                 )}
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {filteredAvailable.map((country) => {
-                    const heroImg =
-                      COUNTRY_HERO_IMAGES[country.code]?.[0] ?? FALLBACK_IMG;
+                    const heroImg = COUNTRY_HERO_IMAGES[country.code]?.[0] ?? FALLBACK_IMG;
                     const policy = country.policies[0];
                     const fee = policy?.feeDetails;
-                    const totalFee = fee
-                      ? fee.governmentFeeINR + fee.serviceFeeINR
-                      : 0;
+                    const totalFee = fee ? fee.governmentFeeINR + fee.serviceFeeINR : 0;
                     const applyPath = `/apply/${country.code.toLowerCase()}/${policy?.visaType.toLowerCase() ?? "tourist"}`;
+                    // Use productLabel if available, fall back to enum label
+                    const visaLabel = policy?.productLabel || VISA_CATEGORY_LABELS[policy?.visaCategory] || policy?.visaCategory;
 
                     return (
                       <Link
@@ -198,6 +221,16 @@ export default function DestinationsPage() {
 
                         {/* Country info — bottom */}
                         <div className="absolute bottom-0 left-0 right-0 p-4">
+                          {/* Freshness badge */}
+                          {policy && (
+                            <div className="mb-2">
+                              <FreshnessBadge
+                                status={policy.freshnessStatus}
+                                lastVerifiedAt={policy.lastVerifiedAt}
+                              />
+                            </div>
+                          )}
+
                           {/* Flag + name */}
                           <div className="flex items-center gap-2.5 mb-2.5">
                             {country.flagUrl && (
@@ -212,6 +245,11 @@ export default function DestinationsPage() {
                               {country.name}
                             </h3>
                           </div>
+
+                          {/* Product label */}
+                          {policy?.productLabel && (
+                            <p className="text-[10px] text-white/60 mb-2 leading-tight">{visaLabel}</p>
+                          )}
 
                           {/* Stats row */}
                           <div className="flex items-center justify-between">
@@ -253,13 +291,11 @@ export default function DestinationsPage() {
               </section>
             )}
 
-            {/* Empty state for filtered results */}
+            {/* Empty state */}
             {filteredAvailable.length === 0 && (
               <div className="py-16 text-center">
                 <p className="text-slate-400 text-sm">
-                  {q
-                    ? `No available destinations match "${query}".`
-                    : `No destinations match this filter yet.`}
+                  {q ? `No available destinations match "${query}".` : `No destinations match this filter yet.`}
                 </p>
                 {(q || activeFilter !== "ALL") && (
                   <button
@@ -286,11 +322,7 @@ export default function DestinationsPage() {
                     >
                       {country.flagUrl && (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={country.flagUrl}
-                          alt=""
-                          className="h-3.5 w-5 rounded-[2px] object-cover"
-                        />
+                        <img src={country.flagUrl} alt="" className="h-3.5 w-5 rounded-[2px] object-cover" />
                       )}
                       {country.name}
                     </div>
@@ -299,7 +331,6 @@ export default function DestinationsPage() {
               </section>
             )}
 
-            {/* Footer note */}
             <p className="mt-16 text-center text-xs text-slate-400">
               All visa types shown are for Indian passport holders only.
             </p>
