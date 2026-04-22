@@ -32,22 +32,16 @@ const VALUES = [
 
 const TEAM = [
   {
-    initials: "NK",
-    name: "Niket K.",
-    role: "Founder & Product",
-    description: "Spent years watching friends stress over visa paperwork. Built Consular to make that stress go away.",
+    initials: "RS",
+    name: "Rinkesh S.",
+    role: "Co-founder",
+    description: "A lifelong travel enthusiast who built and ran a travel agency for years. Rinkesh saw first-hand how visa confusion derailed trips and lost clients. He co-founded Consular to fix the gap he lived every single day.",
   },
   {
-    initials: "SV",
-    name: "Shreya V.",
-    role: "Head of Operations",
-    description: "Ex-consulate liaison with deep knowledge of how embassy queues, VACs, and submission workflows actually work.",
-  },
-  {
-    initials: "RM",
-    name: "Rahul M.",
-    role: "Visa Research Lead",
-    description: "Tracks policy changes across 12 countries weekly. If an embassy updates a fee or form, he knows within 24 hours.",
+    initials: "NS",
+    name: "Niket S.",
+    role: "Co-founder",
+    description: "The tech and operations brain behind Consular. Niket architects the platform, builds the product, and keeps the engine running — so every traveller gets a seamless, reliable experience from checklist to approval.",
   },
 ];
 
@@ -143,7 +137,7 @@ export default function AboutPage() {
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">The people behind Consular</p>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900">A small team with deep focus</h2>
         </div>
-        <div className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-2xl gap-6 sm:grid-cols-2">
           {TEAM.map((m) => (
             <div key={m.name} className="rounded-2xl border border-slate-100 bg-white p-6 text-center shadow-sm">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-base font-bold text-white">
