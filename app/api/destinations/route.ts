@@ -19,6 +19,8 @@ export async function GET() {
             nextRefreshDueAt: true,
             freshnessStatus: true,
             caseComplexity: true,
+            sourceConfidence: true,
+            ruleGroupId: true,
           },
         },
       },

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight, Clock, Search, SlidersHorizontal, CheckCircle2, AlertCircle } from "lucide-react";
+import { ArrowRight, Clock, Search, SlidersHorizontal, CheckCircle2, AlertCircle, AlertTriangle, Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 import { COUNTRY_HERO_IMAGES } from "@/lib/visa-content";
 
@@ -11,6 +11,7 @@ const VISA_CATEGORY_LABELS: Record<string, string> = {
   E_VISA: "e-Visa",
   ETA: "ETA",
   VISA_EXEMPT: "Visa-free",
+  VISA_ON_ARRIVAL: "Visa on Arrival",
 };
 
 const VISA_CATEGORY_COLORS: Record<string, string> = {
@@ -18,6 +19,7 @@ const VISA_CATEGORY_COLORS: Record<string, string> = {
   E_VISA: "bg-blue-500/80 text-white",
   ETA: "bg-amber-500/80 text-white",
   VISA_EXEMPT: "bg-emerald-500/80 text-white",
+  VISA_ON_ARRIVAL: "bg-teal-500/80 text-white",
 };
 
 type Policy = {
@@ -30,6 +32,8 @@ type Policy = {
   lastVerifiedAt: string | null;
   nextRefreshDueAt: string | null;
   freshnessStatus: string;
+  sourceConfidence: string | null;
+  ruleGroupId: string | null;
 };
 
 type Country = {
@@ -45,9 +49,14 @@ const FILTER_TABS = [
   { label: "e-Visa", value: "E_VISA" },
   { label: "Sticker Visa", value: "REQUIRED" },
   { label: "Visa-free", value: "VISA_EXEMPT" },
+  { label: "Visa on Arrival", value: "VISA_ON_ARRIVAL" },
 ];
 
-const SORT_ORDER = ["AE","TH","SG","NZ","CA","JP","VN","ID","MY","TR","EG","KE"];
+const SORT_ORDER = [
+  "AE","TH","SG","NZ","CA","JP","VN","ID","MY","TR","EG","KE",
+  "LK","KR","TW","HK","TZ","QA","OM","GE","KZ","UZ","PH","KH","LA","MV","MU","AZ","RS",
+  "FR","DE","IT","ES","GR","PT","NL","CH","AT","BE","NO","SE","DK","PL","CZ","HU","HR","FI","SK","SI","RO","BG","LT","LV","EE","IS","LU","MT","LI",
+];
 
 function FreshnessBadge({ status, lastVerifiedAt }: { status: string; lastVerifiedAt: string | null }) {
   if (!lastVerifiedAt || status === "unverified") return null;
@@ -210,12 +219,27 @@ export default function DestinationsPage() {
                         {/* Gradient overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/30 to-transparent" />
 
-                        {/* Visa type badge — top right */}
+                        {/* Top badges row */}
                         {policy && (
-                          <div className="absolute top-3 right-3">
+                          <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
+                            {/* Visa category badge */}
                             <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold backdrop-blur-sm ${VISA_CATEGORY_COLORS[policy.visaCategory] ?? "bg-slate-500/80 text-white"}`}>
                               {VISA_CATEGORY_LABELS[policy.visaCategory] ?? policy.visaCategory}
                             </span>
+                            {/* Schengen group badge */}
+                            {policy.ruleGroupId === "schengen_short_stay" && (
+                              <span className="flex items-center gap-1 rounded-full bg-indigo-600/80 px-2 py-0.5 backdrop-blur-sm">
+                                <Globe className="h-2.5 w-2.5 text-indigo-200" />
+                                <span className="text-[9px] font-semibold text-indigo-100">Schengen</span>
+                              </span>
+                            )}
+                            {/* Medium confidence warning */}
+                            {policy.sourceConfidence === "medium" && (
+                              <span className="flex items-center gap-1 rounded-full bg-amber-600/80 px-2 py-0.5 backdrop-blur-sm">
+                                <AlertTriangle className="h-2.5 w-2.5 text-amber-200" />
+                                <span className="text-[9px] font-semibold text-amber-100">Verify rules</span>
+                              </span>
+                            )}
                           </div>
                         )}
 

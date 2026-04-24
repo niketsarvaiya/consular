@@ -15,10 +15,11 @@ enum VisaType {
 }
 
 enum VisaCategory {
-  REQUIRED      // Traditional sticker/stamp visa
-  E_VISA        // Electronic visa
-  ETA           // Electronic Travel Authorization
-  VISA_EXEMPT   // No visa required
+  REQUIRED        // Traditional sticker/stamp visa
+  E_VISA          // Electronic visa
+  ETA             // Electronic Travel Authorization
+  VISA_EXEMPT     // No visa required
+  VISA_ON_ARRIVAL // Visa granted at the port of entry
 }
 
 enum PolicyStatus {
@@ -163,6 +164,17 @@ model VisaPolicy {
   freshnessStatus       String  @default("unverified") // "fresh" | "stale" | "needs_review" | "unverified"
   // Branch flow support (e.g. UAE has regular tourist route AND VOA-eligibility branch)
   flowBranches          Json?   // { id, label, description, conditions, checklist }[]
+
+  // Source traceability
+  verifiedFrom          String? // e.g. "official portal", "embassy page"
+  policyVersion         String? // e.g. "2026-04-22-p2"
+  reviewStatus          String  @default("unverified") // "verified_seed" | "approved" | "needs_review" | "unverified"
+  phase                 String? // "phase_1" | "phase_2" | "phase_3"
+
+  // Shared rules engine (Phase 3 — Schengen and future shared-rule groups)
+  sharedRulesUrl        String? // Link to the shared rules document (e.g. EU Commission Schengen page)
+  ruleGroupId           String? // "schengen_short_stay" — links all policies in a group
+  applicationChannel    String? // "Consulate/VAC/official visa portal"
 
   versionNumber        Int      @default(1)
   status               PolicyStatus @default(DRAFT)

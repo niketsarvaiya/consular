@@ -134,6 +134,311 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // mountains
     "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // mountains
   ],
+
+  // ── Phase 2 countries ────────────────────────────────────────────────────
+  LK: [
+    "https://images.unsplash.com/photo-1562602833-0f4ab2fc46e5?w=1200&q=80",    // Sigiriya rock fortress
+    "https://images.unsplash.com/photo-1590379492966-e076d8f84c2d?w=600&q=80",  // tea estate
+    "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=600&q=80",  // temple
+    "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80",  // coast
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+  ],
+  KR: [
+    "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1200&q=80", // Seoul cityscape
+    "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80",  // Seoul night
+    "https://images.unsplash.com/photo-1540464788945-93d16c46e19f?w=600&q=80",  // Gyeongbokgung
+    "https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=600&q=80",     // cherry blossoms
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+  ],
+  TW: [
+    "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&q=80", // Taipei cityscape
+    "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=600&q=80",  // Taipei 101
+    "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?w=600&q=80",  // Taiwan landscape
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // mountains
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // travel
+  ],
+  HK: [
+    "https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?w=1200&q=80", // Hong Kong harbour night
+    "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=600&q=80",  // skyline
+    "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80",  // cityscape
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // harbour
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // travel
+  ],
+  TZ: [
+    "https://images.unsplash.com/photo-1523805009345-7448845a9e53?w=1200&q=80", // Kilimanjaro
+    "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80",  // savanna
+    "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",     // wildlife
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+  ],
+  QA: [
+    "https://images.unsplash.com/photo-1507666405895-422eee7c5d4e?w=1200&q=80", // Doha skyline
+    "https://images.unsplash.com/photo-1562280963-8a5475740a10?w=600&q=80",     // Qatar cityscape
+    "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=600&q=80",     // desert city
+    "https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?w=600&q=80",  // Gulf
+    "https://images.unsplash.com/photo-1477091087fb5acf52e15e?w=600&q=80",      // skyline
+  ],
+  OM: [
+    "https://images.unsplash.com/photo-1580127885535-2a450eb76ea9?w=1200&q=80", // Oman desert fort
+    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80",  // Muscat
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",     // architecture
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // desert
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // wadis
+  ],
+  GE: [
+    "https://images.unsplash.com/photo-1565008576549-57569a49371d?w=1200&q=80", // Tbilisi old town
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // Caucasus mountains
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Georgia
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+  ],
+  KZ: [
+    "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=1200&q=80", // Kazakhstan steppe
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // mountains
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // steppe
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+  ],
+  UZ: [
+    "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1200&q=80", // Registan, Samarkand
+    "https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=600&q=80",  // Samarkand
+    "https://images.unsplash.com/photo-1545529468-c6633c54cbe8?w=600&q=80",     // mosque tiles
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Silk Road
+  ],
+  PH: [
+    "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1200&q=80", // Palawan islands
+    "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&q=80",  // beach
+    "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80",  // ocean
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // island
+    "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=600&q=80",  // nature
+  ],
+  KH: [
+    "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?w=1200&q=80", // Angkor Wat
+    "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?w=600&q=80",  // Angkor temples
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Mekong
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Southeast Asia
+  ],
+  LA: [
+    "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=1200&q=80", // Luang Prabang / Mekong
+    "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=600&q=80",  // Laos temple
+    "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80",  // river
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // mountains
+  ],
+  MV: [
+    "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=1200&q=80", // Maldives overwater bungalows
+    "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&q=80",  // Maldives
+    "https://images.unsplash.com/photo-1540202404-a2f29016b523?w=600&q=80",     // lagoon
+    "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80",  // ocean blue
+    "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=600&q=80",  // beach
+  ],
+  MU: [
+    "https://images.unsplash.com/photo-1589979481223-deb893043163?w=1200&q=80", // Mauritius coast
+    "https://images.unsplash.com/photo-1484821582734-6c6c9f99a672?w=600&q=80",  // beach
+    "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80",  // ocean
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1507699622108-4be3abd695ad?w=600&q=80",  // nature
+  ],
+  AZ: [
+    "https://images.unsplash.com/photo-1577832369614-f1e2eedc7895?w=1200&q=80", // Baku skyline
+    "https://images.unsplash.com/photo-1577832369614-f1e2eedc7895?w=600&q=80",  // Baku Flame Towers
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Caucasus
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // travel
+  ],
+  RS: [
+    "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=1200&q=80", // Belgrade fortress
+    "https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=600&q=80",  // Belgrade
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Balkans
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Serbia
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // travel
+  ],
+
+  // ── Phase 3 Schengen countries ────────────────────────────────────────────
+  AT: [
+    "https://images.unsplash.com/photo-1513674694-25c9ad70f7e6?w=1200&q=80",    // Hallstatt / Vienna
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // Alps
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Austria
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // mountains
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  BE: [
+    "https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=1200&q=80", // Bruges canal
+    "https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=600&q=80",  // Belgium
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Flanders
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  BG: [
+    "https://images.unsplash.com/photo-1578262853667-e5f2aaf47e0a?w=1200&q=80", // Rila Monastery
+    "https://images.unsplash.com/photo-1578262853667-e5f2aaf47e0a?w=600&q=80",  // Bulgaria
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Balkans
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  HR: [
+    "https://images.unsplash.com/photo-1555990793-da11153b9d98?w=1200&q=80",    // Dubrovnik old town
+    "https://images.unsplash.com/photo-1555990793-da11153b9d98?w=600&q=80",     // Croatia
+    "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&q=80",  // Adriatic
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // coast
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // islands
+  ],
+  CZ: [
+    "https://images.unsplash.com/photo-1519677584237-752f8853252e?w=1200&q=80", // Prague old town square
+    "https://images.unsplash.com/photo-1541849546-216549ae216d?w=600&q=80",     // Charles Bridge
+    "https://images.unsplash.com/photo-1519677584237-752f8853252e?w=600&q=80",  // Prague Castle
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Bohemia
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  DK: [
+    "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=1200&q=80", // Copenhagen Nyhavn
+    "https://images.unsplash.com/photo-1530089711124-9ca31fb9e863?w=600&q=80",  // Denmark
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Scandinavia
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  EE: [
+    "https://images.unsplash.com/photo-1571825522800-1d9d3ea5a1ac?w=1200&q=80", // Tallinn old town
+    "https://images.unsplash.com/photo-1571825522800-1d9d3ea5a1ac?w=600&q=80",  // Estonia
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Baltics
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // forest
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  FI: [
+    "https://images.unsplash.com/photo-1476231682828-37e571bc172f?w=1200&q=80", // Finland aurora boreal
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // Northern Lights
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // forest lakes
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Scandinavia
+  ],
+  GR: [
+    "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=1200&q=80", // Santorini blue domes
+    "https://images.unsplash.com/photo-1555993539-1732b0258235?w=600&q=80",     // Mykonos
+    "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=600&q=80",  // Athens Acropolis
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Aegean
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // coast
+  ],
+  HU: [
+    "https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?w=1200&q=80", // Budapest Parliament
+    "https://images.unsplash.com/photo-1551867633-194f125bddfa?w=600&q=80",     // Chain Bridge
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Danube
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Hungary
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  IS: [
+    "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1200&q=80", // Iceland Northern Lights
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // aurora
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // waterfalls
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // geysers
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // glaciers
+  ],
+  LV: [
+    "https://images.unsplash.com/photo-1547906534-fa0d4d2d8f03?w=1200&q=80",    // Riga old town
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Baltics
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Latvia forest
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  LI: [
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80", // Alpine scenery
+    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",  // Alps
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Liechtenstein
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // mountains
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // valleys
+  ],
+  LT: [
+    "https://images.unsplash.com/photo-1545580954-c4d5d1ef2893?w=1200&q=80",    // Vilnius old town
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Baltics
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Lithuania
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // forest
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  LU: [
+    "https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=1200&q=80", // Luxembourg city
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Ardennes
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // valleys
+  ],
+  MT: [
+    "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",    // Valletta Grand Harbour
+    "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80",  // Mediterranean
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Malta coast
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // island
+  ],
+  NL: [
+    "https://images.unsplash.com/photo-1524850011238-e3d235c7d4c9?w=1200&q=80", // Amsterdam canals
+    "https://images.unsplash.com/photo-1509966756634-9c23dd6e6815?w=600&q=80",  // tulip fields
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // windmills
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Netherlands
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  NO: [
+    "https://images.unsplash.com/photo-1509720773-571943148621?w=1200&q=80",    // Norwegian fjords
+    "https://images.unsplash.com/photo-1476231682828-37e571bc172f?w=600&q=80",  // aurora
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // mountains
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Scandinavia
+  ],
+  PL: [
+    "https://images.unsplash.com/photo-1519197924294-4ba991a11128?w=1200&q=80", // Krakow / Warsaw
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Poland
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+  ],
+  PT: [
+    "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",    // Lisbon / Sintra
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",     // Algarve
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Portugal coast
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+  ],
+  RO: [
+    "https://images.unsplash.com/photo-1563862573-fca3e22da426?w=1200&q=80",    // Transylvania / Bran Castle
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Carpathians
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Romania
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+  ],
+  SK: [
+    "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&q=80",    // Slovakia mountains
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // High Tatras
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Slovakia
+  ],
+  SI: [
+    "https://images.unsplash.com/photo-1562832135-14a35d25edef?w=1200&q=80",    // Lake Bled
+    "https://images.unsplash.com/photo-1562832135-14a35d25edef?w=600&q=80",     // Slovenia
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // Julian Alps
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
+  ],
+  ES: [
+    "https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=1200&q=80",    // Barcelona Sagrada Familia
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",     // Spain coast
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Andalusia
+  ],
+  SE: [
+    "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=1200&q=80", // Stockholm old town
+    "https://images.unsplash.com/photo-1476231682828-37e571bc172f?w=600&q=80",  // aurora
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Sweden
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // Scandinavian nature
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
+  CH: [
+    "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=1200&q=80", // Swiss Alps
+    "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80",  // Matterhorn
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Swiss lakes
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // mountains
+    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
+  ],
 };
 
 const FALLBACK_IMAGES = [
