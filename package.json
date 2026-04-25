@@ -34,6 +34,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "diff-match-patch": "^1.0.5",
+    "framer-motion": "^12.38.0",
     "ioredis": "^5.4.1",
     "jose": "^5.6.3",
     "lucide-react": "^0.400.0",
@@ -45,6 +46,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
+    "react-simple-maps": "^3.0.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
@@ -56,6 +58,7 @@
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/react-simple-maps": "^3.0.6",
     "autoprefixer": "^10.5.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",

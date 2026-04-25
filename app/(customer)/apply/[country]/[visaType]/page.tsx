@@ -24,6 +24,7 @@ const VISA_CATEGORY_LABELS: Record<string, string> = {
   E_VISA: "e-Visa",
   ETA: "ETA",
   VISA_EXEMPT: "Visa-free",
+  VISA_ON_ARRIVAL: "Visa on Arrival",
 };
 
 const VISA_CATEGORY_COLORS: Record<string, string> = {
@@ -31,6 +32,7 @@ const VISA_CATEGORY_COLORS: Record<string, string> = {
   E_VISA: "bg-blue-100 text-blue-700",
   ETA: "bg-amber-100 text-amber-700",
   VISA_EXEMPT: "bg-emerald-100 text-emerald-700",
+  VISA_ON_ARRIVAL: "bg-teal-100 text-teal-700",
 };
 
 export default async function ApplyStartPage({ params }: Props) {
@@ -53,7 +55,7 @@ export default async function ApplyStartPage({ params }: Props) {
 
   const fee = policy.feeDetails as { governmentFeeINR: number; serviceFeeINR: number; taxes?: number; notes?: string } | null;
   const reqDocs = (policy.requiredDocuments as { title: string; key: string; notes?: string }[]) ?? [];
-  const totalFee = fee ? fee.governmentFeeINR + fee.serviceFeeINR : 0;
+  const totalFee = fee && fee.governmentFeeINR != null ? fee.governmentFeeINR + fee.serviceFeeINR : 0;
   const visaTypeLabel = params.visaType.charAt(0).toUpperCase() + params.visaType.slice(1).toLowerCase();
   const code = params.country.toUpperCase();
 

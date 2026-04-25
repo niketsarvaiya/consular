@@ -391,11 +391,11 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",  // nature
   ],
   PT: [
-    "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80",    // Lisbon / Sintra
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",     // Algarve
-    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // Portugal coast
-    "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // Europe
-    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
+    "https://images.unsplash.com/photo-1548707309-dcebeab9ea9b?w=1200&q=80",    // Lisbon trams & hillside
+    "https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=600&q=80",     // Sintra palace
+    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",     // Algarve sea cliffs
+    "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=600&q=80",  // Porto Ribeira
+    "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // Douro valley
   ],
   RO: [
     "https://images.unsplash.com/photo-1563862573-fca3e22da426?w=1200&q=80",    // Transylvania / Bran Castle

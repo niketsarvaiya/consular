@@ -45,6 +45,9 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 <Link href="/destinations" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
                   Destinations
                 </Link>
+                <Link href="/explore" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
+                  Explore Map
+                </Link>
                 <Link href="/about" className="text-sm font-medium text-slate-600 transition-colors hover:text-indigo-600">
                   About Us
                 </Link>

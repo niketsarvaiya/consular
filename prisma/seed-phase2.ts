@@ -11,6 +11,34 @@ const prisma = new PrismaClient();
 
 const VERIFIED_AT = new Date("2026-04-22");
 
+// Government + service fees per country (INR). Gov fee = approximate INR equivalent of official charge.
+// Service fee = Consular facilitation/documentation assistance fee.
+const FEE_MAP: Record<string, { currency: string; governmentFeeINR: number; serviceFeeINR: number; notes: string }> = {
+  LK: { currency: "INR", governmentFeeINR: 1680, serviceFeeINR: 999,  notes: "Sri Lanka ETA ~USD 20. INR equivalent approximate." },
+  MY: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "No visa fee – Malaysia grants visa-free entry to Indians. Service fee covers travel readiness support." },
+  ID: { currency: "INR", governmentFeeINR: 2940, serviceFeeINR: 1200, notes: "Indonesia VOA/e-visa ~USD 35. INR equivalent approximate." },
+  VN: { currency: "INR", governmentFeeINR: 2100, serviceFeeINR: 999,  notes: "Vietnam e-visa ~USD 25. INR equivalent approximate." },
+  JP: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 1499, notes: "Japan waives government visa fee for Indian nationals. Service fee covers documentation support." },
+  KR: { currency: "INR", governmentFeeINR: 3300, serviceFeeINR: 1500, notes: "South Korea single-entry visa ~KRW 60,000. INR equivalent approximate." },
+  TW: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 999,  notes: "Taiwan visa currently free for Indian nationals under facilitation programme." },
+  HK: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "Hong Kong – Indians enter visa-free for up to 14 days." },
+  TR: { currency: "INR", governmentFeeINR: 4200, serviceFeeINR: 1200, notes: "Turkey e-visa ~USD 50. INR equivalent approximate." },
+  KE: { currency: "INR", governmentFeeINR: 2730, serviceFeeINR: 999,  notes: "Kenya ETA ~USD 32.50. INR equivalent approximate." },
+  TZ: { currency: "INR", governmentFeeINR: 4200, serviceFeeINR: 1200, notes: "Tanzania e-visa ~USD 50. INR equivalent approximate." },
+  QA: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "Qatar offers free e-visa / visa on arrival for Indians." },
+  OM: { currency: "INR", governmentFeeINR: 4360, serviceFeeINR: 1200, notes: "Oman e-visa ~OMR 20. INR equivalent approximate." },
+  GE: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "Georgia grants visa-free entry to Indians for up to 365 days." },
+  KZ: { currency: "INR", governmentFeeINR: 1680, serviceFeeINR: 999,  notes: "Kazakhstan e-visa ~USD 20. INR equivalent approximate." },
+  UZ: { currency: "INR", governmentFeeINR: 1680, serviceFeeINR: 999,  notes: "Uzbekistan e-visa ~USD 20. INR equivalent approximate." },
+  PH: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "Philippines grants visa-free entry for up to 30 days." },
+  KH: { currency: "INR", governmentFeeINR: 3024, serviceFeeINR: 1200, notes: "Cambodia e-visa ~USD 36. INR equivalent approximate." },
+  LA: { currency: "INR", governmentFeeINR: 3360, serviceFeeINR: 1200, notes: "Laos e-visa ~USD 40. INR equivalent approximate." },
+  MV: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "Maldives grants free visa on arrival to all nationalities." },
+  MU: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "Mauritius grants visa-free entry for up to 90 days." },
+  AZ: { currency: "INR", governmentFeeINR: 2184, serviceFeeINR: 999,  notes: "Azerbaijan e-visa ~USD 26. INR equivalent approximate." },
+  RS: { currency: "INR", governmentFeeINR: 0,    serviceFeeINR: 699,  notes: "Serbia grants visa-free entry to Indians for up to 30 days." },
+};
+
 function computeFreshness(verifiedAt: Date): string {
   const daysSince = (Date.now() - verifiedAt.getTime()) / (1000 * 60 * 60 * 24);
   if (daysSince <= 14) return "fresh";
@@ -626,6 +654,7 @@ async function main() {
       policyVersion: entry.policy.policyVersion,
       phase: "phase_2",
       internalOpsNotes: entry.policy.internalOpsNotes,
+      feeDetails: FEE_MAP[entry.iso2] ?? {},
     };
 
     if (existing) {
@@ -640,7 +669,6 @@ async function main() {
           eligibilityRules: [],
           requiredDocuments: [],
           optionalDocuments: [],
-          feeDetails: {},
           embassyLinks: [],
           ...policyData,
         },
