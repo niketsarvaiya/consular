@@ -16,8 +16,9 @@ import {
   type VisaStatus,
 } from "@/lib/explore-data";
 
+// 50m = 1:50 million scale — twice the resolution of 110m, smooth realistic curves
 const GEO_URL =
-  "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+  "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 
 // All countries NOT live on Consular → single neutral colour (no rainbow)
 const BASE_COUNTRY = "#1e3a5f";   // neutral steel blue — visible but not distracting
@@ -141,7 +142,7 @@ export function WorldMap({
                       default: {
                         fill: isSelected ? "#f1f5f9" : fill,
                         stroke: "#0a1628",
-                        strokeWidth: 0.5,
+                        strokeWidth: 0.2,
                         outline: "none",
                         opacity: 1,
                         cursor: isLive ? "pointer" : "default",
@@ -150,7 +151,7 @@ export function WorldMap({
                       hover: {
                         fill: isSelected ? "#ffffff" : (HOVER[fill] ?? "#2d5080"),
                         stroke: "#0a1628",
-                        strokeWidth: 0.5,
+                        strokeWidth: 0.2,
                         outline: "none",
                         cursor: isLive ? "pointer" : "default",
                         opacity: 1,
