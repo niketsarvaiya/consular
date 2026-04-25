@@ -2,12 +2,10 @@
 
 import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Search, Globe, ChevronRight, ArrowRight,
-  Clock, DollarSign, X, ChevronDown, LayoutGrid,
-} from "lucide-react";
+import { Search, Globe, ChevronRight, ChevronDown, LayoutGrid } from "lucide-react";
 import dynamic from "next/dynamic";
 import { DestinationCard } from "./DestinationCard";
+import { CountryDrawer } from "./CountryDrawer";
 import {
   EXPLORE_COUNTRIES,
   POPULAR_DESTINATIONS,
@@ -19,7 +17,6 @@ import {
   VISA_STATUS_META,
   type Region,
 } from "@/lib/explore-data";
-import Link from "next/link";
 
 // ── Lazy-load the heavy map ──────────────────────────────────────────────────
 const WorldMap = dynamic(
@@ -185,107 +182,11 @@ export function ExploreClient() {
           </div>
         </div>
 
-        {/* ── FLOATING COUNTRY CARD — bottom left ──────────────────── */}
-        <AnimatePresence>
-          {selectedCountry && (
-            <motion.div
-              key={selectedCountry.iso2}
-              initial={{ opacity: 0, y: 20, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 16, scale: 0.97 }}
-              transition={{ type: "spring", stiffness: 340, damping: 30 }}
-              className="absolute bottom-6 left-4 z-30 w-72 overflow-hidden rounded-2xl shadow-2xl"
-              style={panel("#334155")}
-            >
-              {/* Hero image */}
-              {selectedCountry.heroImage && (
-                <div className="relative h-32 overflow-hidden">
-                  <img
-                    src={selectedCountry.heroImage}
-                    alt={selectedCountry.name}
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <button
-                    onClick={() => setSelectedCountry(null)}
-                    className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                  <div className="absolute bottom-2.5 left-3">
-                    <p className="text-base font-black text-white leading-tight">
-                      {selectedCountry.flag} {selectedCountry.name}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <div className="p-3.5">
-                {!selectedCountry.heroImage && (
-                  <div className="mb-2.5 flex items-start justify-between">
-                    <p className="text-base font-black text-white">
-                      {selectedCountry.flag} {selectedCountry.name}
-                    </p>
-                    <button onClick={() => setSelectedCountry(null)} className="text-slate-500 hover:text-white">
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Status badge */}
-                {(() => {
-                  const meta = VISA_STATUS_META[selectedCountry.visaStatus];
-                  return (
-                    <div
-                      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold mb-3"
-                      style={{ backgroundColor: `${meta.mapColor}20`, color: meta.mapColor, border: `1px solid ${meta.mapColor}40` }}
-                    >
-                      <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: meta.mapColor }} />
-                      {meta.label}
-                    </div>
-                  );
-                })()}
-
-                {/* Quick stats */}
-                <div className="flex gap-3 mb-3">
-                  {selectedCountry.processingDays && (
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                      <Clock className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" />
-                      {selectedCountry.processingDays}
-                    </div>
-                  )}
-                  {selectedCountry.totalFeeINR !== undefined && (
-                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                      <DollarSign className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" />
-                      {selectedCountry.totalFeeINR === 0
-                        ? "Free"
-                        : `from ₹${selectedCountry.totalFeeINR.toLocaleString("en-IN")}`}
-                    </div>
-                  )}
-                </div>
-
-                {/* CTA */}
-                {selectedCountry.hasLivePage && selectedCountry.slug ? (
-                  <Link
-                    href={`/apply/${selectedCountry.slug}/tourist`}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
-                    style={{ background: "#4f46e5" }}
-                    onClick={() => setSelectedCountry(null)}
-                  >
-                    Apply now <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                ) : (
-                  <div
-                    className="rounded-xl py-2.5 text-center text-xs text-slate-600"
-                    style={{ background: "#1e293b", border: "1px solid #334155" }}
-                  >
-                    Coming soon on Consular
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* ── RIGHT SIDE DRAWER — slides in on country click ───────── */}
+        <CountryDrawer
+          country={selectedCountry}
+          onClose={() => setSelectedCountry(null)}
+        />
 
         {/* ── SCROLL DOWN HINT — bottom center ─────────────────────── */}
         {!selectedCountry && (

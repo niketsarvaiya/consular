@@ -19,19 +19,17 @@ import {
 const GEO_URL =
   "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
-// Base fill for countries we don't track
-// All untracked land must be clearly visible against the ocean
-const BASE_COUNTRY = "#253555";   // muted blue-grey — land mass, clearly above ocean
-const OCEAN_COLOR  = "#0d1b2e";   // deep navy — ocean
-const BG_COLOR     = "#0d1b2e";   // same as ocean (bg is the sea)
+// All countries NOT live on Consular → single neutral colour (no rainbow)
+const BASE_COUNTRY = "#1e3a5f";   // neutral steel blue — visible but not distracting
+const BG_COLOR     = "#0a1628";   // deep navy ocean / background
 
 const HOVER: Record<string, string> = {
-  "#059669": "#10b981",
-  "#2563eb": "#3b82f6",
-  "#7c3aed": "#8b5cf6",
-  "#d97706": "#f59e0b",
-  "#dc2626": "#ef4444",
-  "#253555": "#35527a",  // base country hover
+  "#34d399": "#6ee7b7",   // emerald
+  "#60a5fa": "#93c5fd",   // blue
+  "#a78bfa": "#c4b5fd",   // violet
+  "#fbbf24": "#fde68a",   // amber
+  "#f87171": "#fca5a5",   // red
+  "#1e3a5f": "#2d5080",   // neutral hover
 };
 
 const DEFAULT_POSITION = {
@@ -66,9 +64,10 @@ export function WorldMap({
   const getFill = useCallback(
     (geoId: string): string => {
       const c = COUNTRY_BY_NUMERIC[geoId];
-      if (!c) return BASE_COUNTRY;
+      // Only color countries that have a live Consular page
+      if (!c || !c.hasLivePage) return BASE_COUNTRY;
       if (activeFilter !== "all" && c.visaStatus !== activeFilter)
-        return "#1a2a42"; // dimmed — slightly above ocean
+        return BASE_COUNTRY; // filtered out → back to neutral
       return VISA_STATUS_META[c.visaStatus]?.mapColor ?? BASE_COUNTRY;
     },
     [activeFilter]
@@ -129,14 +128,10 @@ export function WorldMap({
             {({ geographies }: { geographies: any[] }) =>
               geographies.map((geo: any) => {
                 const geoId    = String(parseInt(geo.id, 10));
-                const country  = COUNTRY_BY_NUMERIC[geoId];
-                const fill     = getFill(geoId);
+                const country    = COUNTRY_BY_NUMERIC[geoId];
+                const fill       = getFill(geoId);
                 const isSelected = selectedCountry?.isoNumeric === geoId;
-                const isTracked  = !!country;
-                const isDimmed   =
-                  activeFilter !== "all" &&
-                  isTracked &&
-                  country.visaStatus !== activeFilter;
+                const isLive     = !!country?.hasLivePage;
 
                 return (
                   <Geography
@@ -145,21 +140,19 @@ export function WorldMap({
                     style={{
                       default: {
                         fill: isSelected ? "#f1f5f9" : fill,
-                        stroke: "#0d1b2e",       // ocean color as border = seamless coastlines
+                        stroke: "#0a1628",
                         strokeWidth: 0.5,
                         outline: "none",
-                        opacity: isDimmed ? 0.2 : 1,
-                        cursor: isTracked ? "pointer" : "default",
-                        transition: "fill 0.18s ease, opacity 0.18s ease",
+                        opacity: 1,
+                        cursor: isLive ? "pointer" : "default",
+                        transition: "fill 0.18s ease",
                       },
                       hover: {
-                        fill: isSelected
-                          ? "#ffffff"
-                          : HOVER[fill] ?? (isTracked ? "#35527a" : "#35527a"),
-                        stroke: "#0d1b2e",
+                        fill: isSelected ? "#ffffff" : (HOVER[fill] ?? "#2d5080"),
+                        stroke: "#0a1628",
                         strokeWidth: 0.5,
                         outline: "none",
-                        cursor: isTracked ? "pointer" : "default",
+                        cursor: isLive ? "pointer" : "default",
                         opacity: 1,
                         transition: "fill 0.12s ease",
                       },
@@ -178,7 +171,7 @@ export function WorldMap({
                       handleMove(e as unknown as React.MouseEvent<SVGPathElement>, geoId)
                     }
                     onMouseLeave={() => setTooltip(null)}
-                    onClick={() => { if (country) onCountryClick(country); }}
+                    onClick={() => { if (country && isLive) onCountryClick(country); }}
                   />
                 );
               })
