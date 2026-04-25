@@ -24,13 +24,10 @@ const WorldMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div
-        className="absolute inset-0 flex items-center justify-center"
-        style={{ background: "linear-gradient(170deg, #000d1f 0%, #001233 50%, #000d1f 100%)" }}
-      >
+      <div className="absolute inset-0 flex items-center justify-center bg-[#0a1628]">
         <div className="flex flex-col items-center gap-3">
           <Globe className="h-10 w-10 animate-pulse text-indigo-400" />
-          <span className="text-sm text-slate-400">Loading world map…</span>
+          <span className="text-sm text-slate-400">Loading map…</span>
         </div>
       </div>
     ),
