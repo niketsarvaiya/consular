@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
-import { motion } from "framer-motion";
-import { Search, Globe, ChevronRight, Map, LayoutGrid } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Search, Globe, ChevronRight, ArrowRight,
+  Clock, DollarSign, X, ChevronDown, LayoutGrid,
+} from "lucide-react";
 import dynamic from "next/dynamic";
-import { FilterBar } from "./FilterBar";
-import { CountryDrawer } from "./CountryDrawer";
 import { DestinationCard } from "./DestinationCard";
 import {
   EXPLORE_COUNTRIES,
@@ -18,21 +19,20 @@ import {
   VISA_STATUS_META,
   type Region,
 } from "@/lib/explore-data";
+import Link from "next/link";
 
+// ── Lazy-load the heavy map ──────────────────────────────────────────────────
 const WorldMap = dynamic(
   () => import("./WorldMap").then((m) => ({ default: m.WorldMap })),
   {
     ssr: false,
     loading: () => (
       <div
-        className="flex w-full items-center justify-center"
-        style={{
-          minHeight: 580,
-          background: "linear-gradient(170deg, #000d1f 0%, #001233 45%, #000d1f 100%)",
-        }}
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ background: "linear-gradient(170deg, #000d1f 0%, #001233 50%, #000d1f 100%)" }}
       >
-        <div className="flex flex-col items-center gap-3 text-slate-500">
-          <Globe className="h-9 w-9 animate-pulse text-indigo-500" />
+        <div className="flex flex-col items-center gap-3">
+          <Globe className="h-10 w-10 animate-pulse text-indigo-400" />
           <span className="text-sm text-slate-400">Loading world map…</span>
         </div>
       </div>
@@ -41,36 +41,44 @@ const WorldMap = dynamic(
 );
 
 type Filter = VisaStatus | "all";
-type Tab = "map" | "grid";
+
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "visa_free", label: "Visa Free" },
+  { key: "visa_on_arrival", label: "On Arrival" },
+  { key: "e_visa", label: "e-Visa" },
+  { key: "visa_required", label: "Visa Required" },
+];
 
 const REGIONS: (Region | "All")[] = [
   "All", "Asia", "Europe", "Middle East", "Africa", "Americas", "Oceania",
 ];
 
-interface DiscoveryRow {
-  title: string;
-  subtitle: string;
-  items: ExploreCountry[];
-  emoji: string;
-}
-
-const DISCOVERY_ROWS: DiscoveryRow[] = [
-  { title: "Popular destinations",  subtitle: "Where Indians love to travel",      items: POPULAR_DESTINATIONS,  emoji: "🔥" },
-  { title: "Trending right now",    subtitle: "Rapidly growing in bookings",        items: TRENDING_DESTINATIONS, emoji: "📈" },
-  { title: "Easiest to visit",      subtitle: "Visa-free & on-arrival entry",       items: EASIEST_DESTINATIONS,  emoji: "✈️" },
-  { title: "Quick e-Visa",          subtitle: "Apply online in minutes",            items: EVISA_DESTINATIONS,    emoji: "⚡" },
+const DISCOVERY_ROWS = [
+  { title: "🔥 Popular destinations",  subtitle: "Where Indians love to travel",   items: POPULAR_DESTINATIONS },
+  { title: "📈 Trending right now",    subtitle: "Rapidly growing in bookings",    items: TRENDING_DESTINATIONS },
+  { title: "✈️ Easiest to visit",      subtitle: "Visa-free & on-arrival entry",   items: EASIEST_DESTINATIONS },
+  { title: "⚡ Quick e-Visa",          subtitle: "Apply online in minutes",        items: EVISA_DESTINATIONS },
 ];
+
+// glass style helper
+const glass = (border = "rgba(255,255,255,0.12)") => ({
+  background: "rgba(4, 12, 32, 0.82)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: `1px solid ${border}`,
+});
 
 export function ExploreClient() {
   const [activeFilter, setActiveFilter] = useState<Filter>("all");
   const [activeRegion, setActiveRegion] = useState<Region | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<ExploreCountry | null>(null);
-  const [tab, setTab] = useState<Tab>("map");
-  const gridRef = useRef<HTMLDivElement>(null);
+  const [showGrid, setShowGrid] = useState(false);
+  const discoveryRef = useRef<HTMLDivElement>(null);
 
-  // Count live destinations per filter
-  const filterCounts = useMemo(() => {
+  // Live counts
+  const counts = useMemo(() => {
     const live = EXPLORE_COUNTRIES.filter((c) => c.hasLivePage);
     return {
       all: live.length,
@@ -78,7 +86,7 @@ export function ExploreClient() {
       visa_on_arrival: live.filter((c) => c.visaStatus === "visa_on_arrival").length,
       e_visa: live.filter((c) => c.visaStatus === "e_visa").length,
       visa_required: live.filter((c) => c.visaStatus === "visa_required").length,
-    } as Partial<Record<Filter, number>>;
+    } as Record<Filter, number>;
   }, []);
 
   const filteredDestinations = useMemo(() => {
@@ -95,235 +103,360 @@ export function ExploreClient() {
   }, [activeFilter, activeRegion, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div>
+      {/* ── GOOGLE EARTH SECTION — fills viewport under nav ───────── */}
+      <div className="relative" style={{ height: "calc(100vh - 64px)" }}>
 
-      {/* ── Hero ──────────────────────────────────────────────────── */}
-      <div className="bg-white border-b border-slate-100">
-        <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          >
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3.5 py-1.5 text-sm font-medium text-indigo-600 mb-4">
-              <Globe className="h-4 w-4" />
-              {EXPLORE_COUNTRIES.filter((c) => c.hasLivePage).length} destinations · Indian passport
-            </div>
-            <h1 className="text-4xl font-black text-slate-900 leading-tight sm:text-5xl">
-              Explore visa requirements
-              <span className="block bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-                for every country
-              </span>
-            </h1>
-            <p className="mt-3 text-base text-slate-500 max-w-lg">
-              See at a glance which countries Indian passport holders can enter visa-free, on arrival, or with an e-Visa. Click any country for instant details.
-            </p>
-          </motion.div>
+        {/* Map fills everything */}
+        <WorldMap
+          activeFilter={activeFilter}
+          onCountryClick={setSelectedCountry}
+          selectedCountry={selectedCountry}
+        />
 
-          {/* Search + tab switcher row */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
-            className="mt-6 flex flex-wrap items-center gap-3"
-          >
-            <div className="relative flex-1 min-w-[220px] max-w-sm">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        {/* ── TOP FLOATING BAR — search + filters ─────────────────── */}
+        <div className="absolute top-4 left-4 right-4 z-30 flex flex-col gap-2 pointer-events-none">
+          {/* Search row */}
+          <div className="flex justify-center">
+            <div
+              className="flex items-center gap-2 rounded-2xl px-4 py-2.5 shadow-2xl pointer-events-auto w-full max-w-lg"
+              style={glass()}
+            >
+              <Search className="h-4 w-4 flex-shrink-0 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search destinations…"
+                placeholder="Search any country…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                className="flex-1 bg-transparent text-sm text-white placeholder-slate-500 outline-none"
               />
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                <Globe className="h-3.5 w-3.5" />
+                <span>{counts.all} destinations</span>
+              </div>
             </div>
+          </div>
 
-            {/* Tab switcher */}
-            <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1">
-              {(["map", "grid"] as Tab[]).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`relative flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                    tab === t ? "text-slate-900 bg-white shadow-sm" : "text-slate-500 hover:text-slate-700"
-                  }`}
-                >
-                  {t === "map" ? <Map className="h-3.5 w-3.5" /> : <LayoutGrid className="h-3.5 w-3.5" />}
-                  {t === "map" ? "World Map" : "Grid"}
-                </button>
-              ))}
+          {/* Filter chips row */}
+          <div className="flex justify-center pointer-events-auto">
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {FILTERS.map(({ key, label }) => {
+                const isActive = activeFilter === key;
+                const meta = key !== "all" ? VISA_STATUS_META[key as VisaStatus] : null;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setActiveFilter(key)}
+                    className="flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all active:scale-95"
+                    style={
+                      isActive
+                        ? {
+                            background: meta?.mapColor ?? "#6366f1",
+                            color: "#fff",
+                            border: `1px solid ${meta?.mapColor ?? "#6366f1"}`,
+                            boxShadow: `0 0 12px ${meta?.mapColor ?? "#6366f1"}80`,
+                          }
+                        : {
+                            ...glass("rgba(255,255,255,0.1)"),
+                            color: "rgba(200,210,240,0.85)",
+                          }
+                    }
+                  >
+                    {meta && (
+                      <span
+                        className="h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                        style={{ backgroundColor: isActive ? "rgba(255,255,255,0.8)" : meta.mapColor }}
+                      />
+                    )}
+                    {label}
+                    {counts[key] !== undefined && (
+                      <span className="opacity-60 ml-0.5">{counts[key]}</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          </motion.div>
-
-          {/* Filter chips */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
-            className="mt-4"
-          >
-            <FilterBar
-              active={activeFilter}
-              onChange={setActiveFilter}
-              counts={filterCounts}
-            />
-          </motion.div>
+          </div>
         </div>
-      </div>
 
-      {/* ── MAP VIEW — full bleed ──────────────────────────────────── */}
-      {tab === "map" && (
-        <motion.div
-          key="map"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          {/* Full-width map — no container */}
-          <WorldMap
-            activeFilter={activeFilter}
-            onCountryClick={setSelectedCountry}
-            selectedCountry={selectedCountry}
-          />
+        {/* ── FLOATING COUNTRY CARD — bottom left ──────────────────── */}
+        <AnimatePresence>
+          {selectedCountry && (
+            <motion.div
+              key={selectedCountry.iso2}
+              initial={{ opacity: 0, y: 20, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 340, damping: 30 }}
+              className="absolute bottom-6 left-4 z-30 w-72 overflow-hidden rounded-2xl shadow-2xl"
+              style={glass(`${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}40`)}
+            >
+              {/* Hero image */}
+              {selectedCountry.heroImage && (
+                <div className="relative h-32 overflow-hidden">
+                  <img
+                    src={selectedCountry.heroImage}
+                    alt={selectedCountry.name}
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <button
+                    onClick={() => setSelectedCountry(null)}
+                    className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                  <div className="absolute bottom-2.5 left-3">
+                    <p className="text-base font-black text-white leading-tight">
+                      {selectedCountry.flag} {selectedCountry.name}
+                    </p>
+                  </div>
+                </div>
+              )}
 
-          {/* Stats bar — contained */}
-          <div className="border-b border-slate-100 bg-white">
-            <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {(["visa_free", "visa_on_arrival", "e_visa", "visa_required"] as VisaStatus[]).map(
-                  (status) => {
-                    const meta = VISA_STATUS_META[status];
-                    const totalCount = EXPLORE_COUNTRIES.filter((c) => c.visaStatus === status).length;
-                    const liveCount = EXPLORE_COUNTRIES.filter((c) => c.visaStatus === status && c.hasLivePage).length;
-                    const isActive = activeFilter === status;
-                    return (
-                      <button
-                        key={status}
-                        onClick={() => setActiveFilter(isActive ? "all" : status)}
-                        className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-all hover:border-slate-200 ${
-                          isActive ? "border-indigo-200 bg-indigo-50" : "border-slate-100 bg-white"
-                        }`}
-                      >
-                        <span
-                          className="h-3 w-3 flex-shrink-0 rounded-full"
-                          style={{
-                            backgroundColor: meta.mapColor,
-                            boxShadow: `0 0 8px ${meta.mapColor}80`,
-                          }}
-                        />
-                        <div className="min-w-0">
-                          <p className="text-base font-black text-slate-900 tabular-nums leading-none">
-                            {totalCount}
-                          </p>
-                          <p className="mt-0.5 truncate text-xs text-slate-400">{meta.label}</p>
-                          {liveCount > 0 && (
-                            <p className="text-[10px] text-indigo-500 font-medium">{liveCount} bookable</p>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  }
+              <div className="p-3.5">
+                {!selectedCountry.heroImage && (
+                  <div className="mb-2.5 flex items-start justify-between">
+                    <p className="text-base font-black text-white">
+                      {selectedCountry.flag} {selectedCountry.name}
+                    </p>
+                    <button onClick={() => setSelectedCountry(null)} className="text-slate-500 hover:text-white">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Status badge */}
+                {(() => {
+                  const meta = VISA_STATUS_META[selectedCountry.visaStatus];
+                  return (
+                    <div
+                      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold mb-3"
+                      style={{ backgroundColor: `${meta.mapColor}20`, color: meta.mapColor, border: `1px solid ${meta.mapColor}40` }}
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: meta.mapColor }} />
+                      {meta.label}
+                    </div>
+                  );
+                })()}
+
+                {/* Quick stats */}
+                <div className="flex gap-3 mb-3">
+                  {selectedCountry.processingDays && (
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                      <Clock className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" />
+                      {selectedCountry.processingDays}
+                    </div>
+                  )}
+                  {selectedCountry.totalFeeINR !== undefined && (
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                      <DollarSign className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" />
+                      {selectedCountry.totalFeeINR === 0
+                        ? "Free"
+                        : `from ₹${selectedCountry.totalFeeINR.toLocaleString("en-IN")}`}
+                    </div>
+                  )}
+                </div>
+
+                {/* CTA */}
+                {selectedCountry.hasLivePage && selectedCountry.slug ? (
+                  <Link
+                    href={`/apply/${selectedCountry.slug}/tourist`}
+                    className="flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:brightness-110 active:scale-95"
+                    style={{
+                      background: `linear-gradient(135deg, ${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}cc, ${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}88)`,
+                      boxShadow: `0 4px 16px ${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}50`,
+                    }}
+                    onClick={() => setSelectedCountry(null)}
+                  >
+                    Apply now <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                ) : (
+                  <div className="rounded-xl py-2.5 text-center text-xs text-slate-500"
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1px dashed rgba(255,255,255,0.1)" }}>
+                    Coming soon on Consular
+                  </div>
                 )}
               </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* ── GRID VIEW ─────────────────────────────────────────────── */}
-      {tab === "grid" && (
-        <motion.div
-          key="grid"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.25 }}
-          className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
-          ref={gridRef}
-        >
-          {/* Region filter */}
-          <div className="mb-5 flex flex-wrap gap-2">
-            {REGIONS.map((region) => (
-              <button
-                key={region}
-                onClick={() => setActiveRegion(region)}
-                className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-all ${
-                  activeRegion === region
-                    ? "bg-slate-900 text-white shadow-sm"
-                    : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                }`}
-              >
-                {region}
-              </button>
-            ))}
-          </div>
-
-          {filteredDestinations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <p className="text-5xl">🔍</p>
-              <p className="mt-4 text-lg font-semibold text-slate-700">No destinations found</p>
-              <p className="mt-1 text-sm text-slate-500">Try adjusting your filters</p>
-              <button
-                onClick={() => { setActiveFilter("all"); setActiveRegion("All"); setSearchQuery(""); }}
-                className="mt-4 rounded-lg bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 hover:bg-indigo-100 transition-colors"
-              >
-                Clear all filters
-              </button>
-            </div>
-          ) : (
-            <>
-              <p className="mb-4 text-sm text-slate-500">
-                Showing{" "}
-                <span className="font-semibold text-slate-700">{filteredDestinations.length}</span>{" "}
-                destination{filteredDestinations.length !== 1 ? "s" : ""}
-              </p>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                {filteredDestinations.map((country, i) => (
-                  <DestinationCard
-                    key={country.iso2}
-                    country={country}
-                    onClick={setSelectedCountry}
-                    index={i}
-                  />
-                ))}
-              </div>
-            </>
+            </motion.div>
           )}
-        </motion.div>
-      )}
+        </AnimatePresence>
 
-      {/* ── Discovery rows ────────────────────────────────────────── */}
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="space-y-14">
+        {/* ── SCROLL DOWN HINT — bottom center ─────────────────────── */}
+        {!selectedCountry && (
+          <motion.button
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5, duration: 0.6 }}
+            onClick={() => discoveryRef.current?.scrollIntoView({ behavior: "smooth" })}
+            className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1.5 text-slate-500 transition-colors hover:text-slate-300"
+          >
+            <span className="text-xs font-medium tracking-wide">Explore destinations</span>
+            <motion.div
+              animate={{ y: [0, 4, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            >
+              <ChevronDown className="h-4 w-4" />
+            </motion.div>
+          </motion.button>
+        )}
+
+        {/* ── SEARCH RESULTS OVERLAY — when query active ───────────── */}
+        <AnimatePresence>
+          {searchQuery.trim() && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="absolute left-1/2 top-[82px] z-40 w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl shadow-2xl"
+              style={glass()}
+            >
+              {filteredDestinations.length === 0 ? (
+                <div className="p-5 text-center text-sm text-slate-500">
+                  No destinations found for "{searchQuery}"
+                </div>
+              ) : (
+                <div className="max-h-72 overflow-y-auto p-2">
+                  {filteredDestinations.slice(0, 8).map((c) => {
+                    const meta = VISA_STATUS_META[c.visaStatus];
+                    return (
+                      <button
+                        key={c.iso2}
+                        onClick={() => { setSelectedCountry(c); setSearchQuery(""); }}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-white/5"
+                      >
+                        <span className="text-xl leading-none">{c.flag}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-white truncate">{c.name}</p>
+                          <p className="text-xs text-slate-500">{c.region}</p>
+                        </div>
+                        <span
+                          className="flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold"
+                          style={{ backgroundColor: `${meta.mapColor}25`, color: meta.mapColor }}
+                        >
+                          {meta.label}
+                        </span>
+                      </button>
+                    );
+                  })}
+                  {filteredDestinations.length > 8 && (
+                    <p className="px-3 py-2 text-center text-[11px] text-slate-600">
+                      +{filteredDestinations.length - 8} more results
+                    </p>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* ── DISCOVERY SECTION — below the viewport map ────────────── */}
+      <div ref={discoveryRef} className="bg-slate-50">
+        {/* Grid toggle header */}
+        <div className="border-b border-slate-100 bg-white px-4 py-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h2 className="text-xl font-black text-slate-900">Browse destinations</h2>
+              <p className="text-sm text-slate-500">
+                {counts.all} destinations · Indian passport holders
+              </p>
+            </div>
+            <button
+              onClick={() => setShowGrid(!showGrid)}
+              className={`flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
+                showGrid
+                  ? "border-indigo-200 bg-indigo-50 text-indigo-600"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+              }`}
+            >
+              <LayoutGrid className="h-4 w-4" />
+              {showGrid ? "Hide grid" : "Show all destinations"}
+            </button>
+          </div>
+        </div>
+
+        {/* Full grid (toggle) */}
+        <AnimatePresence>
+          {showGrid && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="overflow-hidden border-b border-slate-100 bg-white"
+            >
+              <div className="mx-auto max-w-7xl px-4 pb-8 pt-4 sm:px-6 lg:px-8">
+                {/* Region filter */}
+                <div className="mb-5 flex flex-wrap gap-2">
+                  {REGIONS.map((region) => (
+                    <button
+                      key={region}
+                      onClick={() => setActiveRegion(region)}
+                      className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition-all ${
+                        activeRegion === region
+                          ? "bg-slate-900 text-white shadow-sm"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {region}
+                    </button>
+                  ))}
+                </div>
+                <p className="mb-4 text-sm text-slate-500">
+                  Showing{" "}
+                  <span className="font-semibold text-slate-700">{filteredDestinations.length}</span>{" "}
+                  destinations
+                </p>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                  {filteredDestinations.map((c, i) => (
+                    <DestinationCard
+                      key={c.iso2}
+                      country={c}
+                      onClick={(country) => {
+                        setSelectedCountry(country);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      index={i}
+                    />
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Discovery rows */}
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 space-y-14">
           {DISCOVERY_ROWS.map((row) => {
             if (row.items.length === 0) return null;
             return (
               <section key={row.title}>
                 <div className="mb-5 flex items-end justify-between">
                   <div>
-                    <h2 className="text-xl font-black text-slate-900">
-                      {row.emoji} {row.title}
-                    </h2>
+                    <h2 className="text-xl font-black text-slate-900">{row.title}</h2>
                     <p className="text-sm text-slate-500">{row.subtitle}</p>
                   </div>
                   <button
-                    className="hidden sm:flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                    className="hidden sm:flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700"
                     onClick={() => {
-                      setTab("grid");
-                      setTimeout(
-                        () => gridRef.current?.scrollIntoView({ behavior: "smooth" }),
-                        100
-                      );
+                      setShowGrid(true);
+                      setTimeout(() => discoveryRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
                     }}
                   >
                     View all <ChevronRight className="h-4 w-4" />
                   </button>
                 </div>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                  {row.items.slice(0, 5).map((country, i) => (
+                  {row.items.slice(0, 5).map((c, i) => (
                     <DestinationCard
-                      key={country.iso2}
-                      country={country}
-                      onClick={setSelectedCountry}
+                      key={c.iso2}
+                      country={c}
+                      onClick={(country) => {
+                        setSelectedCountry(country);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
                       index={i}
                     />
                   ))}
@@ -333,12 +466,6 @@ export function ExploreClient() {
           })}
         </div>
       </div>
-
-      {/* Country drawer */}
-      <CountryDrawer
-        country={selectedCountry}
-        onClose={() => setSelectedCountry(null)}
-      />
     </div>
   );
 }
