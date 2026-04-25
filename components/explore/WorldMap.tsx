@@ -44,56 +44,58 @@ const LABELS: {
   iso2: string;
   name: string;
   coords: [number, number];
-  minZoom?: number; // only show at this zoom level and above
+  minZoom: number; // show only when zoomed to this level or above
 }[] = [
-  // ── Major world countries (geographic context) ──
-  { iso2: "RU", name: "Russia",        coords: [90,   61],   minZoom: 1 },
-  { iso2: "CN", name: "China",         coords: [104,  35],   minZoom: 1 },
-  { iso2: "US", name: "USA",           coords: [-98,  38],   minZoom: 1 },
-  { iso2: "CA", name: "Canada",        coords: [-96,  56],   minZoom: 1 },
-  { iso2: "BR", name: "Brazil",        coords: [-52,  -10],  minZoom: 1 },
-  { iso2: "AU", name: "Australia",     coords: [133,  -25],  minZoom: 1 },
-  { iso2: "IN", name: "India",         coords: [80,   22],   minZoom: 1 },
-  // ── Live Consular destinations ──
-  { iso2: "TH", name: "Thailand",      coords: [100,  15],   minZoom: 1.5 },
-  { iso2: "JP", name: "Japan",         coords: [138,  37],   minZoom: 1.5 },
-  { iso2: "SG", name: "Singapore",     coords: [104,   1],   minZoom: 3 },
-  { iso2: "GB", name: "UK",            coords: [-2,   52],   minZoom: 1.5 },
-  { iso2: "DE", name: "Germany",       coords: [10,   51],   minZoom: 1.5 },
-  { iso2: "FR", name: "France",        coords: [2,    46],   minZoom: 1.5 },
-  { iso2: "IT", name: "Italy",         coords: [12,   42],   minZoom: 1.5 },
-  { iso2: "ES", name: "Spain",         coords: [-4,   40],   minZoom: 1.5 },
-  { iso2: "NL", name: "Netherlands",   coords: [5,    52],   minZoom: 3 },
-  { iso2: "PT", name: "Portugal",      coords: [-8,   39],   minZoom: 2 },
-  { iso2: "GR", name: "Greece",        coords: [22,   39],   minZoom: 2 },
-  { iso2: "AT", name: "Austria",       coords: [14,   47],   minZoom: 3 },
-  { iso2: "CH", name: "Switzerland",   coords: [8,    47],   minZoom: 3 },
-  { iso2: "CZ", name: "Czechia",       coords: [15,   50],   minZoom: 3 },
-  { iso2: "HU", name: "Hungary",       coords: [19,   47],   minZoom: 3 },
-  { iso2: "PL", name: "Poland",        coords: [20,   52],   minZoom: 2 },
-  { iso2: "SE", name: "Sweden",        coords: [17,   62],   minZoom: 2 },
-  { iso2: "NO", name: "Norway",        coords: [10,   65],   minZoom: 2 },
-  { iso2: "HR", name: "Croatia",       coords: [15,   45],   minZoom: 3 },
-  { iso2: "AE", name: "UAE",           coords: [54,   24],   minZoom: 1.5 },
-  { iso2: "TR", name: "Turkey",        coords: [35,   39],   minZoom: 1.5 },
-  { iso2: "EG", name: "Egypt",         coords: [30,   27],   minZoom: 1.5 },
-  { iso2: "KE", name: "Kenya",         coords: [38,    0],   minZoom: 1.5 },
-  { iso2: "TZ", name: "Tanzania",      coords: [35,   -6],   minZoom: 2 },
-  { iso2: "NZ", name: "New Zealand",   coords: [172, -42],   minZoom: 1.5 },
-  { iso2: "MY", name: "Malaysia",      coords: [110,   4],   minZoom: 1.5 },
-  { iso2: "ID", name: "Indonesia",     coords: [118,  -2],   minZoom: 1.5 },
-  { iso2: "VN", name: "Vietnam",       coords: [106,  16],   minZoom: 1.5 },
-  { iso2: "KR", name: "South Korea",   coords: [127,  37],   minZoom: 2 },
-  { iso2: "PH", name: "Philippines",   coords: [122,  13],   minZoom: 2 },
-  { iso2: "LK", name: "Sri Lanka",     coords: [81,    8],   minZoom: 2 },
-  { iso2: "QA", name: "Qatar",         coords: [51,   25],   minZoom: 2.5 },
-  { iso2: "OM", name: "Oman",          coords: [57,   22],   minZoom: 2 },
-  { iso2: "GE", name: "Georgia",       coords: [43,   42],   minZoom: 2.5 },
-  { iso2: "AZ", name: "Azerbaijan",    coords: [47,   40],   minZoom: 2.5 },
-  { iso2: "KH", name: "Cambodia",      coords: [105,  12],   minZoom: 2 },
-  { iso2: "MV", name: "Maldives",      coords: [73,    4],   minZoom: 3 },
-  { iso2: "MU", name: "Mauritius",     coords: [57,  -20],   minZoom: 3 },
-  { iso2: "RS", name: "Serbia",        coords: [21,   44],   minZoom: 3 },
+  // ── Continent-scale orientation only at zoom ≥ 1.8 ──────────────────────────
+  { iso2: "RU", name: "Russia",        coords: [90,   61],   minZoom: 1.8 },
+  { iso2: "CN", name: "China",         coords: [104,  35],   minZoom: 1.8 },
+  { iso2: "US", name: "USA",           coords: [-98,  38],   minZoom: 1.8 },
+  { iso2: "CA", name: "Canada",        coords: [-96,  56],   minZoom: 1.8 },
+  { iso2: "BR", name: "Brazil",        coords: [-52,  -10],  minZoom: 1.8 },
+  { iso2: "AU", name: "Australia",     coords: [133,  -25],  minZoom: 1.8 },
+  { iso2: "IN", name: "India",         coords: [80,   22],   minZoom: 1.8 },
+  // ── Large live destinations at zoom ≥ 2.2 ───────────────────────────────────
+  { iso2: "TH", name: "Thailand",      coords: [100,  15],   minZoom: 2.2 },
+  { iso2: "JP", name: "Japan",         coords: [138,  37],   minZoom: 2.2 },
+  { iso2: "GB", name: "UK",            coords: [-2,   52],   minZoom: 2.2 },
+  { iso2: "DE", name: "Germany",       coords: [10,   51],   minZoom: 2.2 },
+  { iso2: "FR", name: "France",        coords: [2,    46],   minZoom: 2.2 },
+  { iso2: "IT", name: "Italy",         coords: [12,   42],   minZoom: 2.2 },
+  { iso2: "ES", name: "Spain",         coords: [-4,   40],   minZoom: 2.2 },
+  { iso2: "TR", name: "Turkey",        coords: [35,   39],   minZoom: 2.2 },
+  { iso2: "EG", name: "Egypt",         coords: [30,   27],   minZoom: 2.2 },
+  { iso2: "KE", name: "Kenya",         coords: [38,    0],   minZoom: 2.2 },
+  { iso2: "ID", name: "Indonesia",     coords: [118,  -2],   minZoom: 2.2 },
+  { iso2: "MY", name: "Malaysia",      coords: [110,   4],   minZoom: 2.2 },
+  { iso2: "AE", name: "UAE",           coords: [54,   24],   minZoom: 2.2 },
+  { iso2: "NZ", name: "New Zealand",   coords: [172, -42],   minZoom: 2.2 },
+  // ── Medium destinations at zoom ≥ 2.8 ───────────────────────────────────────
+  { iso2: "VN", name: "Vietnam",       coords: [106,  16],   minZoom: 2.8 },
+  { iso2: "KR", name: "South Korea",   coords: [127,  37],   minZoom: 2.8 },
+  { iso2: "PT", name: "Portugal",      coords: [-8,   39],   minZoom: 2.8 },
+  { iso2: "GR", name: "Greece",        coords: [22,   39],   minZoom: 2.8 },
+  { iso2: "PL", name: "Poland",        coords: [20,   52],   minZoom: 2.8 },
+  { iso2: "SE", name: "Sweden",        coords: [17,   62],   minZoom: 2.8 },
+  { iso2: "NO", name: "Norway",        coords: [10,   65],   minZoom: 2.8 },
+  { iso2: "OM", name: "Oman",          coords: [57,   22],   minZoom: 2.8 },
+  { iso2: "TZ", name: "Tanzania",      coords: [35,   -6],   minZoom: 2.8 },
+  { iso2: "PH", name: "Philippines",   coords: [122,  13],   minZoom: 2.8 },
+  { iso2: "LK", name: "Sri Lanka",     coords: [81,    8],   minZoom: 2.8 },
+  { iso2: "KH", name: "Cambodia",      coords: [105,  12],   minZoom: 2.8 },
+  // ── Small destinations at zoom ≥ 3.5 ────────────────────────────────────────
+  { iso2: "SG", name: "Singapore",     coords: [104,   1],   minZoom: 3.5 },
+  { iso2: "NL", name: "Netherlands",   coords: [5,    52],   minZoom: 3.5 },
+  { iso2: "AT", name: "Austria",       coords: [14,   47],   minZoom: 3.5 },
+  { iso2: "CH", name: "Switzerland",   coords: [8,    47],   minZoom: 3.5 },
+  { iso2: "CZ", name: "Czechia",       coords: [15,   50],   minZoom: 3.5 },
+  { iso2: "HU", name: "Hungary",       coords: [19,   47],   minZoom: 3.5 },
+  { iso2: "HR", name: "Croatia",       coords: [15,   45],   minZoom: 3.5 },
+  { iso2: "GE", name: "Georgia",       coords: [43,   42],   minZoom: 3.5 },
+  { iso2: "AZ", name: "Azerbaijan",    coords: [47,   40],   minZoom: 3.5 },
+  { iso2: "QA", name: "Qatar",         coords: [51,   25],   minZoom: 3.5 },
+  { iso2: "MV", name: "Maldives",      coords: [73,    4],   minZoom: 3.5 },
+  { iso2: "MU", name: "Mauritius",     coords: [57,  -20],   minZoom: 3.5 },
+  { iso2: "RS", name: "Serbia",        coords: [21,   44],   minZoom: 3.5 },
 ];
 
 interface WorldMapProps {
@@ -159,8 +161,9 @@ export function WorldMap({ activeFilter, onCountryClick, selectedCountry }: Worl
   function zoomOut() { setPosition((p) => ({ ...p, zoom: Math.max(p.zoom / 1.5, 0.8) })); }
   function reset()   { setPosition(DEFAULT_POSITION); }
 
-  // Compute label font size based on zoom — labels scale with map
-  const labelSize = Math.max(8, Math.min(13, 9 * position.zoom));
+  // Labels sit inside ZoomableGroup which applies scale(zoom) to its <g>.
+  // Divide by zoom so the rendered visual size stays constant regardless of zoom.
+  const labelSize = 5.5 / position.zoom;
 
   return (
     <div className="absolute inset-0 overflow-hidden select-none" style={{ background: BG_COLOR }}>
@@ -243,13 +246,12 @@ export function WorldMap({ activeFilter, onCountryClick, selectedCountry }: Worl
                   style={{
                     fontFamily: "Inter, system-ui, sans-serif",
                     fontSize: labelSize,
-                    fontWeight: isLive ? 600 : 400,
-                    fill: isLive ? fillColor : "rgba(148,163,184,0.7)",
-                    opacity: isActive ? 1 : 0.25,
+                    fontWeight: 500,
+                    fill: isLive ? fillColor : "rgba(148,163,184,0.45)",
+                    opacity: isActive ? 1 : 0.2,
                     pointerEvents: "none",
-                    textShadow: "0 1px 3px rgba(0,0,0,0.8)",
-                    letterSpacing: isLive ? "0.02em" : "0.05em",
-                    textTransform: isLive ? "none" : "uppercase",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
                   }}
                 >
                   {label.name}
