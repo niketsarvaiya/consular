@@ -5,7 +5,6 @@ import {
   Geographies,
   Geography,
   Graticule,
-  Sphere,
   ZoomableGroup,
 } from "react-simple-maps";
 import { useState, useCallback } from "react";
@@ -21,18 +20,18 @@ const GEO_URL =
   "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
 // Base fill for countries we don't track
-const BASE_COUNTRY = "#1e293b";   // slate-800
-const OCEAN_COLOR  = "#0f172a";   // slate-900
-const BG_COLOR     = "#080f1a";   // near-black
+// All untracked land must be clearly visible against the ocean
+const BASE_COUNTRY = "#253555";   // muted blue-grey — land mass, clearly above ocean
+const OCEAN_COLOR  = "#0d1b2e";   // deep navy — ocean
+const BG_COLOR     = "#0d1b2e";   // same as ocean (bg is the sea)
 
-// Hover — 25% lighter than each base color
 const HOVER: Record<string, string> = {
-  "#059669": "#10b981",  // emerald brighter
-  "#2563eb": "#3b82f6",  // blue brighter
-  "#7c3aed": "#8b5cf6",  // violet brighter
-  "#d97706": "#f59e0b",  // amber brighter
-  "#dc2626": "#ef4444",  // red brighter
-  "#1e293b": "#334155",  // slate brighter (non-tracked hover)
+  "#059669": "#10b981",
+  "#2563eb": "#3b82f6",
+  "#7c3aed": "#8b5cf6",
+  "#d97706": "#f59e0b",
+  "#dc2626": "#ef4444",
+  "#253555": "#35527a",  // base country hover
 };
 
 const DEFAULT_POSITION = {
@@ -69,7 +68,7 @@ export function WorldMap({
       const c = COUNTRY_BY_NUMERIC[geoId];
       if (!c) return BASE_COUNTRY;
       if (activeFilter !== "all" && c.visaStatus !== activeFilter)
-        return "#111827"; // dimmed — slate-900 variant
+        return "#1a2a42"; // dimmed — slightly above ocean
       return VISA_STATUS_META[c.visaStatus]?.mapColor ?? BASE_COUNTRY;
     },
     [activeFilter]
@@ -123,16 +122,8 @@ export function WorldMap({
           onMoveEnd={(p) => setPosition({ coordinates: p.coordinates, zoom: p.zoom })}
           filterZoomEvent={filterZoomEvent as any}
         >
-          {/* Ocean */}
-          <Sphere
-            id="rsm-sphere"
-            fill={OCEAN_COLOR}
-            stroke="#1e293b"
-            strokeWidth={0.5}
-          />
-
-          {/* Very subtle latitude/longitude grid */}
-          <Graticule stroke="rgba(148,163,184,0.06)" strokeWidth={0.4} />
+          {/* Subtle latitude/longitude grid — structure without noise */}
+          <Graticule stroke="rgba(148,163,184,0.05)" strokeWidth={0.4} />
 
           <Geographies geography={GEO_URL}>
             {({ geographies }: { geographies: any[] }) =>
@@ -154,19 +145,19 @@ export function WorldMap({
                     style={{
                       default: {
                         fill: isSelected ? "#f1f5f9" : fill,
-                        stroke: "#0f172a",
-                        strokeWidth: 0.4,
+                        stroke: "#0d1b2e",       // ocean color as border = seamless coastlines
+                        strokeWidth: 0.5,
                         outline: "none",
-                        opacity: isDimmed ? 0.15 : 1,
+                        opacity: isDimmed ? 0.2 : 1,
                         cursor: isTracked ? "pointer" : "default",
                         transition: "fill 0.18s ease, opacity 0.18s ease",
                       },
                       hover: {
                         fill: isSelected
                           ? "#ffffff"
-                          : HOVER[fill] ?? (isTracked ? "#334155" : "#263048"),
-                        stroke: isTracked ? "#475569" : "#1e293b",
-                        strokeWidth: 0.6,
+                          : HOVER[fill] ?? (isTracked ? "#35527a" : "#35527a"),
+                        stroke: "#0d1b2e",
+                        strokeWidth: 0.5,
                         outline: "none",
                         cursor: isTracked ? "pointer" : "default",
                         opacity: 1,
