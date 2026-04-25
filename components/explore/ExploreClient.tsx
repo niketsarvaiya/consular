@@ -61,11 +61,11 @@ const DISCOVERY_ROWS = [
   { title: "⚡ Quick e-Visa",          subtitle: "Apply online in minutes",        items: EVISA_DESTINATIONS },
 ];
 
-// glass style helper
-const glass = (border = "rgba(255,255,255,0.12)") => ({
-  background: "rgba(4, 12, 32, 0.82)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
+// Dark panel helper — matches the map's slate palette
+const panel = (border = "#1e293b") => ({
+  background: "rgba(15,23,42,0.88)",
+  backdropFilter: "blur(16px)",
+  WebkitBackdropFilter: "blur(16px)",
   border: `1px solid ${border}`,
 });
 
@@ -116,65 +116,71 @@ export function ExploreClient() {
 
         {/* ── TOP FLOATING BAR — search + filters ─────────────────── */}
         <div className="absolute top-4 left-4 right-4 z-30 flex flex-col gap-2 pointer-events-none">
-          {/* Search row */}
+          {/* Search + filter unified bar */}
           <div className="flex justify-center">
             <div
-              className="flex items-center gap-2 rounded-2xl px-4 py-2.5 shadow-2xl pointer-events-auto w-full max-w-lg"
-              style={glass()}
+              className="flex flex-col gap-2 rounded-2xl px-3 py-3 shadow-2xl pointer-events-auto w-full max-w-xl"
+              style={panel("#334155")}
             >
-              <Search className="h-4 w-4 flex-shrink-0 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search any country…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-transparent text-sm text-white placeholder-slate-500 outline-none"
-              />
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                <Globe className="h-3.5 w-3.5" />
-                <span>{counts.all} destinations</span>
+              {/* Search input */}
+              <div className="flex items-center gap-2.5 px-1">
+                <Search className="h-4 w-4 flex-shrink-0 text-slate-500" />
+                <input
+                  type="text"
+                  placeholder="Search any country…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 bg-transparent text-sm font-medium text-slate-100 placeholder-slate-600 outline-none"
+                />
+                <div className="flex items-center gap-1 text-[11px] text-slate-600">
+                  <Globe className="h-3 w-3" />
+                  <span>{counts.all}</span>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Filter chips row */}
-          <div className="flex justify-center pointer-events-auto">
-            <div className="flex flex-wrap justify-center gap-1.5">
-              {FILTERS.map(({ key, label }) => {
-                const isActive = activeFilter === key;
-                const meta = key !== "all" ? VISA_STATUS_META[key as VisaStatus] : null;
-                return (
-                  <button
-                    key={key}
-                    onClick={() => setActiveFilter(key)}
-                    className="flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all active:scale-95"
-                    style={
-                      isActive
-                        ? {
-                            background: meta?.mapColor ?? "#6366f1",
-                            color: "#fff",
-                            border: `1px solid ${meta?.mapColor ?? "#6366f1"}`,
-                            boxShadow: `0 0 12px ${meta?.mapColor ?? "#6366f1"}80`,
-                          }
-                        : {
-                            ...glass("rgba(255,255,255,0.1)"),
-                            color: "rgba(200,210,240,0.85)",
-                          }
-                    }
-                  >
-                    {meta && (
-                      <span
-                        className="h-1.5 w-1.5 flex-shrink-0 rounded-full"
-                        style={{ backgroundColor: isActive ? "rgba(255,255,255,0.8)" : meta.mapColor }}
-                      />
-                    )}
-                    {label}
-                    {counts[key] !== undefined && (
-                      <span className="opacity-60 ml-0.5">{counts[key]}</span>
-                    )}
-                  </button>
-                );
-              })}
+              {/* Divider */}
+              <div className="h-px bg-slate-800 mx-1" />
+
+              {/* Filter chips */}
+              <div className="flex flex-wrap gap-1.5 px-1">
+                {FILTERS.map(({ key, label }) => {
+                  const isActive = activeFilter === key;
+                  const meta = key !== "all" ? VISA_STATUS_META[key as VisaStatus] : null;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setActiveFilter(key)}
+                      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-all active:scale-95"
+                      style={
+                        isActive
+                          ? {
+                              background: meta ? `${meta.mapColor}22` : "#1e293b",
+                              color: meta?.mapColor ?? "#e2e8f0",
+                              border: `1px solid ${meta?.mapColor ?? "#475569"}55`,
+                            }
+                          : {
+                              background: "transparent",
+                              color: "#64748b",
+                              border: "1px solid transparent",
+                            }
+                      }
+                    >
+                      {meta && (
+                        <span
+                          className="h-1.5 w-1.5 flex-shrink-0 rounded-full"
+                          style={{ backgroundColor: meta.mapColor }}
+                        />
+                      )}
+                      {label}
+                      {counts[key] !== undefined && (
+                        <span className="ml-0.5 tabular-nums" style={{ opacity: 0.5 }}>
+                          {counts[key]}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -189,7 +195,7 @@ export function ExploreClient() {
               exit={{ opacity: 0, y: 16, scale: 0.97 }}
               transition={{ type: "spring", stiffness: 340, damping: 30 }}
               className="absolute bottom-6 left-4 z-30 w-72 overflow-hidden rounded-2xl shadow-2xl"
-              style={glass(`${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}40`)}
+              style={panel("#334155")}
             >
               {/* Hero image */}
               {selectedCountry.heroImage && (
@@ -262,18 +268,17 @@ export function ExploreClient() {
                 {selectedCountry.hasLivePage && selectedCountry.slug ? (
                   <Link
                     href={`/apply/${selectedCountry.slug}/tourist`}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:brightness-110 active:scale-95"
-                    style={{
-                      background: `linear-gradient(135deg, ${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}cc, ${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}88)`,
-                      boxShadow: `0 4px 16px ${VISA_STATUS_META[selectedCountry.visaStatus].mapColor}50`,
-                    }}
+                    className="flex w-full items-center justify-center gap-1.5 rounded-xl py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-95"
+                    style={{ background: "#4f46e5" }}
                     onClick={() => setSelectedCountry(null)}
                   >
                     Apply now <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 ) : (
-                  <div className="rounded-xl py-2.5 text-center text-xs text-slate-500"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1px dashed rgba(255,255,255,0.1)" }}>
+                  <div
+                    className="rounded-xl py-2.5 text-center text-xs text-slate-600"
+                    style={{ background: "#1e293b", border: "1px solid #334155" }}
+                  >
                     Coming soon on Consular
                   </div>
                 )}
@@ -310,7 +315,7 @@ export function ExploreClient() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
               className="absolute left-1/2 top-[82px] z-40 w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl shadow-2xl"
-              style={glass()}
+              style={panel()}
             >
               {filteredDestinations.length === 0 ? (
                 <div className="p-5 text-center text-sm text-slate-500">

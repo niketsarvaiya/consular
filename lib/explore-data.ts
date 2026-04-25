@@ -487,37 +487,37 @@ export const VISA_STATUS_META: Record<
   visa_free: {
     label: "Visa Free",
     color: "text-emerald-700",
-    mapColor: "#00e676",        // electric green — pops on dark
+    mapColor: "#059669",        // emerald-600 — clean, professional
     badge: "bg-emerald-100 text-emerald-700",
   },
   visa_on_arrival: {
     label: "Visa on Arrival",
-    color: "text-sky-700",
-    mapColor: "#00b0ff",        // bright sky blue
-    badge: "bg-sky-100 text-sky-700",
+    color: "text-blue-700",
+    mapColor: "#2563eb",        // blue-600 — clear, confident
+    badge: "bg-blue-100 text-blue-700",
   },
   e_visa: {
     label: "e-Visa",
     color: "text-violet-700",
-    mapColor: "#b388ff",        // soft vivid violet
+    mapColor: "#7c3aed",        // violet-700 — refined
     badge: "bg-violet-100 text-violet-700",
   },
   visa_required: {
     label: "Visa Required",
     color: "text-amber-700",
-    mapColor: "#ffab40",        // warm amber glow
+    mapColor: "#d97706",        // amber-600 — warm, readable
     badge: "bg-amber-100 text-amber-700",
   },
   restricted: {
     label: "Restricted",
     color: "text-red-700",
-    mapColor: "#ff5252",        // vivid red
+    mapColor: "#dc2626",        // red-600 — clear warning
     badge: "bg-red-100 text-red-700",
   },
   unknown: {
     label: "Unknown",
     color: "text-slate-500",
-    mapColor: "#1a3150",        // dark navy — barely visible, ocean-like
+    mapColor: "#1e293b",        // slate-800 — blends with ocean
     badge: "bg-slate-100 text-slate-500",
   },
 };
