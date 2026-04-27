@@ -1,20 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { amadeusGet } from "@/lib/amadeus";
+import { searchFlights } from "@/lib/sky-scrapper";
 
 export const runtime = "nodejs";
 
 /**
  * GET /api/travel/flights
- * Proxies Amadeus flight-offers search server-side (hides API keys).
+ * Proxies Sky Scrapper flight search server-side (hides API key).
  *
  * Query params:
- *   origin       — IATA airport code, e.g. BOM
- *   destination  — IATA airport code, e.g. DXB
- *   date         — YYYY-MM-DD
- *   adults       — 1–9 (default 1)
+ *   origin      — IATA airport code, e.g. BOM
+ *   destination — IATA airport code, e.g. DXB
+ *   date        — YYYY-MM-DD
+ *   adults      — 1–9 (default 1)
  */
 export async function GET(req: NextRequest) {
-  const p = req.nextUrl.searchParams;
+  const p           = req.nextUrl.searchParams;
   const origin      = p.get("origin")      ?? "BOM";
   const destination = p.get("destination");
   const date        = p.get("date");
@@ -27,23 +27,15 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  if (!process.env.AMADEUS_API_KEY) {
+  if (!process.env.RAPIDAPI_KEY) {
     return NextResponse.json(
-      { error: "Amadeus API not configured" },
+      { error: "RAPIDAPI_KEY not configured" },
       { status: 503 }
     );
   }
 
   try {
-    const data = await amadeusGet("/v2/shopping/flight-offers", {
-      originLocationCode:      origin,
-      destinationLocationCode: destination,
-      departureDate:           date,
-      adults,
-      currencyCode:            "INR",
-      max:                     "6",
-      nonStop:                 "false",
-    });
+    const data = await searchFlights({ originIata: origin, destinationIata: destination, date, adults });
     return NextResponse.json(data);
   } catch (err: any) {
     console.error("[/api/travel/flights]", err?.message);

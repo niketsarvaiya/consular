@@ -48,10 +48,11 @@ const AIRLINES: Record<string, string> = {
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-function parseDuration(iso: string): string {
-  const h = iso.match(/(\d+)H/)?.[1] ?? "0";
-  const m = iso.match(/(\d+)M/)?.[1] ?? "0";
-  return parseInt(h) > 0 ? `${h}h ${m}m` : `${m}m`;
+// Sky Scrapper returns duration in minutes as a number
+function parseMins(mins: number): string {
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 
 function fmtTime(iso: string): string {
@@ -60,12 +61,9 @@ function fmtTime(iso: string): string {
   });
 }
 
-function fmtPrice(currency: string, total: string): string {
-  const n = parseFloat(total);
-  const rates: Record<string, number> = {
-    INR: 1, USD: 84, EUR: 91, GBP: 107, AUD: 55,
-  };
-  const inr = Math.round(n * (rates[currency] ?? 84));
+// Sky Scrapper prices are raw USD floats; convert to INR for display
+function fmtUSD(raw: number): string {
+  const inr = Math.round(raw * 84);
   return `₹${inr.toLocaleString("en-IN")}`;
 }
 
@@ -121,13 +119,14 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
   const [error,   setError]   = useState<string | null>(null);
   const [hasFetched, setHasFetched] = useState(false);
 
-  const searchFlights = useCallback(async () => {
+  const doSearchFlights = useCallback(async () => {
     setLoading(true); setError(null); setFlights(null); setHasFetched(false);
     try {
       const res  = await fetch(`/api/travel/flights?origin=${origin}&destination=${iataCode}&date=${flightDate}&adults=${adults}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setFlights(data.data ?? []);
+      // Sky Scrapper: { status, data: { itineraries: [...] } }
+      setFlights(data.data?.itineraries ?? []);
       setHasFetched(true);
     } catch (e: any) {
       setError(e.message);
@@ -136,13 +135,14 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
     }
   }, [iataCode, origin, flightDate, adults]);
 
-  const searchHotels = useCallback(async () => {
+  const doSearchHotels = useCallback(async () => {
     setLoading(true); setError(null); setHotels(null); setHasFetched(false);
     try {
       const res  = await fetch(`/api/travel/hotels?cityCode=${iataCode}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${hotelAdults}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setHotels(data.data ?? []);
+      // Sky Scrapper: { status, data: { hotels: [...] } }
+      setHotels(data.data?.hotels ?? data.data ?? []);
       setHasFetched(true);
     } catch (e: any) {
       setError(e.message);
@@ -258,7 +258,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
               </div>
 
               <button
-                onClick={searchFlights}
+                onClick={doSearchFlights}
                 disabled={loading}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-60"
               >
@@ -310,7 +310,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
               </div>
 
               <button
-                onClick={searchHotels}
+                onClick={doSearchHotels}
                 disabled={loading}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-60"
               >
@@ -327,51 +327,57 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
             <div className="flex items-start gap-2 rounded-lg border border-red-100 bg-red-50 p-3">
               <AlertCircle className="h-4 w-4 flex-shrink-0 text-red-500 mt-0.5" />
               <p className="text-xs text-red-600">
-                {error.includes("configured") || error.includes("not configured")
-                  ? "Amadeus API keys not added yet — see setup steps."
-                  : "No results found for this route/date. Try the agency below."}
+                {error.includes("not configured")
+                  ? "RAPIDAPI_KEY not set — add it to environment variables."
+                  : "No results found for this route/date. Try our agency below."}
               </p>
             </div>
           )}
 
-          {/* ── Sandbox notice ── */}
-          {hasFetched && (
-            <div className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-700">
-              ⚠️ Showing <strong>sample pricing</strong> (sandbox mode). Live rates after Amadeus production approval.
-            </div>
-          )}
-
-          {/* ── Flight results ── */}
+          {/* ── Flight results (Sky Scrapper format) ── */}
           {tab === "flights" && flights !== null && (
             <div className="space-y-2">
               {flights.length === 0 ? (
                 <p className="py-4 text-center text-sm text-slate-500">No flights found. Try our agency →</p>
               ) : (
-                flights.slice(0, 4).map((offer: any) => {
-                  const itinerary = offer.itineraries[0];
-                  const first     = itinerary.segments[0];
-                  const last      = itinerary.segments.at(-1);
-                  const stops     = itinerary.segments.length - 1;
-                  const airline   = AIRLINES[first.carrierCode] ?? first.carrierCode;
+                flights.slice(0, 4).map((itinerary: any) => {
+                  // Sky Scrapper: itinerary → legs[0] (outbound leg)
+                  const leg       = itinerary.legs?.[0];
+                  if (!leg) return null;
+                  const carrier   = leg.carriers?.marketing?.[0];
+                  const airline   = carrier?.name ?? AIRLINES[carrier?.alternateId] ?? "Unknown";
+                  const logoUrl   = carrier?.logoUrl as string | undefined;
+                  const stops     = leg.stopCount ?? 0;
+                  const price     = itinerary.price?.raw ?? 0;
+                  const tags: string[] = itinerary.tags ?? [];
                   return (
-                    <div key={offer.id} className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
+                    <div key={itinerary.id} className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="truncate text-sm font-bold text-slate-900">{airline}</p>
+                          <div className="flex items-center gap-1.5">
+                            {logoUrl && (
+                              <img src={logoUrl} alt={airline} className="h-4 w-4 rounded object-contain" />
+                            )}
+                            <p className="truncate text-sm font-bold text-slate-900">{airline}</p>
+                            {tags.includes("cheapest") && (
+                              <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-700">Cheapest</span>
+                            )}
+                            {tags.includes("best") && !tags.includes("cheapest") && (
+                              <span className="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-700">Best</span>
+                            )}
+                          </div>
                           <p className="text-xs text-slate-500">
-                            {first.carrierCode}{first.number} · {fmtTime(first.departure.at)} → {fmtTime(last.arrival.at)}
+                            {fmtTime(leg.departure)} → {fmtTime(leg.arrival)}
                           </p>
                           <div className="mt-1 flex items-center gap-2">
-                            <span className="text-[11px] text-slate-400">{parseDuration(itinerary.duration)}</span>
+                            <span className="text-[11px] text-slate-400">{parseMins(leg.durationInMinutes)}</span>
                             <span className={`text-[11px] font-semibold ${stops === 0 ? "text-emerald-600" : "text-amber-600"}`}>
                               {stops === 0 ? "Nonstop" : `${stops} stop${stops > 1 ? "s" : ""}`}
                             </span>
                           </div>
                         </div>
                         <div className="flex-shrink-0 text-right">
-                          <p className="text-base font-black text-slate-900">
-                            {fmtPrice(offer.price.currency, offer.price.total)}
-                          </p>
+                          <p className="text-base font-black text-slate-900">{fmtUSD(price)}</p>
                           <p className="text-[10px] text-slate-400">per person</p>
                         </div>
                       </div>
@@ -390,34 +396,33 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
             </div>
           )}
 
-          {/* ── Hotel results ── */}
+          {/* ── Hotel results (Sky Scrapper format) ── */}
           {tab === "hotels" && hotels !== null && (
             <div className="space-y-2">
               {hotels.length === 0 ? (
                 <p className="py-4 text-center text-sm text-slate-500">No hotels found. Try our agency →</p>
               ) : (
-                hotels.slice(0, 4).map((item: any) => {
-                  const hotel = item.hotel;
-                  const offer = item.offers?.[0];
-                  const stars = Math.min(parseInt(hotel.rating ?? "3"), 5);
+                hotels.slice(0, 4).map((hotel: any) => {
+                  // Sky Scrapper: hotel is a flat object { name, stars, price, reviewSummary }
+                  const stars   = Math.min(hotel.stars ?? hotel.starRating ?? 3, 5);
+                  const price   = hotel.price?.raw ?? hotel.rawPrice ?? 0;
+                  const review  = hotel.reviewSummary;
                   return (
-                    <div key={hotel.hotelId} className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
+                    <div key={hotel.hotelId ?? hotel.id} className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
                           <p className="truncate text-sm font-bold text-slate-900 leading-snug">{hotel.name}</p>
                           <p className="text-xs text-amber-500 mt-0.5">{"★".repeat(stars)}</p>
-                          {offer?.room?.typeEstimated?.category && (
-                            <p className="mt-0.5 text-xs capitalize text-slate-400">
-                              {offer.room.typeEstimated.category.toLowerCase().replace(/_/g, " ")}
+                          {review && (
+                            <p className="mt-0.5 text-[11px] text-slate-400">
+                              {review.score?.toFixed(1)} · {review.scoreDesc ?? "Good"}
                             </p>
                           )}
                         </div>
-                        {offer?.price && (
+                        {price > 0 && (
                           <div className="flex-shrink-0 text-right">
-                            <p className="text-base font-black text-slate-900">
-                              {fmtPrice(offer.price.currency, offer.price.total)}
-                            </p>
-                            <p className="text-[10px] text-slate-400">total stay</p>
+                            <p className="text-base font-black text-slate-900">{fmtUSD(price)}</p>
+                            <p className="text-[10px] text-slate-400">per night</p>
                           </div>
                         )}
                       </div>
