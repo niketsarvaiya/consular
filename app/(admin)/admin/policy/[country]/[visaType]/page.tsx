@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
+import { getHeroImages } from "@/lib/visa-content";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import Link from "next/link";
@@ -31,6 +32,12 @@ export default async function AdminPolicyDetailPage({ params }: Props) {
 
   const pendingSnapshot = snapshots.find((s) => s.status === "pending_review");
 
+  // Seed hero images: DB-saved → static content library → empty
+  const existingEligibility = (policy.eligibilityRules as Record<string, unknown>) ?? {};
+  const dbHeroImages = existingEligibility.heroImages as string[] | undefined;
+  const staticHeroImages = getHeroImages(country.code).filter(Boolean);
+  const seedHeroImages = (dbHeroImages?.some(Boolean) ? dbHeroImages : staticHeroImages).filter(Boolean);
+
   // Serialise policy for client component (dates → strings)
   const policyForEditor = {
     visaCategory: policy.visaCategory,
@@ -45,7 +52,10 @@ export default async function AdminPolicyDetailPage({ params }: Props) {
     biometricsNotes: policy.biometricsNotes,
     vacNotes: policy.vacNotes,
     embassyLinks: (policy.embassyLinks as { label: string; url: string }[]) ?? [],
-    eligibilityRules: (policy.eligibilityRules as Record<string, unknown>) ?? null,
+    eligibilityRules: {
+      ...existingEligibility,
+      heroImages: seedHeroImages,  // always seed so the editor has something to show
+    },
   };
 
   return (

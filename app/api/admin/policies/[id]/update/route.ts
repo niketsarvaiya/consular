@@ -56,7 +56,7 @@ export async function PATCH(
     embassyLinks,
     contentFaqs,
     contentTagline,
-    contentHeroImage,
+    contentHeroImages,
   } = body;
 
   // Merge content fields into eligibilityRules JSON (repurpose as content store)
@@ -65,7 +65,7 @@ export async function PATCH(
     ...existingEligibility,
     ...(contentFaqs !== undefined && { faqs: contentFaqs }),
     ...(contentTagline !== undefined && { tagline: contentTagline }),
-    ...(contentHeroImage !== undefined && { heroImage: contentHeroImage }),
+    ...(contentHeroImages !== undefined && { heroImages: contentHeroImages }),
   };
 
   const newVersionNumber = existing.versionNumber + 1;

@@ -170,7 +170,8 @@ function SortableDocRow({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: item.id });
 
-  const [expanded, setExpanded] = useState(false);
+  // Auto-expand freshly added rows (empty title signals brand-new)
+  const [expanded, setExpanded] = useState(!item.title);
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -188,6 +189,7 @@ function SortableDocRow({
     <div ref={setNodeRef} style={style} className={`rounded-xl border ${isDragging ? "border-indigo-300 bg-indigo-50" : "border-slate-200 bg-white"} overflow-hidden`}>
       <div className="flex items-center gap-3 px-4 py-3">
         <button
+          type="button"
           {...attributes}
           {...listeners}
           className="cursor-grab text-slate-300 hover:text-slate-500 touch-none"
@@ -220,11 +222,11 @@ function SortableDocRow({
           Required
         </label>
 
-        <button onClick={() => setExpanded(!expanded)} className="text-slate-400 hover:text-slate-600">
+        <button type="button" onClick={() => setExpanded(!expanded)} className="text-slate-400 hover:text-slate-600">
           {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </button>
 
-        <button onClick={onDelete} className="text-red-400 hover:text-red-600">
+        <button type="button" onClick={onDelete} className="text-red-400 hover:text-red-600">
           <Trash2 className="h-4 w-4" />
         </button>
       </div>
@@ -327,7 +329,15 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
   // ── Content / FAQ state ──
   const existingEligibility = initialData.eligibilityRules ?? {};
   const [tagline, setTagline] = useState((existingEligibility as Record<string, unknown>).tagline as string ?? "");
-  const [heroImage, setHeroImage] = useState((existingEligibility as Record<string, unknown>).heroImage as string ?? "");
+  // heroImages: array of up to 5 URLs.
+  // Priority: saved DB data → single heroImage field → empty (user adds manually)
+  const [heroImages, setHeroImages] = useState<string[]>(() => {
+    const saved = (existingEligibility as Record<string, unknown>).heroImages;
+    if (Array.isArray(saved) && (saved as string[]).some(Boolean)) return (saved as string[]).filter(Boolean);
+    const single = (existingEligibility as Record<string, unknown>).heroImage as string | undefined;
+    if (single) return [single];
+    return [];
+  });
   const [faqs, setFaqs] = useState<FaqCategory[]>(() => {
     const raw = (existingEligibility as Record<string, unknown>).faqs;
     if (Array.isArray(raw)) {
@@ -354,11 +364,11 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  // ── Computed pricing ──
+  // ── Computed pricing ── GST applies to service fee only
   const govFeeINR = feeCurrency === "INR" ? foreignGovFee : Math.round((foreignGovFee * (rates[feeCurrency] ?? 1)) * 100) / 100;
   const subtotal = govFeeINR + serviceFeeINR;
   const gatewayAmount = Math.round((subtotal * gatewayFeePct) / 100);
-  const gstAmount = Math.round(((subtotal + gatewayAmount) * gstPct) / 100);
+  const gstAmount = Math.round((serviceFeeINR * gstPct) / 100); // GST on service fee only
   const totalINR = subtotal + gatewayAmount + gstAmount;
 
   // ── Save handler ──
@@ -392,7 +402,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
         embassyLinks: embassyLinks.map(({ id: _id, ...rest }) => rest),
         contentFaqs: faqs,
         contentTagline: tagline || null,
-        contentHeroImage: heroImage || null,
+        contentHeroImages: heroImages.filter(Boolean),
       };
 
       const res = await fetch(`/api/admin/policies/${policyId}/update`, {
@@ -508,6 +518,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
         {TABS.map((tab) => (
           <button
             key={tab.id}
+            type="button"
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
               activeTab === tab.id
@@ -589,12 +600,14 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
               </p>
               <div className="flex gap-2">
                 <button
+                  type="button"
                   onClick={() => addDoc(true)}
                   className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
                 >
                   <Plus className="h-3.5 w-3.5" /> Required doc
                 </button>
                 <button
+                  type="button"
                   onClick={() => addDoc(false)}
                   className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
                 >
@@ -764,7 +777,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                   <span className="text-slate-700">+ ₹{gatewayAmount.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">GST ({gstPct}%)</span>
+                  <span className="text-slate-500">GST ({gstPct}% on service fee)</span>
                   <span className="text-slate-700">+ ₹{gstAmount.toLocaleString("en-IN")}</span>
                 </div>
                 <div className="border-t-2 border-slate-300 pt-3 flex justify-between">
@@ -803,21 +816,68 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1.5 flex items-center gap-1">
-                  <Image className="h-3.5 w-3.5" /> Hero Image URL
-                </label>
-                <input
-                  type="url"
-                  value={heroImage}
-                  onChange={(e) => setHeroImage(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none"
-                  placeholder="https://images.unsplash.com/..."
-                />
-                {heroImage && (
-                  <div className="mt-2 h-32 w-full overflow-hidden rounded-xl border border-slate-200">
-                    <img src={heroImage} alt="Hero preview" className="h-full w-full object-cover" />
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-medium text-slate-600 flex items-center gap-1">
+                    <Image className="h-3.5 w-3.5" /> Hero Images
+                    <span className="text-slate-400 font-normal ml-1">({heroImages.length}/5 · first = main hero, rest = mosaic)</span>
+                  </label>
+                  {heroImages.length < 5 && (
+                    <button
+                      type="button"
+                      onClick={() => setHeroImages((prev) => [...prev, ""])}
+                      className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                    >
+                      <Plus className="h-3.5 w-3.5" /> Add image
+                    </button>
+                  )}
+                </div>
+
+                {heroImages.length === 0 && (
+                  <div className="rounded-xl border border-dashed border-slate-200 p-4 text-center">
+                    <Image className="h-6 w-6 text-slate-300 mx-auto mb-1" />
+                    <p className="text-xs text-slate-400">No images yet — click Add image</p>
                   </div>
                 )}
+
+                <div className="space-y-3">
+                  {heroImages.map((url, idx) => (
+                    <div key={idx} className="rounded-xl border border-slate-200 overflow-hidden">
+                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border-b border-slate-100">
+                        <span className={`text-[10px] font-bold rounded px-1.5 py-0.5 ${idx === 0 ? "bg-indigo-100 text-indigo-700" : "bg-slate-200 text-slate-500"}`}>
+                          {idx === 0 ? "MAIN HERO" : `MOSAIC ${idx}`}
+                        </span>
+                        <input
+                          type="url"
+                          value={url}
+                          onChange={(e) => {
+                            const copy = [...heroImages];
+                            copy[idx] = e.target.value;
+                            setHeroImages(copy);
+                          }}
+                          className="flex-1 bg-transparent text-xs text-slate-700 border-none outline-none placeholder:text-slate-400"
+                          placeholder="https://images.unsplash.com/photo-..."
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setHeroImages((prev) => prev.filter((_, i) => i !== idx))}
+                          className="text-red-400 hover:text-red-600 shrink-0"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      {url && (
+                        <div className={`overflow-hidden ${idx === 0 ? "h-36" : "h-20"}`}>
+                          <img
+                            src={url}
+                            alt={`Image ${idx + 1}`}
+                            className="h-full w-full object-cover"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
