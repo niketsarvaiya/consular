@@ -159,7 +159,8 @@ const ACCEPTED_FORMAT_OPTIONS = ["pdf", "jpg", "jpeg", "png", "docx", "doc", "ti
 // ─── Predefined document presets ─────────────────────────────────────────────
 
 const DOC_PRESETS: { key: string; title: string; description: string }[] = [
-  { key: "passport",           title: "Passport Copy",               description: "Clear scan of passport bio-data page (first and last pages)." },
+  { key: "passport_front",     title: "Passport Front Side",         description: "Clear scan of passport bio-data page (photo page)." },
+  { key: "passport_back",      title: "Passport Back Side",          description: "Clear scan of passport back cover / last page with address." },
   { key: "passport_photo",     title: "Passport Size Photo",         description: "Recent colour photograph, white background, 35×45 mm." },
   { key: "bank_statement",     title: "Bank Statement (3 months)",   description: "Latest 3 months bank statement showing sufficient funds." },
   { key: "flight_itinerary",   title: "Flight Itinerary",            description: "Confirmed or tentative return flight booking / itinerary." },
