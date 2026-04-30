@@ -156,6 +156,27 @@ const VISA_CATEGORIES = [
 
 const ACCEPTED_FORMAT_OPTIONS = ["pdf", "jpg", "jpeg", "png", "docx", "doc", "tiff"];
 
+// ─── Predefined document presets ─────────────────────────────────────────────
+
+const DOC_PRESETS: { key: string; title: string; description: string }[] = [
+  { key: "passport",           title: "Passport Copy",               description: "Clear scan of passport bio-data page (first and last pages)." },
+  { key: "passport_photo",     title: "Passport Size Photo",         description: "Recent colour photograph, white background, 35×45 mm." },
+  { key: "bank_statement",     title: "Bank Statement (3 months)",   description: "Latest 3 months bank statement showing sufficient funds." },
+  { key: "flight_itinerary",   title: "Flight Itinerary",            description: "Confirmed or tentative return flight booking / itinerary." },
+  { key: "hotel_booking",      title: "Hotel / Accommodation Booking", description: "Hotel confirmation or letter of accommodation for the entire stay." },
+  { key: "travel_insurance",   title: "Travel Insurance",            description: "Policy covering medical expenses and repatriation for the duration of travel." },
+  { key: "cover_letter",       title: "Cover Letter / Application Letter", description: "Personal letter stating purpose, duration, and details of travel." },
+  { key: "employment_letter",  title: "Employment Letter",           description: "Letter from employer confirming employment, salary, and approved leave." },
+  { key: "itr",                title: "Income Tax Returns (ITR)",    description: "Last 2 years' ITR with acknowledgement." },
+  { key: "salary_slips",       title: "Salary Slips (3 months)",     description: "Latest 3 months' salary slips." },
+  { key: "noc",                title: "No Objection Certificate (NOC)", description: "NOC from employer or institution." },
+  { key: "invitation_letter",  title: "Invitation Letter",           description: "Invitation from sponsor, host, or conference in the destination country." },
+  { key: "visa_form",          title: "Visa Application Form",       description: "Completed and signed official visa application form." },
+  { key: "marriage_cert",      title: "Marriage Certificate",        description: "Copy of marriage certificate (if applicable)." },
+  { key: "birth_cert",         title: "Birth Certificate",           description: "Copy of birth certificate." },
+  { key: "business_reg",       title: "Business Registration",       description: "Certificate of incorporation or business registration document." },
+];
+
 // ─── Sortable Document Row ────────────────────────────────────────────────────
 
 function SortableDocRow({
@@ -203,6 +224,7 @@ function SortableDocRow({
             onChange={(e) => onChange({ ...item, title: e.target.value })}
             className="w-full text-sm font-medium text-slate-900 bg-transparent border-none outline-none focus:ring-0 placeholder:text-slate-400"
             placeholder="Document title"
+            autoFocus={!item.title}
           />
           <input
             value={item.key}
@@ -210,6 +232,21 @@ function SortableDocRow({
             className="w-full text-xs text-slate-400 font-mono bg-transparent border-none outline-none focus:ring-0"
             placeholder="doc_key"
           />
+          {/* Preset suggestions — only shown when title is still empty */}
+          {!item.title && (
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {DOC_PRESETS.map((p) => (
+                <button
+                  key={p.key}
+                  type="button"
+                  onClick={() => onChange({ ...item, title: p.title, key: p.key, description: p.description })}
+                  className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-600 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                >
+                  {p.title}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <label className="flex items-center gap-1.5 text-xs text-slate-500 shrink-0">
@@ -317,6 +354,10 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
     gstPct?: number;
     totalINR?: number;
     notes?: string;
+    express?: {
+      available?: boolean; processingTimeMin?: number; processingTimeMax?: number;
+      additionalFee?: number; additionalFeeINR?: number; totalINR?: number; notes?: string;
+    };
   } | null;
 
   const [feeCurrency, setFeeCurrency] = useState(existingFee?.currency ?? "INR");
@@ -325,6 +366,17 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
   const [gatewayFeePct, setGatewayFeePct] = useState(existingFee?.gatewayFeePct ?? 2);
   const [gstPct, setGstPct] = useState(existingFee?.gstPct ?? 18);
   const [feeNotes, setFeeNotes] = useState(existingFee?.notes ?? "");
+
+  // ── Express visa state ──
+  const existingExpress = existingFee?.express as {
+    available?: boolean; processingTimeMin?: number; processingTimeMax?: number;
+    additionalFee?: number; additionalFeeINR?: number; totalINR?: number; notes?: string;
+  } | undefined;
+  const [expressEnabled,    setExpressEnabled]    = useState(existingExpress?.available ?? false);
+  const [expressProcMin,    setExpressProcMin]     = useState(existingExpress?.processingTimeMin ?? 1);
+  const [expressProcMax,    setExpressProcMax]     = useState(existingExpress?.processingTimeMax ?? 3);
+  const [expressAddlFee,    setExpressAddlFee]     = useState(existingExpress?.additionalFee ?? 0);
+  const [expressNotes,      setExpressNotes]       = useState(existingExpress?.notes ?? "");
 
   // ── Content / FAQ state ──
   const existingEligibility = initialData.eligibilityRules ?? {};
@@ -371,6 +423,12 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
   const gstAmount = Math.round((serviceFeeINR * gstPct) / 100); // GST on service fee only
   const totalINR = subtotal + gatewayAmount + gstAmount;
 
+  // ── Express computed ──
+  const expressAddlFeeINR = feeCurrency === "INR" ? expressAddlFee : Math.round((expressAddlFee * (rates[feeCurrency] ?? 1)) * 100) / 100;
+  const expressGateway    = Math.round(((subtotal + expressAddlFeeINR) * gatewayFeePct) / 100);
+  const expressGst        = Math.round(((serviceFeeINR + expressAddlFeeINR) * gstPct) / 100);
+  const expressTotalINR   = govFeeINR + serviceFeeINR + expressAddlFeeINR + expressGateway + expressGst;
+
   // ── Save handler ──
   const handleSave = async () => {
     setSaving(true);
@@ -395,6 +453,15 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
           gstPct,
           totalINR,
           notes: feeNotes,
+          express: expressEnabled ? {
+            available: true,
+            processingTimeMin: expressProcMin,
+            processingTimeMax: expressProcMax,
+            additionalFee: expressAddlFee,
+            additionalFeeINR: expressAddlFeeINR,
+            totalINR: expressTotalINR,
+            notes: expressNotes,
+          } : { available: false },
         },
         appointmentNotes: apptNotes || null,
         biometricsNotes: bioNotes || null,
@@ -596,24 +663,15 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
           <div>
             <div className="mb-4 flex items-center justify-between">
               <p className="text-xs text-slate-500">
-                Drag rows to reorder · Toggle &ldquo;Required&rdquo; checkbox per document · Expand row for advanced settings
+                Drag rows to reorder · uncheck &ldquo;Required&rdquo; to mark as optional · expand row for formats &amp; size
               </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => addDoc(true)}
-                  className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
-                >
-                  <Plus className="h-3.5 w-3.5" /> Required doc
-                </button>
-                <button
-                  type="button"
-                  onClick={() => addDoc(false)}
-                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
-                >
-                  <Plus className="h-3.5 w-3.5" /> Optional doc
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => addDoc(true)}
+                className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add document
+              </button>
             </div>
 
             {docs.length === 0 && (
@@ -652,6 +710,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
 
         {/* ── PRICING TAB ── */}
         {activeTab === "pricing" && (
+          <div className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-2">
             {/* Inputs */}
             <div className="space-y-5">
@@ -796,6 +855,116 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 </p>
               )}
             </div>
+          </div>{/* end grid */}
+
+          {/* ── Express Visa ── */}
+          <div className="mt-6 rounded-2xl border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-4 bg-slate-50 border-b border-slate-100">
+              <div>
+                <p className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                  ⚡ Express Visa Option
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">Same documents, faster processing at a surcharge</p>
+              </div>
+              {/* Toggle */}
+              <button
+                type="button"
+                onClick={() => setExpressEnabled((v) => !v)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 transition-colors ${expressEnabled ? "border-amber-500 bg-amber-500" : "border-slate-300 bg-slate-200"}`}
+              >
+                <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${expressEnabled ? "translate-x-5" : "translate-x-1"}`} />
+              </button>
+            </div>
+
+            {expressEnabled && (
+              <div className="p-5 grid gap-6 lg:grid-cols-2">
+                {/* Inputs */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">Express Processing Time (business days)</label>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1">
+                        <label className="block text-[10px] text-slate-400 mb-1">Min</label>
+                        <input type="number" min={1} value={expressProcMin}
+                          onChange={(e) => setExpressProcMin(Number(e.target.value))}
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-amber-400 focus:outline-none" />
+                      </div>
+                      <span className="text-slate-400 mt-5">–</span>
+                      <div className="flex-1">
+                        <label className="block text-[10px] text-slate-400 mb-1">Max</label>
+                        <input type="number" min={1} value={expressProcMax}
+                          onChange={(e) => setExpressProcMax(Number(e.target.value))}
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-amber-400 focus:outline-none" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">
+                      Express Surcharge ({feeCurrency})
+                    </label>
+                    <div className="flex gap-2 items-center">
+                      <span className="text-xs text-slate-400">{feeCurrency}</span>
+                      <input type="number" min={0} step={0.01} value={expressAddlFee}
+                        onChange={(e) => setExpressAddlFee(Number(e.target.value))}
+                        className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
+                        placeholder="0" />
+                    </div>
+                    {feeCurrency !== "INR" && !ratesLoading && (
+                      <p className="mt-1 text-xs text-slate-400">≈ ₹{expressAddlFeeINR.toLocaleString("en-IN")} INR</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">Express notes</label>
+                    <input type="text" value={expressNotes}
+                      onChange={(e) => setExpressNotes(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
+                      placeholder="e.g. Express processing subject to embassy availability" />
+                  </div>
+                </div>
+
+                {/* Express breakdown */}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-600 mb-3">Express Breakdown</h3>
+                  <div className="rounded-2xl border border-amber-100 bg-amber-50/60 p-4 space-y-2.5">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-600">Government Fee</span>
+                      <span className="font-medium text-slate-900">₹{govFeeINR.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-600">Service Fee</span>
+                      <span className="font-medium text-slate-900">₹{serviceFeeINR.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-amber-700 font-medium">Express Surcharge</span>
+                      <span className="font-semibold text-amber-700">+ ₹{expressAddlFeeINR.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="border-t border-amber-200 pt-2 flex justify-between text-sm">
+                      <span className="text-slate-500">Gateway ({gatewayFeePct}%)</span>
+                      <span className="text-slate-600">+ ₹{expressGateway.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-slate-500">GST ({gstPct}% on service)</span>
+                      <span className="text-slate-600">+ ₹{expressGst.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="border-t-2 border-amber-300 pt-2.5 flex justify-between">
+                      <span className="font-bold text-slate-900">Express Total</span>
+                      <span className="text-xl font-black text-amber-700">₹{expressTotalINR.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="pt-1 flex justify-between text-xs text-slate-400">
+                      <span>vs standard ₹{totalINR.toLocaleString("en-IN")}</span>
+                      <span className="text-amber-600 font-medium">+₹{(expressTotalINR - totalINR).toLocaleString("en-IN")} premium</span>
+                    </div>
+                    {expressNotes && <p className="text-xs text-slate-400 italic pt-1">{expressNotes}</p>}
+                  </div>
+                  <p className="mt-2 text-xs text-slate-400">
+                    Processing: {expressProcMin}–{expressProcMax} business days (vs standard {procMin}–{procMax})
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
           </div>
         )}
 
