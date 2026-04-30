@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import {
-  Plane, Hotel, Search, ExternalLink,
-  MessageCircle, ChevronDown, ChevronUp,
-  AlertCircle, Loader2,
+  Plane, Hotel, MessageCircle,
+  ExternalLink, ChevronDown, ChevronUp, ArrowRight,
 } from "lucide-react";
 import type { ExploreCountry } from "@/lib/explore-data";
 
@@ -34,64 +33,49 @@ const INDIAN_AIRPORTS = [
   { code: "AMD", city: "Ahmedabad" },
 ];
 
-const AIRLINES: Record<string, string> = {
-  AI: "Air India", "6E": "IndiGo", UK: "Vistara",  SG: "SpiceJet",
-  EK: "Emirates",  QR: "Qatar Airways", EY: "Etihad",
-  SQ: "Singapore Airlines", TK: "Turkish Airlines",
-  LH: "Lufthansa", BA: "British Airways", AF: "Air France",
-  KL: "KLM",       MH: "Malaysia Airlines", TG: "Thai Airways",
-  CX: "Cathay Pacific", GA: "Garuda Indonesia",
-  VN: "Vietnam Airlines", OZ: "Asiana Airlines",
-  KE: "Korean Air", JL: "Japan Airlines", NH: "ANA",
-  WY: "Oman Air",  QF: "Qantas", NZ: "Air New Zealand",
-  FZ: "flydubai",  G9: "Air Arabia", PC: "Pegasus Airlines",
-};
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-// Sky Scrapper returns duration in minutes as a number
-function parseMins(mins: number): string {
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  return h > 0 ? `${h}h ${m}m` : `${m}m`;
-}
-
-function fmtTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString("en-IN", {
-    hour: "2-digit", minute: "2-digit", hour12: true,
-  });
-}
-
-// Sky Scrapper prices are raw USD floats; convert to INR for display
-function fmtUSD(raw: number): string {
-  const inr = Math.round(raw * 84);
-  return `₹${inr.toLocaleString("en-IN")}`;
-}
-
 function dateAhead(days: number): string {
   const d = new Date();
   d.setDate(d.getDate() + days);
   return d.toISOString().slice(0, 10);
 }
 
-function mmtFlightLink(
-  from: string, to: string, date: string, adults: string
-): string {
+// ── Affiliate deep-link builders ─────────────────────────────────────────────
+
+/** MakeMyTrip one-way flight search */
+function mmtFlight(from: string, to: string, date: string, adults: string) {
   const [y, m, day] = date.split("-");
   return `https://www.makemytrip.com/flights/search?from=${from}&to=${to}&depDate=${day}%2F${m}%2F${y}&flightType=O&class=E&adults=${adults}&children=0&infants=0&searchType=SR`;
 }
 
-function bookingLink(
-  city: string, checkIn: string, checkOut: string, adults: string
-): string {
+/** Google Flights search */
+function googleFlight(from: string, to: string, date: string) {
+  return `https://www.google.com/travel/flights?q=Flights+from+${from}+to+${to}+on+${date}`;
+}
+
+/** EaseMyTrip one-way search */
+function emtFlight(from: string, to: string, date: string, adults: string) {
+  return `https://www.easemytrip.com/flights/search?org=${from}&des=${to}&dd=${date}&ad=${adults}&ch=0&inf=0&cbn=1&tript=O&sCabin=E`;
+}
+
+/** Booking.com hotel search */
+function bookingHotel(city: string, checkIn: string, checkOut: string, adults: string) {
   return (
     `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(city)}` +
     `&checkin=${checkIn}&checkout=${checkOut}&group_adults=${adults}&no_rooms=1&group_children=0&sb=1`
   );
 }
 
-function waLink(countryName: string, originCity: string, date: string): string {
+/** Agoda hotel search */
+function agodaHotel(city: string, checkIn: string, checkOut: string, adults: string) {
+  const ci = checkIn.replace(/-/g, "/");
+  const co = checkOut.replace(/-/g, "/");
+  return `https://www.agoda.com/search?city=${encodeURIComponent(city)}&checkIn=${ci}&checkOut=${co}&adults=${adults}&rooms=1`;
+}
+
+/** Agency WhatsApp */
+function agencyWA(countryName: string, originCity: string, date: string) {
   const phone = process.env.NEXT_PUBLIC_AGENCY_WHATSAPP ?? "919999999999";
-  const msg = `Hi! Planning a trip to ${countryName} from ${originCity} around ${date}. Need help booking flights & hotels. Can you assist?`;
+  const msg   = `Hi! I'm planning a trip to ${countryName} departing from ${originCity} around ${date}. Can you help with flights & hotels?`;
   return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }
 
@@ -99,63 +83,23 @@ function waLink(countryName: string, originCity: string, date: string): string {
 export function TravelSearch({ country }: { country: ExploreCountry }) {
   const iataCode = IATA_BY_ISO2[country.iso2];
 
-  const [open,   setOpen]   = useState(false);
-  const [tab,    setTab]    = useState<"flights" | "hotels">("flights");
-
-  // Flight form state
+  const [open,       setOpen]       = useState(false);
+  const [tab,        setTab]        = useState<"flights" | "hotels">("flights");
   const [origin,     setOrigin]     = useState("BOM");
   const [flightDate, setFlightDate] = useState(dateAhead(14));
   const [adults,     setAdults]     = useState("1");
+  const [checkIn,    setCheckIn]    = useState(dateAhead(14));
+  const [checkOut,   setCheckOut]   = useState(dateAhead(17));
+  const [hotelAdults,setHotelAdults]= useState("2");
 
-  // Hotel form state
-  const [checkIn,     setCheckIn]     = useState(dateAhead(14));
-  const [checkOut,    setCheckOut]    = useState(dateAhead(17));
-  const [hotelAdults, setHotelAdults] = useState("2");
-
-  // Results + loading
-  const [loading, setLoading] = useState(false);
-  const [flights, setFlights] = useState<any[] | null>(null);
-  const [hotels,  setHotels]  = useState<any[] | null>(null);
-  const [error,   setError]   = useState<string | null>(null);
-  const [hasFetched, setHasFetched] = useState(false);
-
-  const doSearchFlights = useCallback(async () => {
-    setLoading(true); setError(null); setFlights(null); setHasFetched(false);
-    try {
-      const res  = await fetch(`/api/travel/flights?origin=${origin}&destination=${iataCode}&date=${flightDate}&adults=${adults}`);
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      // Sky Scrapper: { status, data: { itineraries: [...] } }
-      setFlights(data.data?.itineraries ?? []);
-      setHasFetched(true);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [iataCode, origin, flightDate, adults]);
-
-  const doSearchHotels = useCallback(async () => {
-    setLoading(true); setError(null); setHotels(null); setHasFetched(false);
-    try {
-      const res  = await fetch(`/api/travel/hotels?cityCode=${iataCode}&checkIn=${checkIn}&checkOut=${checkOut}&adults=${hotelAdults}`);
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      // Sky Scrapper: { status, data: { hotels: [...] } }
-      setHotels(data.data?.hotels ?? data.data ?? []);
-      setHasFetched(true);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [iataCode, checkIn, checkOut, hotelAdults]);
-
-  // No IATA code for this country → show only agency CTA
   if (!iataCode) {
     return (
       <div className="mt-5 border-t border-slate-100 pt-5">
-        <AgencyCTA countryName={country.name} originCity="Mumbai" date={dateAhead(14)} origin="BOM" />
+        <AgencyCTA
+          countryName={country.name}
+          originCity="Mumbai"
+          date={dateAhead(14)}
+        />
       </div>
     );
   }
@@ -165,7 +109,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
   return (
     <div className="mt-5 border-t border-slate-100 pt-5">
 
-      {/* ── Toggle button ── */}
+      {/* ── Toggle header ── */}
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left transition-colors hover:bg-slate-100"
@@ -176,12 +120,13 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
           </div>
           <div>
             <p className="text-sm font-semibold text-slate-900">Plan your trip</p>
-            <p className="text-xs text-slate-500">Flights & hotels to {country.name}</p>
+            <p className="text-xs text-slate-500">Flights &amp; hotels to {country.name}</p>
           </div>
         </div>
         {open
-          ? <ChevronUp  className="h-4 w-4 flex-shrink-0 text-slate-400" />
-          : <ChevronDown className="h-4 w-4 flex-shrink-0 text-slate-400" />}
+          ? <ChevronUp   className="h-4 w-4 flex-shrink-0 text-slate-400" />
+          : <ChevronDown className="h-4 w-4 flex-shrink-0 text-slate-400" />
+        }
       </button>
 
       {open && (
@@ -192,7 +137,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
             {(["flights", "hotels"] as const).map((t) => (
               <button
                 key={t}
-                onClick={() => { setTab(t); setError(null); }}
+                onClick={() => setTab(t)}
                 className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold capitalize transition-all ${
                   tab === t
                     ? "bg-white text-indigo-600 shadow-sm"
@@ -207,9 +152,11 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
             ))}
           </div>
 
-          {/* ── Flight form ── */}
+          {/* ════════════════ FLIGHTS TAB ════════════════ */}
           {tab === "flights" && (
-            <div className="space-y-2">
+            <div className="space-y-3">
+
+              {/* Form */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-1">From</label>
@@ -230,9 +177,6 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                     <span className="ml-1.5 truncate text-xs text-slate-400">{country.name}</span>
                   </div>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-1">Departure</label>
                   <input
@@ -257,22 +201,65 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                 </div>
               </div>
 
-              <button
-                onClick={doSearchFlights}
-                disabled={loading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-60"
-              >
-                {loading
-                  ? <Loader2 className="h-4 w-4 animate-spin" />
-                  : <Search  className="h-4 w-4" />}
-                {loading ? "Searching…" : "Search Flights"}
-              </button>
+              {/* Search on platforms */}
+              <div>
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                  Search on
+                </p>
+                <div className="space-y-2">
+                  {[
+                    {
+                      name: "MakeMyTrip",
+                      logo: "🟠",
+                      desc: "India's #1 flight booking",
+                      href: mmtFlight(origin, iataCode, flightDate, adults),
+                      color: "border-orange-200 hover:bg-orange-50",
+                      textColor: "text-orange-700",
+                    },
+                    {
+                      name: "Google Flights",
+                      logo: "🔵",
+                      desc: "Compare all airlines at once",
+                      href: googleFlight(origin, iataCode, flightDate),
+                      color: "border-blue-200 hover:bg-blue-50",
+                      textColor: "text-blue-700",
+                    },
+                    {
+                      name: "EaseMyTrip",
+                      logo: "🟢",
+                      desc: "No convenience fees",
+                      href: emtFlight(origin, iataCode, flightDate, adults),
+                      color: "border-emerald-200 hover:bg-emerald-50",
+                      textColor: "text-emerald-700",
+                    },
+                  ].map((platform) => (
+                    <a
+                      key={platform.name}
+                      href={platform.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center justify-between rounded-xl border bg-white px-3.5 py-2.5 transition-colors ${platform.color}`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-lg leading-none">{platform.logo}</span>
+                        <div>
+                          <p className={`text-sm font-semibold ${platform.textColor}`}>{platform.name}</p>
+                          <p className="text-xs text-slate-400">{platform.desc}</p>
+                        </div>
+                      </div>
+                      <ArrowRight className={`h-4 w-4 flex-shrink-0 ${platform.textColor}`} />
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
-          {/* ── Hotel form ── */}
+          {/* ════════════════ HOTELS TAB ════════════════ */}
           {tab === "hotels" && (
-            <div className="space-y-2">
+            <div className="space-y-3">
+
+              {/* Form */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-1">Check-in</label>
@@ -294,155 +281,80 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                     className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
                   />
                 </div>
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-1">Guests</label>
+                  <select
+                    value={hotelAdults}
+                    onChange={(e) => setHotelAdults(e.target.value)}
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
+                  >
+                    {[1,2,3,4].map((n) => (
+                      <option key={n} value={String(n)}>{n} guest{n > 1 ? "s" : ""}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
+              {/* Search on platforms */}
               <div>
-                <label className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-1">Guests</label>
-                <select
-                  value={hotelAdults}
-                  onChange={(e) => setHotelAdults(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
-                >
-                  {[1,2,3,4].map((n) => (
-                    <option key={n} value={String(n)}>{n} guest{n > 1 ? "s" : ""}</option>
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                  Search on
+                </p>
+                <div className="space-y-2">
+                  {[
+                    {
+                      name: "Booking.com",
+                      logo: "🔵",
+                      desc: "150,000+ hotels worldwide",
+                      href: bookingHotel(country.name, checkIn, checkOut, hotelAdults),
+                      color: "border-blue-200 hover:bg-blue-50",
+                      textColor: "text-blue-700",
+                    },
+                    {
+                      name: "Agoda",
+                      logo: "🟣",
+                      desc: "Best rates in Asia & beyond",
+                      href: agodaHotel(country.name, checkIn, checkOut, hotelAdults),
+                      color: "border-violet-200 hover:bg-violet-50",
+                      textColor: "text-violet-700",
+                    },
+                    {
+                      name: "MakeMyTrip Hotels",
+                      logo: "🟠",
+                      desc: "Pay in INR, no forex charges",
+                      href: `https://www.makemytrip.com/hotels/hotel-listing/?checkin=${checkIn}&checkout=${checkOut}&city=${encodeURIComponent(country.name)}&adults=${hotelAdults}&children=0`,
+                      color: "border-orange-200 hover:bg-orange-50",
+                      textColor: "text-orange-700",
+                    },
+                  ].map((platform) => (
+                    <a
+                      key={platform.name}
+                      href={platform.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center justify-between rounded-xl border bg-white px-3.5 py-2.5 transition-colors ${platform.color}`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-lg leading-none">{platform.logo}</span>
+                        <div>
+                          <p className={`text-sm font-semibold ${platform.textColor}`}>{platform.name}</p>
+                          <p className="text-xs text-slate-400">{platform.desc}</p>
+                        </div>
+                      </div>
+                      <ArrowRight className={`h-4 w-4 flex-shrink-0 ${platform.textColor}`} />
+                    </a>
                   ))}
-                </select>
+                </div>
               </div>
-
-              <button
-                onClick={doSearchHotels}
-                disabled={loading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-60"
-              >
-                {loading
-                  ? <Loader2 className="h-4 w-4 animate-spin" />
-                  : <Search  className="h-4 w-4" />}
-                {loading ? "Searching…" : "Search Hotels"}
-              </button>
             </div>
           )}
 
-          {/* ── Error ── */}
-          {error && (
-            <div className="flex items-start gap-2 rounded-lg border border-red-100 bg-red-50 p-3">
-              <AlertCircle className="h-4 w-4 flex-shrink-0 text-red-500 mt-0.5" />
-              <p className="text-xs text-red-600">
-                {error.includes("not configured")
-                  ? "RAPIDAPI_KEY not set — add it to environment variables."
-                  : "No results found for this route/date. Try our agency below."}
-              </p>
-            </div>
-          )}
-
-          {/* ── Flight results (Sky Scrapper format) ── */}
-          {tab === "flights" && flights !== null && (
-            <div className="space-y-2">
-              {flights.length === 0 ? (
-                <p className="py-4 text-center text-sm text-slate-500">No flights found. Try our agency →</p>
-              ) : (
-                flights.slice(0, 4).map((itinerary: any) => {
-                  // Sky Scrapper: itinerary → legs[0] (outbound leg)
-                  const leg       = itinerary.legs?.[0];
-                  if (!leg) return null;
-                  const carrier   = leg.carriers?.marketing?.[0];
-                  const airline   = carrier?.name ?? AIRLINES[carrier?.alternateId] ?? "Unknown";
-                  const logoUrl   = carrier?.logoUrl as string | undefined;
-                  const stops     = leg.stopCount ?? 0;
-                  const price     = itinerary.price?.raw ?? 0;
-                  const tags: string[] = itinerary.tags ?? [];
-                  return (
-                    <div key={itinerary.id} className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            {logoUrl && (
-                              <img src={logoUrl} alt={airline} className="h-4 w-4 rounded object-contain" />
-                            )}
-                            <p className="truncate text-sm font-bold text-slate-900">{airline}</p>
-                            {tags.includes("cheapest") && (
-                              <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-semibold text-emerald-700">Cheapest</span>
-                            )}
-                            {tags.includes("best") && !tags.includes("cheapest") && (
-                              <span className="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-700">Best</span>
-                            )}
-                          </div>
-                          <p className="text-xs text-slate-500">
-                            {fmtTime(leg.departure)} → {fmtTime(leg.arrival)}
-                          </p>
-                          <div className="mt-1 flex items-center gap-2">
-                            <span className="text-[11px] text-slate-400">{parseMins(leg.durationInMinutes)}</span>
-                            <span className={`text-[11px] font-semibold ${stops === 0 ? "text-emerald-600" : "text-amber-600"}`}>
-                              {stops === 0 ? "Nonstop" : `${stops} stop${stops > 1 ? "s" : ""}`}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex-shrink-0 text-right">
-                          <p className="text-base font-black text-slate-900">{fmtUSD(price)}</p>
-                          <p className="text-[10px] text-slate-400">per person</p>
-                        </div>
-                      </div>
-                      <a
-                        href={mmtFlightLink(origin, iataCode, flightDate, adults)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 py-1.5 text-xs font-semibold text-indigo-600 transition-colors hover:bg-indigo-100"
-                      >
-                        Book on MakeMyTrip <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          )}
-
-          {/* ── Hotel results (Sky Scrapper format) ── */}
-          {tab === "hotels" && hotels !== null && (
-            <div className="space-y-2">
-              {hotels.length === 0 ? (
-                <p className="py-4 text-center text-sm text-slate-500">No hotels found. Try our agency →</p>
-              ) : (
-                hotels.slice(0, 4).map((hotel: any) => {
-                  // Sky Scrapper: hotel is a flat object { name, stars, price, reviewSummary }
-                  const stars   = Math.min(hotel.stars ?? hotel.starRating ?? 3, 5);
-                  const price   = hotel.price?.raw ?? hotel.rawPrice ?? 0;
-                  const review  = hotel.reviewSummary;
-                  return (
-                    <div key={hotel.hotelId ?? hotel.id} className="rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <p className="truncate text-sm font-bold text-slate-900 leading-snug">{hotel.name}</p>
-                          <p className="text-xs text-amber-500 mt-0.5">{"★".repeat(stars)}</p>
-                          {review && (
-                            <p className="mt-0.5 text-[11px] text-slate-400">
-                              {review.score?.toFixed(1)} · {review.scoreDesc ?? "Good"}
-                            </p>
-                          )}
-                        </div>
-                        {price > 0 && (
-                          <div className="flex-shrink-0 text-right">
-                            <p className="text-base font-black text-slate-900">{fmtUSD(price)}</p>
-                            <p className="text-[10px] text-slate-400">per night</p>
-                          </div>
-                        )}
-                      </div>
-                      <a
-                        href={bookingLink(country.name, checkIn, checkOut, hotelAdults)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 py-1.5 text-xs font-semibold text-blue-600 transition-colors hover:bg-blue-100"
-                      >
-                        Book on Booking.com <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          )}
-
-          {/* ── Agency CTA ── always visible ── */}
-          <AgencyCTA countryName={country.name} originCity={originCity} date={flightDate} origin={origin} />
+          {/* ── Agency CTA — always visible ── */}
+          <AgencyCTA
+            countryName={country.name}
+            originCity={originCity}
+            date={flightDate}
+          />
 
         </div>
       )}
@@ -450,11 +362,11 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
   );
 }
 
-// ── Agency CTA sub-component ─────────────────────────────────────────────────
+// ── Agency CTA ───────────────────────────────────────────────────────────────
 function AgencyCTA({
-  countryName, originCity, date, origin,
+  countryName, originCity, date,
 }: {
-  countryName: string; originCity: string; date: string; origin: string;
+  countryName: string; originCity: string; date: string;
 }) {
   return (
     <div className="rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50 p-4">
@@ -463,20 +375,21 @@ function AgencyCTA({
           <MessageCircle className="h-4 w-4" />
         </div>
         <div>
-          <p className="text-sm font-bold text-emerald-900">Book via our agency</p>
+          <p className="text-sm font-bold text-emerald-900">Better rates via our agency</p>
           <p className="mt-0.5 text-xs leading-relaxed text-emerald-700">
-            Our travel consultants get exclusive fares + packages — often cheaper than OTAs.
+            Our travel consultants get exclusive fares &amp; package deals — flights + hotels + visa, all in one.
           </p>
         </div>
       </div>
       <a
-        href={waLink(countryName, originCity, date)}
+        href={agencyWA(countryName, originCity, date)}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 active:scale-95"
       >
         <MessageCircle className="h-4 w-4" />
         Chat on WhatsApp
+        <ExternalLink className="h-3.5 w-3.5 opacity-70" />
       </a>
     </div>
   );

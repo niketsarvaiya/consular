@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, Clock, DollarSign, MapPin, Globe } from "lucide-react";
 import Link from "next/link";
 import { type ExploreCountry, VISA_STATUS_META } from "@/lib/explore-data";
-import { TravelSearch } from "./TravelSearch";
 
 interface CountryDrawerProps {
   country: ExploreCountry | null;
@@ -192,8 +191,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
                 </div>
               )}
 
-              {/* ── Flights & Hotels search ── */}
-              <TravelSearch country={country} />
+
             </div>
           </motion.div>
         </>

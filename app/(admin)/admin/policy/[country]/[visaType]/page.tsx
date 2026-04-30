@@ -3,8 +3,9 @@ import { prisma } from "@/lib/db/prisma";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import Link from "next/link";
-import { ArrowLeft, RefreshCw, Clock, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
 import { PolicyRefreshButton } from "@/components/admin/PolicyRefreshButton";
+import { PolicyEditor } from "@/components/admin/PolicyEditor";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -30,10 +31,22 @@ export default async function AdminPolicyDetailPage({ params }: Props) {
 
   const pendingSnapshot = snapshots.find((s) => s.status === "pending_review");
 
-  const feeDetails = policy.feeDetails as { governmentFeeINR: number; serviceFeeINR: number; taxes?: number; notes?: string } | null;
-  const reqDocs = (policy.requiredDocuments as { key: string; title: string }[]) ?? [];
-  const optDocs = (policy.optionalDocuments as { key: string; title: string }[]) ?? [];
-  const embassyLinks = (policy.embassyLinks as { label: string; url: string }[]) ?? [];
+  // Serialise policy for client component (dates → strings)
+  const policyForEditor = {
+    visaCategory: policy.visaCategory,
+    status: policy.status,
+    processingTimeMin: policy.processingTimeMin ?? 0,
+    processingTimeMax: policy.processingTimeMax ?? 0,
+    processingNotes: policy.processingNotes,
+    requiredDocuments: (policy.requiredDocuments as { key: string; title: string; description?: string; acceptedFormats?: string[]; maxFileSizeMb?: number }[]) ?? [],
+    optionalDocuments: (policy.optionalDocuments as { key: string; title: string; description?: string; acceptedFormats?: string[]; maxFileSizeMb?: number }[]) ?? [],
+    feeDetails: (policy.feeDetails as Record<string, unknown>) ?? null,
+    appointmentNotes: policy.appointmentNotes,
+    biometricsNotes: policy.biometricsNotes,
+    vacNotes: policy.vacNotes,
+    embassyLinks: (policy.embassyLinks as { label: string; url: string }[]) ?? [],
+    eligibilityRules: (policy.eligibilityRules as Record<string, unknown>) ?? null,
+  };
 
   return (
     <div>
@@ -57,7 +70,7 @@ export default async function AdminPolicyDetailPage({ params }: Props) {
         <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-5">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-amber-800">Changes detected — requires your review</p>
+              <p className="text-sm font-semibold text-amber-800">Auto-refresh detected changes — requires your review</p>
               <p className="mt-1 text-xs text-amber-700">
                 Change types: {(pendingSnapshot.changeTypes ?? []).join(", ")}
               </p>
@@ -80,8 +93,6 @@ export default async function AdminPolicyDetailPage({ params }: Props) {
               </form>
             </div>
           </div>
-
-          {/* Show diff summary */}
           {pendingSnapshot.diff && (
             <details className="mt-3">
               <summary className="cursor-pointer text-xs font-medium text-amber-700">View change summary</summary>
@@ -91,93 +102,41 @@ export default async function AdminPolicyDetailPage({ params }: Props) {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          {/* Fees */}
-          {feeDetails && (
-            <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-sm font-semibold text-slate-900">Fee details</h2>
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-400">Government fee</p><p className="mt-1 font-semibold text-slate-900">₹{feeDetails.governmentFeeINR.toLocaleString("en-IN")}</p></div>
-                <div className="rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-400">Service fee</p><p className="mt-1 font-semibold text-slate-900">₹{feeDetails.serviceFeeINR.toLocaleString("en-IN")}</p></div>
-                <div className="rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-400">Processing time</p><p className="mt-1 font-semibold text-slate-900">{policy.processingTimeMin}–{policy.processingTimeMax} days</p></div>
-              </div>
-              {feeDetails.notes && <p className="mt-3 text-xs text-slate-500">{feeDetails.notes}</p>}
-            </div>
-          )}
+      {/* ── Full Policy Editor ── */}
+      <PolicyEditor
+        policyId={policy.id}
+        countryCode={country.code}
+        countryName={country.name}
+        visaType={params.visaType}
+        initialData={policyForEditor}
+      />
 
-          {/* Documents */}
-          <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-sm font-semibold text-slate-900">Required documents ({reqDocs.length})</h2>
-            <div className="space-y-1">
-              {reqDocs.map((d) => (
-                <div key={d.key} className="flex items-center gap-2 text-sm text-slate-600 py-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />{d.title}
-                </div>
-              ))}
-            </div>
-            {optDocs.length > 0 && (
-              <>
-                <h3 className="mb-2 mt-4 text-xs font-semibold text-slate-500">Optional documents</h3>
-                {optDocs.map((d) => (
-                  <div key={d.key} className="flex items-center gap-2 text-sm text-slate-400 py-0.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-slate-200" />{d.title}
-                  </div>
-                ))}
-              </>
-            )}
+      {/* Version history & metadata sidebar */}
+      <div className="mt-6 grid gap-4 lg:grid-cols-3">
+        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Metadata</h3>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between"><span className="text-slate-400">Version</span><span className="font-mono text-slate-700">v{policy.versionNumber}</span></div>
+            <div className="flex justify-between"><span className="text-slate-400">Last refreshed</span><span className="text-slate-700">{policy.lastRefreshedAt ? new Date(policy.lastRefreshedAt).toLocaleDateString("en-IN") : "Never"}</span></div>
+            <div className="flex justify-between"><span className="text-slate-400">Last approved</span><span className="text-slate-700">{policy.lastApprovedAt ? new Date(policy.lastApprovedAt).toLocaleDateString("en-IN") : "—"}</span></div>
+            <div className="flex justify-between"><span className="text-slate-400">Approved by</span><span className="text-slate-700">{policy.approvedBy?.fullName ?? "—"}</span></div>
           </div>
-
-          {/* Notes */}
-          {(policy.appointmentNotes || policy.biometricsNotes || policy.vacNotes) && (
-            <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm space-y-3">
-              <h2 className="text-sm font-semibold text-slate-900">Process notes</h2>
-              {policy.appointmentNotes && <div><p className="text-xs font-medium text-slate-400">Appointment</p><p className="text-sm text-slate-600">{policy.appointmentNotes}</p></div>}
-              {policy.biometricsNotes && <div><p className="text-xs font-medium text-slate-400">Biometrics</p><p className="text-sm text-slate-600">{policy.biometricsNotes}</p></div>}
-              {policy.vacNotes && <div><p className="text-xs font-medium text-slate-400">VAC / Center</p><p className="text-sm text-slate-600">{policy.vacNotes}</p></div>}
-            </div>
-          )}
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-4">
-          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Metadata</h3>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between"><span className="text-slate-400">Version</span><span className="font-mono text-slate-700">v{policy.versionNumber}</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Last refreshed</span><span className="text-slate-700">{policy.lastRefreshedAt ? new Date(policy.lastRefreshedAt).toLocaleDateString("en-IN") : "Never"}</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Last approved</span><span className="text-slate-700">{policy.lastApprovedAt ? new Date(policy.lastApprovedAt).toLocaleDateString("en-IN") : "—"}</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Approved by</span><span className="text-slate-700">{policy.approvedBy?.fullName ?? "—"}</span></div>
-            </div>
-          </div>
-
-          {embassyLinks.length > 0 && (
-            <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Official sources</h3>
-              <div className="space-y-2">
-                {embassyLinks.map((link, i) => (
-                  <a key={i} href={link.url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs text-blue-600 hover:underline">
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Version history</h3>
-            <div className="space-y-2">
-              {snapshots.map((s) => (
-                <div key={s.id} className="flex items-start gap-2 text-xs">
-                  <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${s.status === "approved" ? "bg-emerald-500" : s.status === "rejected" ? "bg-red-400" : "bg-amber-400"}`} />
-                  <div>
-                    <span className="font-medium text-slate-700">v{s.versionNumber}</span>
-                    <span className="ml-1.5 text-slate-400">{s.changeSource.replace(/_/g, " ")}</span>
-                    <span className="ml-1.5 text-slate-400">{new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
-                  </div>
+        <div className="lg:col-span-2 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Version history</h3>
+          <div className="space-y-2">
+            {snapshots.map((s) => (
+              <div key={s.id} className="flex items-start gap-2 text-xs">
+                <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${s.status === "approved" ? "bg-emerald-500" : s.status === "rejected" ? "bg-red-400" : "bg-amber-400"}`} />
+                <div>
+                  <span className="font-medium text-slate-700">v{s.versionNumber}</span>
+                  <span className="ml-1.5 text-slate-400">{s.changeSource.replace(/_/g, " ")}</span>
+                  <span className="ml-1.5 text-slate-400">{new Date(s.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+            {snapshots.length === 0 && <p className="text-xs text-slate-400">No version history yet</p>}
           </div>
         </div>
       </div>
