@@ -2,7 +2,8 @@ import { getPolicies } from "@/lib/services/policy.service";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import Link from "next/link";
-import { ArrowRight, RefreshCw, AlertTriangle } from "lucide-react";
+import { ArrowRight, AlertTriangle } from "lucide-react";
+import { CountryActiveToggle } from "@/components/admin/CountryActiveToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,7 @@ export default async function AdminPolicyPage() {
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">Version</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">Status</th>
               <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">Last Refreshed</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">Country Active</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -55,6 +57,12 @@ export default async function AdminPolicyPage() {
                 <td className="px-4 py-3"><StatusBadge status={policy.status} type="policy" /></td>
                 <td className="px-4 py-3 text-xs text-slate-400">
                   {policy.lastRefreshedAt ? new Date(policy.lastRefreshedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "Never"}
+                </td>
+                <td className="px-4 py-3">
+                  <CountryActiveToggle
+                    countryId={policy.country.id}
+                    initialActive={policy.country.isActive}
+                  />
                 </td>
                 <td className="px-4 py-3">
                   <Link href={`/admin/policy/${policy.country.code.toLowerCase()}/${policy.visaType.toLowerCase()}`} className="flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900">
