@@ -372,11 +372,13 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
   const existingExpress = existingFee?.express as {
     available?: boolean; processingTimeMin?: number; processingTimeMax?: number;
     additionalFee?: number; additionalFeeINR?: number; totalINR?: number; notes?: string;
+    govFee?: number;
   } | undefined;
   const [expressEnabled,    setExpressEnabled]    = useState(existingExpress?.available ?? false);
   const [expressProcMin,    setExpressProcMin]     = useState(existingExpress?.processingTimeMin ?? 1);
   const [expressProcMax,    setExpressProcMax]     = useState(existingExpress?.processingTimeMax ?? 3);
   const [expressAddlFee,    setExpressAddlFee]     = useState(existingExpress?.additionalFee ?? 0);
+  const [expressGovFee,     setExpressGovFee]      = useState<number | null>(existingExpress?.govFee ?? null); // null = inherit from standard
   const [expressNotes,      setExpressNotes]       = useState(existingExpress?.notes ?? "");
 
   // ── Content / FAQ state ──
@@ -425,10 +427,14 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
   const totalINR = subtotal + gatewayAmount + gstAmount;
 
   // ── Express computed ──
-  const expressAddlFeeINR = feeCurrency === "INR" ? expressAddlFee : Math.round((expressAddlFee * (rates[feeCurrency] ?? 1)) * 100) / 100;
-  const expressGateway    = Math.round(((subtotal + expressAddlFeeINR) * gatewayFeePct) / 100);
-  const expressGst        = Math.round(((serviceFeeINR + expressAddlFeeINR) * gstPct) / 100);
-  const expressTotalINR   = govFeeINR + serviceFeeINR + expressAddlFeeINR + expressGateway + expressGst;
+  // expressGovFee: null means inherit from standard govFeeINR; otherwise override
+  const expressGovFeeRaw    = expressGovFee !== null ? expressGovFee : foreignGovFee;
+  const expressGovFeeINR    = feeCurrency === "INR" ? expressGovFeeRaw : Math.round((expressGovFeeRaw * (rates[feeCurrency] ?? 1)) * 100) / 100;
+  const expressAddlFeeINR   = feeCurrency === "INR" ? expressAddlFee : Math.round((expressAddlFee * (rates[feeCurrency] ?? 1)) * 100) / 100;
+  const expressSubtotal     = expressGovFeeINR + serviceFeeINR + expressAddlFeeINR;
+  const expressGateway      = Math.round((expressSubtotal * gatewayFeePct) / 100);
+  const expressGst          = Math.round((serviceFeeINR * gstPct) / 100);
+  const expressTotalINR     = expressSubtotal + expressGateway + expressGst;
 
   // ── Save handler ──
   const handleSave = async () => {
@@ -460,6 +466,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
             processingTimeMax: expressProcMax,
             additionalFee: expressAddlFee,
             additionalFeeINR: expressAddlFeeINR,
+            ...(expressGovFee !== null && { govFee: expressGovFee, govFeeINR: expressGovFeeINR }),
             totalINR: expressTotalINR,
             notes: expressNotes,
           } : { available: false },
@@ -900,6 +907,45 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                     </div>
                   </div>
 
+                  {/* Express Government Fee override */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-medium text-slate-600">
+                        Government / Visa Fee ({feeCurrency})
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setExpressGovFee(expressGovFee !== null ? null : foreignGovFee)}
+                        className={`text-[10px] font-medium rounded px-1.5 py-0.5 transition-colors ${expressGovFee !== null ? "bg-amber-100 text-amber-700 hover:bg-amber-200" : "bg-slate-100 text-slate-500 hover:bg-slate-200"}`}
+                      >
+                        {expressGovFee !== null ? "⚡ Overriding standard" : "Same as standard — override?"}
+                      </button>
+                    </div>
+                    {expressGovFee !== null ? (
+                      <>
+                        <div className="flex gap-2 items-center">
+                          <span className="text-xs text-slate-400 shrink-0">{feeCurrency}</span>
+                          <input
+                            type="number"
+                            min={0}
+                            step={0.01}
+                            value={expressGovFee}
+                            onChange={(e) => setExpressGovFee(Number(e.target.value))}
+                            className="flex-1 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm focus:border-amber-400 focus:outline-none"
+                            placeholder="0"
+                          />
+                        </div>
+                        {feeCurrency !== "INR" && !ratesLoading && (
+                          <p className="mt-1 text-xs text-slate-400">≈ ₹{expressGovFeeINR.toLocaleString("en-IN")} INR</p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-xs text-slate-400 italic">
+                        Inheriting standard: {feeCurrency} {foreignGovFee.toLocaleString()} = ₹{govFeeINR.toLocaleString("en-IN")}
+                      </p>
+                    )}
+                  </div>
+
                   <div>
                     <label className="block text-xs font-medium text-slate-600 mb-1.5">
                       Express Surcharge ({feeCurrency})
@@ -930,8 +976,13 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                   <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-600 mb-3">Express Breakdown</h3>
                   <div className="rounded-2xl border border-amber-100 bg-amber-50/60 p-4 space-y-2.5">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Government Fee</span>
-                      <span className="font-medium text-slate-900">₹{govFeeINR.toLocaleString("en-IN")}</span>
+                      <span className="text-slate-600 flex items-center gap-1">
+                        Government Fee
+                        {expressGovFee !== null && (
+                          <span className="text-[9px] font-bold bg-amber-200 text-amber-800 rounded px-1 py-0.5">OVERRIDDEN</span>
+                        )}
+                      </span>
+                      <span className="font-medium text-slate-900">₹{expressGovFeeINR.toLocaleString("en-IN")}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Service Fee</span>
