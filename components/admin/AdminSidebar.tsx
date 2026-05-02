@@ -3,13 +3,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils/cn";
-import { LayoutDashboard, FolderOpen, Globe, Users, ClipboardList, LogOut, ChevronRight, Map } from "lucide-react";
+import { LayoutDashboard, FolderOpen, Globe, Users, ClipboardList, LogOut, ChevronRight, Map, Activity } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/admin/cases", label: "Cases", icon: FolderOpen, exact: false },
   { href: "/admin/policy", label: "Policy Engine", icon: Globe, exact: false },
   { href: "/admin/countries", label: "Countries", icon: Map, exact: false },
+  { href: "/admin/logs", label: "Activity Log", icon: Activity, exact: false },
   { href: "/admin/team", label: "Team", icon: Users, exact: false },
   { href: "/admin/audit", label: "Audit Log", icon: ClipboardList, exact: false },
 ];
