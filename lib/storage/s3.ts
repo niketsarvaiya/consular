@@ -36,7 +36,7 @@ const ALLOWED_MIME_TYPES = new Set([
   "image/png",
 ]);
 
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB hard limit
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB hard limit
 
 export interface UploadResult {
   fileKey: string;

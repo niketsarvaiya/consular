@@ -126,7 +126,7 @@ function toDocItems(
     title: d.title,
     description: d.description ?? "",
     acceptedFormats: d.acceptedFormats ?? ["pdf", "jpg", "jpeg", "png"],
-    maxFileSizeMb: d.maxFileSizeMb ?? 5,
+    maxFileSizeMb: d.maxFileSizeMb ?? 3,
     isRequired: required,
   }));
 }
@@ -521,7 +521,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
         title: "",
         description: "",
         acceptedFormats: ["pdf", "jpg", "jpeg", "png"],
-        maxFileSizeMb: 5,
+        maxFileSizeMb: 3,
         isRequired: required,
       },
     ]);
