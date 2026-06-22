@@ -51,7 +51,7 @@ function LoginForm() {
             <div className="flex h-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-400 to-violet-400 px-2.5">
               <span className="text-xs font-bold tracking-wide text-white">CO</span>
             </div>
-            <span className="text-lg font-semibold text-white">Consular</span>
+            <span className="text-lg font-semibold text-white">VisaSetGo/span>
           </Link>
         </div>
 
@@ -116,7 +116,7 @@ function LoginForm() {
             <div className="flex h-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 px-2.5">
               <span className="text-xs font-bold tracking-wide text-white">CO</span>
             </div>
-            <span className="text-lg font-semibold text-slate-900">Consular</span>
+            <span className="text-lg font-semibold text-slate-900">VisaSetGo/span>
           </Link>
         </div>
 

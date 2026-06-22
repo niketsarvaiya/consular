@@ -83,7 +83,7 @@ export default async function AdminTeamPage() {
         <div className="mt-3 rounded-lg bg-slate-900 p-3">
           <code className="text-[11px] text-slate-300">
             {`INSERT INTO ops_users (email, full_name, password_hash, role)`}<br />
-            {`VALUES ('new@consular.in', 'New Member', '<bcrypt>', 'OPS');`}
+            {`VALUES ('new@visasetgo.com', 'New Member', '<bcrypt>', 'OPS');`}
           </code>
         </div>
       </div>

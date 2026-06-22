@@ -154,7 +154,7 @@ export default async function ApplicationDetailPage({ params }: Props) {
           </div>
 
           <div className="rounded-xl bg-slate-50 p-4 text-xs text-slate-400 leading-relaxed">
-            Visa approval is at the sole discretion of the respective embassy or government authority. Consular does not guarantee visa approval.
+            Visa approval is at the sole discretion of the respective embassy or government authority. VisaSetGo does not guarantee visa approval.
           </div>
         </div>
       </div>

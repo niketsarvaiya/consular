@@ -6,7 +6,7 @@ import { Providers } from "@/components/shared/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "Consular – Visa Processing for Indian Passport Holders", template: "%s | Consular" },
+  title: { default: "VisaSetGo – Visa Processing for Indian Passport Holders", template: "%s | VisaSetGo" },
   description: "Professional visa application assistance for Indian passport holders. Tourist and business visas, guided step-by-step.",
 };
 

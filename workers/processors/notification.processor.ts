@@ -26,7 +26,7 @@ export async function processNotificationJob(job: Job<NotificationJobData>): Pro
 
   try {
     const { subject, html } = renderEmailTemplate(eventType as NotificationEventType, templateVars);
-    await transporter.sendMail({ from: `"Consular" <${process.env.EMAIL_FROM}>`, to: recipient, subject, html: wrapEmailInLayout(html) });
+    await transporter.sendMail({ from: `"VisaSetGo" <${process.env.EMAIL_FROM}>`, to: recipient, subject, html: wrapEmailInLayout(html) });
     await prisma.communication.update({ where: { id: communication.id }, data: { status: "SENT", sentAt: new Date() } });
   } catch (error) {
     await prisma.communication.update({ where: { id: communication.id }, data: { status: "FAILED", failureReason: String(error).slice(0, 500) } });
@@ -43,7 +43,7 @@ function wrapEmailInLayout(bodyHtml: string): string {
     .body a{color:#2563eb;} blockquote{border-left:3px solid #e2e8f0;margin:0 0 16px;padding:8px 16px;color:#64748b;}
     .footer{border-top:1px solid #f1f5f9;padding:20px 32px;font-size:12px;color:#94a3b8;}
   </style></head><body><div class="wrapper">
-    <div class="header"><h1>Consular</h1><span>Visa Processing Platform</span></div>
+    <div class="header"><h1>VisaSetGo</h1><span>Visa Processing Platform</span></div>
     <div class="body">${bodyHtml}</div>
     <div class="footer"><p>Visa approval is at the sole discretion of the respective embassy or government authority.</p></div>
   </div></body></html>`;

@@ -34,7 +34,7 @@ function AdminLoginForm() {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
             <Shield className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-2xl font-semibold text-white">Consular Ops</h1>
+          <h1 className="text-2xl font-semibold text-white">VisaSetGo Ops</h1>
           <p className="mt-2 text-sm text-slate-400">Internal team access only</p>
         </div>
 
@@ -52,7 +52,7 @@ function AdminLoginForm() {
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="w-full rounded-lg border border-white/10 bg-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-white/30"
-              placeholder="ops@consular.in"
+              placeholder="ops@visasetgo.com"
             />
           </div>
           <div>

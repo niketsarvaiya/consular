@@ -53,7 +53,7 @@ const STEPS = [
   { icon: CalendarDays, num: "04", title: "We file and track your visa", desc: "From submission to stamp — we handle every embassy interaction for you." },
 ];
 
-const WHY_CONSULAR = [
+const WHY_VISASETGO = [
   { icon: ShieldCheck, title: "Embassy-grade review",      desc: "Every document verified by specialists before submission." },
   { icon: Zap,         title: "Real-time updates",         desc: "Track every stage. Notified the moment anything changes." },
   { icon: Lock,        title: "Bank-grade security",       desc: "Passport data encrypted end-to-end. Never shared." },
@@ -343,7 +343,7 @@ export function VisaPageClient({
 
                 {/* Header */}
                 <div className="bg-zinc-950 px-5 py-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Consular Visa Service</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">VisaSetGo Visa Service</p>
                   <p className="text-[17px] font-bold text-white mt-1">{countryName} {visaTypeLabel} Visa</p>
                 </div>
 
@@ -356,7 +356,7 @@ export function VisaPageClient({
                         <span className="text-sm font-semibold text-slate-900">₹{fee.governmentFeeINR.toLocaleString("en-IN")}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-slate-500">Consular service</span>
+                        <span className="text-sm text-slate-500">VisaSetGo service</span>
                         <span className="text-sm font-semibold text-slate-900">₹{fee.serviceFeeINR.toLocaleString("en-IN")}</span>
                       </div>
                       <div className="border-t border-slate-100 pt-2.5 flex items-center justify-between">
@@ -426,7 +426,7 @@ export function VisaPageClient({
                 <div className="flex items-center gap-3">
                   <div className="h-9 w-9 rounded-full bg-zinc-900 flex items-center justify-center text-white text-sm font-bold shrink-0">C</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">Consular Team</p>
+                    <p className="text-sm font-semibold text-slate-900">VisaSetGo Team</p>
                     <p className="text-[11px] text-slate-400">Responds within 2 hours</p>
                   </div>
                 </div>
@@ -471,9 +471,9 @@ export function VisaPageClient({
       {/* ── WHY CONSULAR — full-width section ────────────────────────────── */}
       <div className="border-t border-slate-100 bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 py-12 md:px-8">
-          <h2 className="text-xl font-bold text-slate-900 mb-8">Why Consular</h2>
+          <h2 className="text-xl font-bold text-slate-900 mb-8">Why VisaSetGo</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {WHY_CONSULAR.map((item) => (
+            {WHY_VISASETGO.map((item) => (
               <div key={item.title}>
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-200 mb-3">
                   <item.icon className="h-4 w-4 text-slate-700" />

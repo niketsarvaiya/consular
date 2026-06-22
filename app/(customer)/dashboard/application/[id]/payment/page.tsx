@@ -66,7 +66,7 @@ export default function PaymentPage() {
       amount: order.amount,
       currency: order.currency,
       order_id: order.orderId,
-      name: "Consular",
+      name: "VisaSetGo",
       description: "Visa Application Fee",
       prefill: { name: customerName, email: customerEmail },
       theme: { color: "#0f172a" },

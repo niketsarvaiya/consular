@@ -58,7 +58,7 @@ const TESTIMONIALS = [
     name: "Priya S.",
     location: "Mumbai → Singapore",
     stars: 5,
-    quote: "I was dreading the visa process, but Consular made it feel like nothing at all. My documents were reviewed overnight and I got my visa in four days. Absolutely brilliant service.",
+    quote: "I was dreading the visa process, but VisaSetGo made it feel like nothing at all. My documents were reviewed overnight and I got my visa in four days. Absolutely brilliant service.",
   },
   {
     name: "Rohan M.",
@@ -74,7 +74,7 @@ const TESTIMONIALS = [
   },
 ];
 
-const WHY_CONSULAR = [
+const WHY_VISASETGO = [
   { icon: CheckCircle, title: "Official sources only", description: "Every policy is backed by embassy and government sources — not travel blogs." },
   { icon: Zap, title: "Freshness badges", description: "We mark when each country's requirements were last verified so you always have current info." },
   { icon: Users, title: "Real human review", description: "A real ops specialist checks your documents before anything goes out." },
@@ -116,7 +116,7 @@ export default function HomePage() {
             </h1>
 
             <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-white/65">
-              Consular guides Indian passport holders through every step of the visa process — from verified checklists to expert document review.
+              VisaSetGo guides Indian passport holders through every step of the visa process — from verified checklists to expert document review.
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -201,7 +201,7 @@ export default function HomePage() {
       {/* ── HOW IT WORKS ── */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">How Consular works</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">How VisaSetGo works</p>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             From planning to approval in 4 steps
           </h2>
@@ -230,14 +230,14 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-slate-900 to-indigo-950 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center mb-14">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-400">Why Consular</p>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-400">Why VisaSetGo</p>
             <h2 className="text-3xl font-bold text-white sm:text-4xl">Built on truth, not guesswork</h2>
             <p className="mt-4 text-base text-white/55">
               We source every requirement directly from embassies and government portals — and we show you exactly when we last checked.
             </p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {WHY_CONSULAR.map((item) => (
+            {WHY_VISASETGO.map((item) => (
               <div key={item.title} className="rounded-2xl border border-white/8 bg-white/5 p-6 backdrop-blur-sm">
                 <item.icon className="mb-4 h-6 w-6 text-indigo-400" />
                 <h3 className="text-sm font-bold text-white">{item.title}</h3>

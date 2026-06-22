@@ -41,7 +41,7 @@ export function renderEmailTemplate(
 
   const templates: Record<NotificationEventType, { subject: string; html: string }> = {
     welcome: {
-      subject: "Welcome to Consular",
+      subject: "Welcome to VisaSetGo",
       html: `
         <p>Hi ${vars.customerName},</p>
         <p>Your account has been created. You can now start your visa application.</p>
@@ -133,5 +133,5 @@ export function renderEmailTemplate(
     },
   };
 
-  return templates[eventType] ?? { subject: "Consular Update", html: `<p>${vars.message ?? ""}</p>` };
+  return templates[eventType] ?? { subject: "VisaSetGo Update", html: `<p>${vars.message ?? ""}</p>` };
 }

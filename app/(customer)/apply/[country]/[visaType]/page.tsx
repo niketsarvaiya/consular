@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 interface Props { params: { country: string; visaType: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  return { title: `${params.country.toUpperCase()} ${params.visaType} Visa – Consular` };
+  return { title: `${params.country.toUpperCase()} ${params.visaType} Visa – VisaSetGo` };
 }
 
 const VISA_CATEGORY_LABELS: Record<string, string> = {

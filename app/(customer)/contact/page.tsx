@@ -49,8 +49,8 @@ export default function ContactPage() {
               </div>
               <h3 className="font-semibold text-slate-900">Email us</h3>
               <p className="mt-1 text-sm text-slate-500">For all enquiries, applications, and document questions.</p>
-              <a href="mailto:support@consular.in" className="mt-2 block text-sm font-semibold text-indigo-600 hover:text-indigo-700">
-                support@consular.in
+              <a href="mailto:support@visasetgo.com" className="mt-2 block text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                support@visasetgo.com
               </a>
             </div>
 

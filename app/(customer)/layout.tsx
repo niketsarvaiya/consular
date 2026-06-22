@@ -18,9 +18,9 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             <div>
               <div className="flex items-center gap-2.5">
                 <div className="flex h-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 px-2.5">
-                  <span className="text-[10px] font-bold tracking-wide text-white">CO</span>
+                  <span className="text-[10px] font-bold tracking-wide text-white">VS</span>
                 </div>
-                <span className="text-base font-semibold text-slate-900">Consular</span>
+                <span className="text-base font-semibold text-slate-900">VisaSetGo</span>
               </div>
               <p className="mt-3 text-sm font-medium text-slate-500">
                 Your personal visa concierge
@@ -73,10 +73,10 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                 get back to you promptly.
               </p>
               <a
-                href="mailto:support@consular.in"
+                href="mailto:support@visasetgo.com"
                 className="mt-3 inline-block text-sm font-semibold text-indigo-600 transition-colors hover:text-indigo-700"
               >
-                support@consular.in
+                support@visasetgo.com
               </a>
               <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
@@ -92,11 +92,11 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
           <div className="mt-12 border-t border-slate-100 pt-6">
             <div className="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
               <p className="text-xs text-slate-400">
-                © {new Date().getFullYear()} Consular. Made with care for Indian travellers.
+                © {new Date().getFullYear()} VisaSetGo. Made with care for Indian travellers.
               </p>
               <p className="text-xs leading-relaxed text-slate-400">
                 Visa approval is at the sole discretion of the respective embassy.
-                Consular facilitates the process only and does not guarantee approval.
+                VisaSetGo facilitates the process only and does not guarantee approval.
               </p>
             </div>
           </div>

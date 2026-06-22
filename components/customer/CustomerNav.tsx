@@ -33,10 +33,10 @@ export function CustomerNav() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="flex h-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 px-2.5 transition-shadow group-hover:shadow-md group-hover:shadow-indigo-200">
-              <span className="text-xs font-bold tracking-wide text-white">CO</span>
+              <span className="text-xs font-bold tracking-wide text-white">VS</span>
             </div>
             <div className="flex flex-col leading-none">
-              <span className="text-base font-semibold tracking-tight text-slate-900">Consular</span>
+              <span className="text-base font-semibold tracking-tight text-slate-900">VisaSetGo</span>
               <span className="text-[10px] font-medium tracking-wide text-slate-400">Visa concierge</span>
             </div>
           </Link>

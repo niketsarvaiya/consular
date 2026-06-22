@@ -8,7 +8,7 @@ import { processPolicyRefreshJob } from "@/workers/processors/policy-refresh.pro
 import { processNotificationJob } from "@/workers/processors/notification.processor";
 import { processOCRJob } from "@/workers/processors/ocr.processor";
 
-console.log("[Worker] Starting Consular background workers...");
+console.log("[Worker] Starting VisaSetGo background workers...");
 
 const policyWorker = new Worker("policy-refresh", processPolicyRefreshJob, { connection: redisConnection, concurrency: 2 });
 policyWorker.on("completed", (job) => console.log(`[PolicyRefresh] Job ${job.id} completed`));

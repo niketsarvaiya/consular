@@ -625,7 +625,7 @@ export const COUNTRY_FAQ: Record<string, FAQCategory[]> = {
         },
         {
           q: "What is the Canada visitor visa fee for Indians?",
-          a: "The government application fee is CAD $100 (≈ ₹6,100). Biometrics cost an additional CAD $85 (≈ ₹5,200). Consular's service fee is ₹3,500. Total all-in cost is approximately ₹14,800–15,000.",
+          a: "The government application fee is CAD $100 (≈ ₹6,100). Biometrics cost an additional CAD $85 (≈ ₹5,200). VisaSetGo's service fee is ₹3,500. Total all-in cost is approximately ₹14,800–15,000.",
         },
         {
           q: "How long can I stay in Canada on a visitor visa?",
@@ -703,7 +703,7 @@ export const COUNTRY_FAQ: Record<string, FAQCategory[]> = {
         },
         {
           q: "What is the New Zealand visitor visa fee?",
-          a: "The government application fee is NZD 441 (approximately ₹22,000). This fee is non-refundable regardless of outcome. Consular's service fee is ₹2,500. Additional costs may include a medical examination (if required) and a police clearance certificate.",
+          a: "The government application fee is NZD 441 (approximately ₹22,000). This fee is non-refundable regardless of outcome. VisaSetGo's service fee is ₹2,500. Additional costs may include a medical examination (if required) and a police clearance certificate.",
         },
         {
           q: "How long can I stay in New Zealand on a visitor visa?",
@@ -762,8 +762,8 @@ export const DEFAULT_FAQ: FAQCategory[] = [
     category: "General",
     questions: [
       { q: "How long does visa processing take?", a: "Processing times vary by country and visa type. The estimated processing window for this destination is shown in the details above. We recommend applying well before your travel date to allow for any delays." },
-      { q: "What happens if my visa is rejected?", a: "If your application is rejected, we will notify you immediately with the reason (if provided by the embassy). You can reapply with additional documentation. Consular's team will guide you through strengthening your application." },
-      { q: "Is the fee refundable if my visa is rejected?", a: "Government fees paid to embassies are non-refundable. Consular's service fee is charged only after your documents are approved — so you don't pay us unless your application is ready to file." },
+      { q: "What happens if my visa is rejected?", a: "If your application is rejected, we will notify you immediately with the reason (if provided by the embassy). You can reapply with additional documentation. VisaSetGo's team will guide you through strengthening your application." },
+      { q: "Is the fee refundable if my visa is rejected?", a: "Government fees paid to embassies are non-refundable. VisaSetGo's service fee is charged only after your documents are approved — so you don't pay us unless your application is ready to file." },
     ],
   },
   {
@@ -776,7 +776,7 @@ export const DEFAULT_FAQ: FAQCategory[] = [
   {
     category: "Process",
     questions: [
-      { q: "How does the Consular process work?", a: "You enter your passport details, upload your documents, and our team reviews everything before you pay. Once approved, we submit your application and track it until you receive your visa. You're updated at every step." },
+      { q: "How does the VisaSetGo process work?", a: "You enter your passport details, upload your documents, and our team reviews everything before you pay. Once approved, we submit your application and track it until you receive your visa. You're updated at every step." },
     ],
   },
 ];

@@ -183,7 +183,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
               ) : (
                 <div className="mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center">
                   <p className="text-sm font-medium text-slate-500">
-                    Coming soon on Consular
+                    Coming soon on VisaSetGo
                   </p>
                   <p className="mt-1 text-xs text-slate-400">
                     We're working on adding {country.name}
