@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, Shield, FileCheck, ClipboardList, Star, CheckCircle, Globe, Zap, Users } from "lucide-react";
 import { COUNTRY_HERO_IMAGES } from "@/lib/visa-content";
+import { Reveal } from "@/components/shared/Reveal";
+import { CountUp } from "@/components/shared/CountUp";
 
 const FEATURED = [
   { code: "AE", name: "UAE", label: "Tourist Visa", time: "3–5 days" },
@@ -92,12 +94,12 @@ export default function HomePage() {
         <img
           src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1920&q=80"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover object-center opacity-30 mix-blend-luminosity"
+          className="animate-kenburns absolute inset-0 h-full w-full object-cover object-center opacity-30 mix-blend-luminosity"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink-900/70 via-ink-900/55 to-ink-900/90" />
 
         <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-20 sm:px-6 lg:px-8 lg:pt-32">
-          <div className="mx-auto max-w-3xl text-center">
+          <Reveal className="mx-auto max-w-3xl text-center">
 
             {/* Live badge */}
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-medium text-white/80 backdrop-blur-sm">
@@ -122,9 +124,9 @@ export default function HomePage() {
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/destinations"
-                className="flex items-center gap-2 rounded-2xl bg-sunset px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-iris-600/40 transition-all hover:brightness-110 hover:shadow-iris-600/50"
+                className="group flex items-center gap-2 rounded-2xl bg-sunset px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-iris-600/40 transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-iris-600/50"
               >
-                Browse destinations <ArrowRight className="h-4 w-4" />
+                Browse destinations <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/auth/register"
@@ -137,17 +139,17 @@ export default function HomePage() {
             <p className="mt-5 text-xs text-white/40">
               Free to start · No card required · 12+ countries covered
             </p>
-          </div>
+          </Reveal>
 
           {/* Stats strip */}
-          <div className="mx-auto mt-20 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+          <Reveal delay={0.15} className="mx-auto mt-20 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
             {STATS.map((s) => (
               <div key={s.label} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center backdrop-blur-sm">
-                <p className="text-2xl font-bold text-white">{s.value}</p>
+                <p className="text-2xl font-bold text-white"><CountUp value={s.value} /></p>
                 <p className="mt-1 text-xs text-white/50">{s.label}</p>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -165,13 +167,13 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            {FEATURED.map((d) => {
+            {FEATURED.map((d, i) => {
               const img = COUNTRY_HERO_IMAGES[d.code]?.[0] ?? "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80";
               return (
+                <Reveal key={d.code} delay={i * 0.06}>
                 <Link
-                  key={d.code}
                   href={`/apply/${d.code.toLowerCase()}/tourist`}
-                  className="group relative overflow-hidden rounded-2xl bg-slate-800 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
+                  className="group relative block overflow-hidden rounded-2xl bg-slate-800 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                   style={{ height: "180px" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -186,6 +188,7 @@ export default function HomePage() {
                     <p className="text-[10px] text-white/55">{d.label} · {d.time}</p>
                   </div>
                 </Link>
+                </Reveal>
               );
             })}
           </div>
@@ -211,17 +214,19 @@ export default function HomePage() {
         </div>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {HOW_IT_WORKS.map((item) => (
-            <div key={item.step} className="relative rounded-3xl border border-slate-100 bg-white p-7 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-              <div className="mb-5 flex items-start justify-between">
-                <div className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${item.iconBg}`}>
-                  <item.icon className={`h-5 w-5 ${item.iconColor}`} />
+          {HOW_IT_WORKS.map((item, i) => (
+            <Reveal key={item.step} delay={i * 0.08} className="h-full">
+              <div className="group relative h-full rounded-3xl border border-slate-100 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="mb-5 flex items-start justify-between">
+                  <div className={`inline-flex h-11 w-11 items-center justify-center rounded-2xl ${item.iconBg} transition-transform duration-300 group-hover:scale-110`}>
+                    <item.icon className={`h-5 w-5 ${item.iconColor}`} />
+                  </div>
+                  <span className="text-3xl font-black tracking-tight text-slate-100">{item.step}</span>
                 </div>
-                <span className="text-3xl font-black tracking-tight text-slate-100">{item.step}</span>
+                <h3 className="text-sm font-bold text-ink">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-500">{item.description}</p>
               </div>
-              <h3 className="text-sm font-bold text-ink">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">{item.description}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -237,12 +242,14 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {WHY_VISASETGO.map((item) => (
-              <div key={item.title} className="rounded-2xl border border-white/8 bg-white/5 p-6 backdrop-blur-sm">
-                <item.icon className="mb-4 h-6 w-6 text-iris-300" />
-                <h3 className="text-sm font-bold text-white">{item.title}</h3>
-                <p className="mt-2 text-sm text-white/55 leading-relaxed">{item.description}</p>
-              </div>
+            {WHY_VISASETGO.map((item, i) => (
+              <Reveal key={item.title} delay={i * 0.08} className="h-full">
+                <div className="h-full rounded-2xl border border-white/8 bg-white/5 p-6 backdrop-blur-sm transition-colors hover:bg-white/[0.08]">
+                  <item.icon className="mb-4 h-6 w-6 text-iris-300" />
+                  <h3 className="text-sm font-bold text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm text-white/55 leading-relaxed">{item.description}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -257,8 +264,9 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-7 shadow-sm hover:shadow-md transition-shadow">
+            {TESTIMONIALS.map((t, i) => (
+              <Reveal key={t.name} delay={i * 0.1} className="h-full">
+              <div className="flex h-full flex-col justify-between rounded-3xl border border-slate-100 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <div className="mb-5 flex gap-0.5">
                   {Array.from({ length: t.stars }).map((_, i) => (
                     <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
@@ -275,6 +283,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>
