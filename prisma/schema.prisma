@@ -250,6 +250,9 @@ model Customer {
   consentGivenAt DateTime?
   deletedAt     DateTime? // soft delete
 
+  // ISO numeric country codes (world-atlas geo.id) the user marked as visited
+  visitedCountries String[] @default([])
+
   passports    Passport[]
   applications Application[]
   documents    Document[]
