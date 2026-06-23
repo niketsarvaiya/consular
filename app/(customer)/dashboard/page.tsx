@@ -85,122 +85,134 @@ export default async function DashboardPage() {
     : "—";
 
   return (
-    <div className="bg-slate-50/60 min-h-screen pb-4">
-      <TravelProfile
-        initialVisited={visited}
-        planned={planned}
-        greeting={getGreeting()}
-        firstName={firstName}
-        fullName={session.user.name ?? firstName}
-        initials={initials}
-        memberSince={memberSince}
-        inProgress={inProgress}
-      />
+    <div className="min-h-screen bg-slate-50/60">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
 
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        {/* ── Applications ── */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-bold tracking-tight text-slate-900">Your applications</h2>
+        {/* ── Header strip ── */}
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-base font-bold text-white shadow-md shadow-indigo-200">
+              {initials}
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-indigo-500">{getGreeting()},</p>
+              <h1 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">{firstName}! ✨</h1>
+              <p className="text-[11px] text-slate-400">Traveller since {memberSince}</p>
+            </div>
+          </div>
           <Link
             href="/destinations"
             className="flex shrink-0 items-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-indigo-300"
           >
             <MapPin className="h-4 w-4" />
-            Plan a new trip
+            <span className="hidden sm:inline">Plan a new trip</span>
+            <span className="sm:hidden">New trip</span>
           </Link>
         </div>
 
-        {applications.length === 0 ? (
-          <div className="mb-16 rounded-3xl border border-dashed border-indigo-200 bg-indigo-50/40 px-8 py-20 text-center">
-            <div className="text-5xl">🌍</div>
-            <h3 className="mt-5 text-xl font-bold text-slate-800">Where would you like to go?</h3>
-            <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate-500">
-              Pick a destination and we&apos;ll build your personalised document checklist — so you always know exactly what to prepare.
-            </p>
-            <Link
-              href="/destinations"
-              className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-700"
-            >
-              Browse destinations <ArrowRight className="h-4 w-4" />
-            </Link>
-            <p className="mt-4 text-xs text-slate-400">Free to start · No card required</p>
+        {/* ── Two-column: map left · applications right ── */}
+        <div className="grid gap-6 lg:grid-cols-12">
+
+          {/* LEFT — travel map + visited manager */}
+          <div className="lg:col-span-7">
+            <TravelProfile initialVisited={visited} planned={planned} inProgress={inProgress} />
           </div>
-        ) : (
-          <div className="mb-16 space-y-5">
-            {applications.map((app) => {
-              const requiredItems = app.checklistItems.filter((i) => i.isRequired);
-              const approvedRequired = requiredItems.filter((i) => i.status === "APPROVED").length;
-              const progressPct =
-                requiredItems.length > 0 ? Math.round((approvedRequired / requiredItems.length) * 100) : 0;
 
-              const visaLabel = app.visaType.charAt(0) + app.visaType.slice(1).toLowerCase();
-              const visaColorClass =
-                VISA_TYPE_COLORS[app.visaType] ?? "bg-slate-100 text-slate-600 ring-slate-200";
+          {/* RIGHT — applications */}
+          <div className="lg:col-span-5">
+            <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-400">
+              Your applications
+            </h2>
 
-              return (
+            {applications.length === 0 ? (
+              <div className="rounded-3xl border border-dashed border-indigo-200 bg-indigo-50/40 px-6 py-14 text-center">
+                <div className="text-4xl">🌍</div>
+                <h3 className="mt-4 text-base font-bold text-slate-800">Where would you like to go?</h3>
+                <p className="mx-auto mt-2 max-w-xs text-xs leading-relaxed text-slate-500">
+                  Pick a destination and we&apos;ll build your personalised document checklist.
+                </p>
                 <Link
-                  key={app.id}
-                  href={`/dashboard/application/${app.id}`}
-                  className="group block rounded-3xl border border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-indigo-100 hover:shadow-md"
+                  href="/destinations"
+                  className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-700"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-5">
-                      {app.country.flagUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={app.country.flagUrl}
-                          alt={app.country.name}
-                          className="h-12 w-[68px] rounded-xl object-cover shadow-sm"
-                        />
-                      ) : (
-                        <div className="flex h-12 w-[68px] items-center justify-center rounded-xl bg-slate-100 text-3xl">
-                          🌐
+                  Browse destinations <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {applications.map((app) => {
+                  const requiredItems = app.checklistItems.filter((i) => i.isRequired);
+                  const approvedRequired = requiredItems.filter((i) => i.status === "APPROVED").length;
+                  const progressPct =
+                    requiredItems.length > 0 ? Math.round((approvedRequired / requiredItems.length) * 100) : 0;
+
+                  const visaLabel = app.visaType.charAt(0) + app.visaType.slice(1).toLowerCase();
+                  const visaColorClass =
+                    VISA_TYPE_COLORS[app.visaType] ?? "bg-slate-100 text-slate-600 ring-slate-200";
+
+                  return (
+                    <Link
+                      key={app.id}
+                      href={`/dashboard/application/${app.id}`}
+                      className="group block rounded-3xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:border-indigo-100 hover:shadow-md"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3.5">
+                          {app.country.flagUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={app.country.flagUrl}
+                              alt={app.country.name}
+                              className="h-10 w-[58px] rounded-lg object-cover shadow-sm"
+                            />
+                          ) : (
+                            <div className="flex h-10 w-[58px] items-center justify-center rounded-lg bg-slate-100 text-2xl">
+                              🌐
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-sm font-bold text-slate-900">{app.country.name}</p>
+                            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset ${visaColorClass}`}>
+                                {visaLabel}
+                              </span>
+                              <span className="font-mono text-[10px] text-slate-400">#{app.id.slice(-8).toUpperCase()}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-indigo-500" />
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between">
+                        <StatusBadge status={app.status} type="application" />
+                        {requiredItems.length > 0 && (
+                          <span className="text-[11px] font-medium text-slate-400">
+                            {approvedRequired}/{requiredItems.length} docs
+                          </span>
+                        )}
+                      </div>
+
+                      {requiredItems.length > 0 && (
+                        <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                          <div
+                            className="h-1.5 rounded-full transition-all"
+                            style={{
+                              width: `${progressPct}%`,
+                              background:
+                                progressPct === 100
+                                  ? "linear-gradient(90deg, #6366f1, #8b5cf6)"
+                                  : "linear-gradient(90deg, #6366f1, #f59e0b)",
+                            }}
+                          />
                         </div>
                       )}
-                      <div>
-                        <p className="text-base font-bold text-slate-900">{app.country.name}</p>
-                        <div className="mt-1.5 flex items-center gap-2">
-                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${visaColorClass}`}>
-                            {visaLabel} Visa
-                          </span>
-                          <span className="font-mono text-xs text-slate-400">#{app.id.slice(-8).toUpperCase()}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <StatusBadge status={app.status} type="application" />
-                      <ArrowRight className="h-4 w-4 text-slate-300 transition-colors group-hover:text-indigo-500" />
-                    </div>
-                  </div>
-
-                  {requiredItems.length > 0 && (
-                    <div className="mt-6">
-                      <div className="mb-2 flex items-center justify-between text-xs">
-                        <span className="font-medium text-slate-500">Document progress</span>
-                        <span className="font-semibold text-slate-700">
-                          {approvedRequired}/{requiredItems.length} approved
-                        </span>
-                      </div>
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                        <div
-                          className="h-2 rounded-full transition-all"
-                          style={{
-                            width: `${progressPct}%`,
-                            background:
-                              progressPct === 100
-                                ? "linear-gradient(90deg, #6366f1, #8b5cf6)"
-                                : "linear-gradient(90deg, #6366f1, #f59e0b)",
-                          }}
-                        />
-                      </div>
-                      <p className="mt-1.5 text-right text-[11px] text-slate-400">{progressPct}% complete</p>
-                    </div>
-                  )}
-                </Link>
-              );
-            })}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

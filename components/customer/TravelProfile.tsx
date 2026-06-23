@@ -8,11 +8,6 @@ import { ALL_COUNTRIES, COUNTRY_BY_NUMERIC } from "@/lib/countries-data";
 interface TravelProfileProps {
   initialVisited: string[]; // ISO numeric codes
   planned: PlannedTrip[];
-  greeting: string;
-  firstName: string;
-  fullName: string;
-  initials: string;
-  memberSince: string;
   inProgress: number;
 }
 
@@ -20,23 +15,13 @@ function norm(id: string | number): string {
   return String(parseInt(String(id), 10));
 }
 
-export function TravelProfile({
-  initialVisited,
-  planned,
-  greeting,
-  firstName,
-  fullName,
-  initials,
-  memberSince,
-  inProgress,
-}: TravelProfileProps) {
+export function TravelProfile({ initialVisited, planned, inProgress }: TravelProfileProps) {
   const [visited, setVisited] = useState<Set<string>>(() => new Set(initialVisited.map(norm)));
   const [savingId, setSavingId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
 
-  // close dropdown on outside click
   useEffect(() => {
     if (!open) return;
     function onClick(e: MouseEvent) {
@@ -48,7 +33,6 @@ export function TravelProfile({
 
   const persist = useCallback(async (geoId: string, willVisit: boolean) => {
     setSavingId(geoId);
-    // optimistic
     setVisited((prev) => {
       const next = new Set(prev);
       if (willVisit) next.add(geoId);
@@ -63,7 +47,6 @@ export function TravelProfile({
       });
       if (!res.ok) throw new Error();
     } catch {
-      // revert
       setVisited((prev) => {
         const next = new Set(prev);
         if (willVisit) next.delete(geoId);
@@ -83,7 +66,6 @@ export function TravelProfile({
     [persist, visited]
   );
 
-  // visited country rows (resolved + sorted)
   const visitedRows = useMemo(() => {
     return Array.from(visited)
       .map((n) => COUNTRY_BY_NUMERIC[norm(n)])
@@ -91,7 +73,6 @@ export function TravelProfile({
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [visited]);
 
-  // search results (exclude already-visited, cap to 8)
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return [];
@@ -100,70 +81,49 @@ export function TravelProfile({
     ).slice(0, 8);
   }, [query, visited]);
 
+  const stats = [
+    { icon: Globe2, label: "Visited", value: visitedRows.length, color: "text-emerald-600" },
+    { icon: Plane, label: "Planned", value: planned.length, color: "text-indigo-600" },
+    { icon: FileCheck2, label: "In progress", value: inProgress, color: "text-amber-600" },
+  ];
+
   return (
-    <div>
-      {/* ── Map cover ── */}
-      <section className="relative h-[300px] w-full overflow-hidden sm:h-[380px]">
-        <ProfileMap visited={visited} onToggle={toggle} planned={planned} savingId={savingId} editable />
+    <div className="space-y-5">
+      {/* ── Map card ── */}
+      <div className="overflow-hidden rounded-3xl border border-slate-100 bg-slate-900 shadow-sm">
+        <div className="flex items-center justify-between px-5 py-3">
+          <p className="flex items-center gap-2 text-sm font-semibold text-white">
+            <Globe2 className="h-4 w-4 text-emerald-400" /> Your travel map
+          </p>
+          <p className="text-[11px] text-slate-400">Tap a country to mark visited</p>
+        </div>
+        <div className="relative h-[340px] w-full sm:h-[400px]">
+          <ProfileMap visited={visited} onToggle={toggle} planned={planned} savingId={savingId} editable />
+        </div>
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-slate-50/60" />
+        {/* stats strip */}
+        <div className="grid grid-cols-3 divide-x divide-slate-800 border-t border-slate-800">
+          {stats.map((s) => (
+            <div key={s.label} className="px-4 py-3 text-center">
+              <s.icon className={`mx-auto mb-1 h-4 w-4 ${s.color}`} />
+              <p className="text-lg font-black text-white">{s.value}</p>
+              <p className="text-[10px] font-medium uppercase tracking-wide text-slate-500">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        <div className="pointer-events-none absolute left-0 top-0 p-6 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-indigo-300">{greeting},</p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight text-white drop-shadow-sm sm:text-4xl">
-            {firstName}&apos;s travel map
-          </h1>
-          <p className="mt-2 max-w-md text-sm text-slate-300">
-            Add countries you&apos;ve visited below. Your planned trips glow ✈
+      {/* ── Visited country manager ── */}
+      <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+        <div className="mb-3">
+          <h3 className="flex items-center gap-2 text-sm font-bold text-slate-900">
+            <Globe2 className="h-4 w-4 text-emerald-500" /> Countries you&apos;ve visited
+          </h3>
+          <p className="mt-0.5 text-xs text-slate-400">
+            Search to add, or tap the map. {visitedRows.length} marked.
           </p>
         </div>
-      </section>
 
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        {/* ── Profile + live stats (overlaps the map) ── */}
-        <div className="relative -mt-12 mb-5 rounded-3xl border border-slate-100 bg-white p-5 shadow-xl shadow-slate-900/5 sm:p-6">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-lg font-bold text-white shadow-md shadow-indigo-200">
-                {initials}
-              </div>
-              <div>
-                <p className="text-base font-bold text-slate-900">{fullName}</p>
-                <p className="text-xs text-slate-400">Traveller since {memberSince}</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { icon: Globe2, label: "Visited", value: visitedRows.length, color: "text-emerald-600" },
-                { icon: Plane, label: "Planned", value: planned.length, color: "text-indigo-600" },
-                { icon: FileCheck2, label: "In progress", value: inProgress, color: "text-amber-600" },
-              ].map((s) => (
-                <div key={s.label} className="rounded-2xl bg-slate-50 px-4 py-3 text-center">
-                  <s.icon className={`mx-auto mb-1 h-4 w-4 ${s.color}`} />
-                  <p className="text-xl font-black text-slate-900">{s.value}</p>
-                  <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-      {/* ── Manage visited countries ── */}
-      <div className="mb-10 rounded-3xl border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <div>
-            <h3 className="flex items-center gap-2 text-sm font-bold text-slate-900">
-              <Globe2 className="h-4 w-4 text-emerald-500" />
-              Countries you&apos;ve visited
-            </h3>
-            <p className="mt-0.5 text-xs text-slate-400">
-              Add them below, or tap a country on the map. {visitedRows.length} marked.
-            </p>
-          </div>
-        </div>
-
-        {/* Search picker */}
         <div ref={boxRef} className="relative">
           <div className={`flex items-center gap-2 rounded-xl border bg-white px-3 py-2.5 transition-colors ${open ? "border-indigo-400 ring-2 ring-indigo-100" : "border-slate-200"}`}>
             <Search className="h-4 w-4 shrink-0 text-slate-400" />
@@ -204,13 +164,12 @@ export function TravelProfile({
           )}
         </div>
 
-        {/* Visited chips */}
         {visitedRows.length > 0 ? (
           <div className="mt-4 flex flex-wrap gap-2">
             {visitedRows.map((c) => (
               <span
                 key={c.n}
-                className={`group inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 py-1 pl-2.5 pr-1.5 text-xs font-medium text-emerald-800 transition-opacity ${savingId === norm(c.n) ? "opacity-50" : ""}`}
+                className={`inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50 py-1 pl-2.5 pr-1.5 text-xs font-medium text-emerald-800 transition-opacity ${savingId === norm(c.n) ? "opacity-50" : ""}`}
               >
                 <span className="text-sm leading-none">{c.flag}</span>
                 {c.name}
@@ -230,7 +189,6 @@ export function TravelProfile({
             <Check className="h-3.5 w-3.5" /> No countries added yet — search above to start building your map.
           </div>
         )}
-      </div>
       </div>
     </div>
   );
