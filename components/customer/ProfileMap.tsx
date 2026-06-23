@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import {
   ComposableMap,
   Geographies,
   Geography,
   Graticule,
   Marker,
+  ZoomableGroup,
 } from "react-simple-maps";
 import { geoCentroid } from "d3-geo";
 import { Plane, Plus, Minus } from "lucide-react";
@@ -49,8 +50,17 @@ function norm(id: string | number): string {
 
 export function ProfileMap({ visited, onToggle, planned, editable = true, savingId = null }: ProfileMapProps) {
   const [tooltip, setTooltip] = useState<Tooltip | null>(null);
-  const [zoom, setZoom] = useState(1);
+  const [position, setPosition] = useState<{ coordinates: [number, number]; zoom: number }>({
+    coordinates: [0, 0],
+    zoom: 1,
+  });
   const saving = savingId;
+
+  // Distinguish a click (toggle visited) from a drag (pan). Record pointer-down
+  // position; if the pointer moved more than a few px, treat it as a pan and
+  // skip the toggle — exactly how Google Maps ignores a click after a drag.
+  const downPos = useRef<{ x: number; y: number } | null>(null);
+  const draggedRef = useRef(false);
 
   const plannedSet = useMemo(() => new Set(planned.map((p) => norm(p.geoId))), [planned]);
   const plannedByGeo = useMemo(() => {
@@ -61,16 +71,43 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
 
   const toggleVisited = (geoId: string) => {
     if (!editable) return;
+    if (draggedRef.current) return; // was a pan, not a click
     onToggle(norm(geoId));
   };
 
+  const clampZoom = (z: number) => Math.min(Math.max(z, 1), 8);
+
   return (
-    <div className="absolute inset-0 overflow-hidden" style={{ background: BG }}>
+    <div
+      className="absolute inset-0 cursor-grab overflow-hidden active:cursor-grabbing"
+      style={{ background: BG }}
+      onMouseDown={(e) => {
+        downPos.current = { x: e.clientX, y: e.clientY };
+        draggedRef.current = false;
+      }}
+      onMouseMove={(e) => {
+        if (!downPos.current) return;
+        const dx = e.clientX - downPos.current.x;
+        const dy = e.clientY - downPos.current.y;
+        if (Math.hypot(dx, dy) > 5) draggedRef.current = true;
+      }}
+      onMouseUp={() => { downPos.current = null; }}
+    >
       <ComposableMap
         projection="geoNaturalEarth1"
-        projectionConfig={{ scale: 165 * zoom }}
+        projectionConfig={{ scale: 165 }}
         style={{ width: "100%", height: "100%" }}
       >
+        <ZoomableGroup
+          zoom={position.zoom}
+          center={position.coordinates}
+          minZoom={1}
+          maxZoom={8}
+          onMoveEnd={(pos) => setPosition(pos)}
+          // Allow drag-to-pan & pinch, but ignore wheel so page scrolling still works.
+          // (rsm's types mis-declare this param; the runtime value is the d3 zoom event)
+          filterZoomEvent={(d3Event) => (d3Event as unknown as { type: string }).type !== "wheel"}
+        >
         <Graticule stroke="rgba(148,163,184,0.05)" strokeWidth={0.4} />
 
         <Geographies geography={GEO_URL}>
@@ -157,6 +194,7 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
             );
           }}
         </Geographies>
+        </ZoomableGroup>
       </ComposableMap>
 
       {/* Tooltip */}
@@ -176,11 +214,12 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
       {/* Zoom controls */}
       <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-1">
         {[
-          { icon: <Plus className="h-3.5 w-3.5" />, fn: () => setZoom((z) => Math.min(z * 1.3, 4)) },
-          { icon: <Minus className="h-3.5 w-3.5" />, fn: () => setZoom((z) => Math.max(z / 1.3, 1)) },
+          { icon: <Plus className="h-3.5 w-3.5" />, fn: () => setPosition((p) => ({ ...p, zoom: clampZoom(p.zoom * 1.4) })) },
+          { icon: <Minus className="h-3.5 w-3.5" />, fn: () => setPosition((p) => ({ ...p, zoom: clampZoom(p.zoom / 1.4) })) },
         ].map((b, i) => (
           <button
             key={i}
+            type="button"
             onClick={b.fn}
             className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800/90 text-slate-300 ring-1 ring-slate-700 backdrop-blur transition hover:bg-slate-700 active:scale-95"
           >
