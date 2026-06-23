@@ -116,18 +116,18 @@ export function DashboardClient({
   const others = apps.filter((a) => a.id !== primary?.id);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-ivory">
       {/* ───────────────── IMMERSIVE HERO ───────────────── */}
       <section className="relative h-[460px] w-full overflow-hidden sm:h-[540px]">
         <ProfileMap visited={visited} onToggle={toggle} planned={planned} savingId={savingId} editable />
 
         {/* vignettes */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-slate-950/85 via-slate-950/30 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-slate-50 via-slate-50/40 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-ivory via-ivory/40 to-transparent" />
 
         {/* headline */}
         <div className="pointer-events-none absolute left-0 top-0 px-5 pt-7 sm:px-10 sm:pt-10">
-          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-300">
+          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-300">
             <Sparkles className="h-3.5 w-3.5" /> Your travel atlas
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-white drop-shadow sm:text-5xl">
@@ -164,11 +164,11 @@ export function DashboardClient({
                   key={c.n}
                   type="button"
                   onClick={() => { persist(norm(c.n), true); setQuery(""); }}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors hover:bg-indigo-50"
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors hover:bg-gold-50"
                 >
                   <span className="text-lg">{c.flag}</span>
                   <span className="flex-1 font-medium text-slate-700">{c.name}</span>
-                  <Plus className="h-4 w-4 text-indigo-500" />
+                  <Plus className="h-4 w-4 text-gold-600" />
                 </button>
               ))}
             </div>
@@ -184,7 +184,7 @@ export function DashboardClient({
         <div className="absolute bottom-7 left-5 z-10 flex items-stretch gap-px overflow-hidden rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md sm:left-10">
           {[
             { icon: Globe2, label: "Visited", value: visitedRows.length, tint: "text-emerald-300" },
-            { icon: Plane, label: "Planned", value: planned.length, tint: "text-indigo-300" },
+            { icon: Plane, label: "Planned", value: planned.length, tint: "text-gold-300" },
             { icon: MapPin, label: "of world", value: `${worldPct}%`, tint: "text-amber-300" },
           ].map((s) => (
             <div key={s.label} className="px-5 py-3 text-center">
@@ -202,7 +202,7 @@ export function DashboardClient({
         {/* Profile chip row */}
         <div className="mb-5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-sm font-bold text-white shadow-lg shadow-indigo-900/20 ring-2 ring-white">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-ink to-ink-700 text-sm font-bold text-white shadow-lg shadow-ink/30 ring-2 ring-white">
               {initials}
             </div>
             <div className="rounded-2xl bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur">
@@ -212,7 +212,7 @@ export function DashboardClient({
           </div>
           <Link
             href="/destinations"
-            className="flex shrink-0 items-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-300/50 transition-all hover:bg-indigo-700 hover:shadow-indigo-400/50"
+            className="flex shrink-0 items-center gap-2 rounded-2xl bg-ink px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-ink/20 transition-all hover:bg-ink-700 hover:shadow-ink/30"
           >
             <Plane className="h-4 w-4" />
             <span className="hidden sm:inline">Plan a new trip</span>
@@ -235,7 +235,7 @@ export function DashboardClient({
                   <div className="flex h-16 w-24 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-3xl">🌐</div>
                 )}
                 <div className="min-w-0">
-                  <p className="text-[11px] font-semibold uppercase tracking-widest text-indigo-500">Active application</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-gold-600">Active application</p>
                   <h2 className="mt-0.5 truncate text-xl font-bold text-slate-900">{primary.countryName}</h2>
                   <div className="mt-1.5 flex flex-wrap items-center gap-2">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${VISA_TYPE_COLORS[primary.visaType] ?? "bg-slate-100 text-slate-600 ring-slate-200"}`}>
@@ -257,7 +257,7 @@ export function DashboardClient({
             </div>
 
             {primary.required > 0 && (
-              <div className="border-t border-slate-100 bg-slate-50/60 px-6 py-4 sm:px-7">
+              <div className="border-t border-slate-100 bg-ivory/60 px-6 py-4 sm:px-7">
                 <div className="mb-2 flex items-center justify-between text-xs">
                   <span className="font-medium text-slate-500">Document progress</span>
                   <span className="font-semibold text-slate-700">{primary.approved}/{primary.required} approved</span>
@@ -268,8 +268,8 @@ export function DashboardClient({
                     style={{
                       width: `${primary.progressPct}%`,
                       background: primary.progressPct === 100
-                        ? "linear-gradient(90deg,#6366f1,#8b5cf6)"
-                        : "linear-gradient(90deg,#6366f1,#f59e0b)",
+                        ? "linear-gradient(90deg,#C8892B,#E0AC54)"
+                        : "linear-gradient(90deg,#C8892B,#f59e0b)",
                     }}
                   />
                 </div>
@@ -277,13 +277,13 @@ export function DashboardClient({
             )}
           </div>
         ) : (
-          <div className="rounded-[28px] border border-dashed border-indigo-200 bg-white px-8 py-16 text-center shadow-sm">
+          <div className="rounded-[28px] border border-dashed border-gold-200 bg-white px-8 py-16 text-center shadow-sm">
             <div className="text-5xl">🌍</div>
             <h3 className="mt-5 text-xl font-bold text-slate-800">Where would you like to go?</h3>
             <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate-500">
               Pick a destination and we&apos;ll build your personalised document checklist — so you always know exactly what to prepare.
             </p>
-            <Link href="/destinations" className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-700">
+            <Link href="/destinations" className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-ink px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-ink/15 transition-all hover:bg-ink-700">
               Browse destinations <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -298,7 +298,7 @@ export function DashboardClient({
                 <Link
                   key={app.id}
                   href={`/dashboard/application/${app.id}`}
-                  className="group flex items-center gap-3.5 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:border-indigo-100 hover:shadow-md"
+                  className="group flex items-center gap-3.5 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:border-gold-200 hover:shadow-md"
                 >
                   {app.flagUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -310,7 +310,7 @@ export function DashboardClient({
                     <p className="truncate text-sm font-bold text-slate-900">{app.countryName}</p>
                     <div className="mt-1"><StatusBadge status={app.status as BadgeStatus} type="application" /></div>
                   </div>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-indigo-500" />
+                  <ChevronRight className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-gold-600" />
                 </Link>
               ))}
             </div>

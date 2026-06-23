@@ -19,7 +19,7 @@ const BASE = "#1e293b";
 const BASE_HOVER = "#334155";
 const VISITED = "#34d399";
 const VISITED_HOVER = "#6ee7b7";
-const PLANNED = "#818cf8";
+const PLANNED = "#C8892B";
 
 export interface PlannedTrip {
   geoId: string;     // ISO numeric (matches world-atlas geo.id)
@@ -120,7 +120,7 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
                   const isVisited = visited.has(id);
                   const isPlanned = plannedSet.has(id);
                   const name = geo.properties?.name ?? "";
-                  const fill = isVisited ? VISITED : isPlanned ? "rgba(129,140,248,0.35)" : BASE;
+                  const fill = isVisited ? VISITED : isPlanned ? "rgba(200,137,43,0.35)" : BASE;
 
                   return (
                     <Geography
@@ -152,7 +152,7 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
                           opacity: saving === id ? 0.6 : 1,
                         },
                         hover: {
-                          fill: isVisited ? VISITED_HOVER : isPlanned ? "rgba(129,140,248,0.55)" : BASE_HOVER,
+                          fill: isVisited ? VISITED_HOVER : isPlanned ? "rgba(200,137,43,0.55)" : BASE_HOVER,
                           stroke: BG,
                           strokeWidth: 0.3,
                           outline: "none",
@@ -172,7 +172,7 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
                   return (
                     <Marker key={`m-${geo.rsmKey}`} coordinates={[lng, lat]}>
                       {/* pulse ring */}
-                      <circle r={8} fill="rgba(129,140,248,0.25)">
+                      <circle r={8} fill="rgba(200,137,43,0.25)">
                         <animate attributeName="r" values="6;13;6" dur="2.4s" repeatCount="indefinite" />
                         <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
                       </circle>
@@ -234,7 +234,7 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
           <span className="h-2.5 w-2.5 rounded-sm" style={{ background: VISITED }} /> Visited
         </span>
         <span className="flex items-center gap-1.5 text-[11px] font-medium text-slate-300">
-          <Plane className="h-3 w-3 text-indigo-400" /> Planned
+          <Plane className="h-3 w-3 text-gold-400" /> Planned
         </span>
       </div>
     </div>

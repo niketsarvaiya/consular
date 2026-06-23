@@ -86,7 +86,7 @@ export default function HomePage() {
     <div className="bg-white">
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+      <section className="relative overflow-hidden bg-gradient-to-br from-ink-900 via-ink to-ink-900">
         {/* Background image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -110,7 +110,7 @@ export default function HomePage() {
 
             <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
               Your visa,{" "}
-              <span className="bg-gradient-to-r from-indigo-300 via-violet-300 to-purple-300 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-gold-200 via-gold-300 to-gold-200 bg-clip-text italic text-transparent">
                 handled with care.
               </span>
             </h1>
@@ -122,7 +122,7 @@ export default function HomePage() {
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/destinations"
-                className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-900/50 transition-all hover:bg-indigo-500 hover:shadow-indigo-800/50"
+                className="flex items-center gap-2 rounded-2xl bg-gold px-8 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/30 transition-all hover:bg-gold-400 hover:shadow-black/40"
               >
                 Browse destinations <ArrowRight className="h-4 w-4" />
               </Link>
@@ -156,10 +156,10 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 flex items-end justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-indigo-500">Top picks</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">Top picks</p>
               <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">Popular for Indian travellers</h2>
             </div>
-            <Link href="/destinations" className="hidden items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 sm:flex">
+            <Link href="/destinations" className="hidden items-center gap-1 text-sm font-medium text-gold-700 hover:text-gold-800 sm:flex">
               View all <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -191,7 +191,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-6 sm:hidden text-center">
-            <Link href="/destinations" className="text-sm font-medium text-indigo-600 hover:underline">
+            <Link href="/destinations" className="text-sm font-medium text-gold-700 hover:underline">
               View all destinations →
             </Link>
           </div>
@@ -201,7 +201,7 @@ export default function HomePage() {
       {/* ── HOW IT WORKS ── */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">How VisaSetGo works</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">How VisaSetGo works</p>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             From planning to approval in 4 steps
           </h2>
@@ -227,10 +227,10 @@ export default function HomePage() {
       </section>
 
       {/* ── WHY CONSULAR ── */}
-      <section className="bg-gradient-to-br from-slate-900 to-indigo-950 py-20">
+      <section className="bg-gradient-to-br from-ink to-ink-900 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center mb-14">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-400">Why VisaSetGo</p>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gold-400">Why VisaSetGo</p>
             <h2 className="text-3xl font-bold text-white sm:text-4xl">Built on truth, not guesswork</h2>
             <p className="mt-4 text-base text-white/55">
               We source every requirement directly from embassies and government portals — and we show you exactly when we last checked.
@@ -252,7 +252,7 @@ export default function HomePage() {
       <section className="bg-gradient-to-b from-indigo-50/50 to-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">Stories from our travellers</p>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">Stories from our travellers</p>
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Real journeys, real care</h2>
           </div>
 
@@ -266,7 +266,7 @@ export default function HomePage() {
                 </div>
                 <p className="flex-1 text-sm leading-relaxed text-slate-600">&ldquo;{t.quote}&rdquo;</p>
                 <div className="mt-6 flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold-50 text-xs font-bold text-gold-700">
                     {t.name.charAt(0)}
                   </div>
                   <div>
@@ -282,7 +282,7 @@ export default function HomePage() {
 
       {/* ── FINAL CTA ── */}
       <section className="mx-auto max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-700 px-8 py-20 text-center shadow-xl shadow-indigo-900/20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-700 px-8 py-20 text-center shadow-xl shadow-ink/30">
           <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/5" />
           <div className="pointer-events-none absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-white/5" />
           <div className="relative">
@@ -295,11 +295,11 @@ export default function HomePage() {
             </p>
             <Link
               href="/destinations"
-              className="mt-9 inline-flex items-center gap-2 rounded-2xl bg-white px-9 py-4 text-sm font-semibold text-indigo-700 shadow-lg shadow-indigo-900/20 transition-colors hover:bg-indigo-50"
+              className="mt-9 inline-flex items-center gap-2 rounded-2xl bg-gold px-9 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/25 transition-colors hover:bg-gold-400"
             >
               Start your application <ArrowRight className="h-4 w-4" />
             </Link>
-            <p className="mt-5 text-xs text-indigo-400">Free to start · No card required</p>
+            <p className="mt-5 text-xs text-ivory/50">Free to start · No card required</p>
           </div>
         </div>
       </section>
