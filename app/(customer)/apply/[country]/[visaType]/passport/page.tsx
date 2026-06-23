@@ -3,6 +3,10 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Loader2, ArrowRight, CheckCircle2, FileText, CreditCard, CalendarDays } from "lucide-react";
 import Link from "next/link";
+import { DatePicker } from "@/components/shared/DatePicker";
+
+const TODAY_ISO = new Date().toISOString().slice(0, 10);
+const THIS_YEAR = new Date().getFullYear();
 
 interface SavedPassport {
   id: string;
@@ -258,17 +262,43 @@ export default function PassportStepPage() {
 
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-slate-700">Date of birth</label>
-                  <input type="date" required value={form.dateOfBirth} onChange={(e) => setForm({ ...form, dateOfBirth: e.target.value })} className={inputCls} />
+                  <DatePicker
+                    required
+                    value={form.dateOfBirth}
+                    onChange={(v) => setForm({ ...form, dateOfBirth: v })}
+                    placeholder="Select date of birth"
+                    max={TODAY_ISO}
+                    withDropdowns
+                    fromYear={THIS_YEAR - 100}
+                    toYear={THIS_YEAR}
+                  />
                 </div>
 
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-slate-700">Passport expiry date</label>
-                  <input type="date" required value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className={inputCls} />
+                  <DatePicker
+                    required
+                    value={form.expiryDate}
+                    onChange={(v) => setForm({ ...form, expiryDate: v })}
+                    placeholder="Select expiry date"
+                    min={TODAY_ISO}
+                    withDropdowns
+                    fromYear={THIS_YEAR}
+                    toYear={THIS_YEAR + 15}
+                  />
                 </div>
 
                 <div>
                   <label className="mb-1.5 block text-sm font-medium text-slate-700">Issue date <span className="text-slate-400 font-normal">(optional)</span></label>
-                  <input type="date" value={form.issueDate} onChange={(e) => setForm({ ...form, issueDate: e.target.value })} className={inputCls} />
+                  <DatePicker
+                    value={form.issueDate}
+                    onChange={(v) => setForm({ ...form, issueDate: v })}
+                    placeholder="Select issue date"
+                    max={TODAY_ISO}
+                    withDropdowns
+                    fromYear={THIS_YEAR - 15}
+                    toYear={THIS_YEAR}
+                  />
                 </div>
 
                 <div>
@@ -295,11 +325,21 @@ export default function PassportStepPage() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-700">Departure date</label>
-                <input type="date" value={form.travelDateFrom} onChange={(e) => setForm({ ...form, travelDateFrom: e.target.value })} className={inputCls} />
+                <DatePicker
+                  value={form.travelDateFrom}
+                  onChange={(v) => setForm({ ...form, travelDateFrom: v, travelDateTo: form.travelDateTo && v && form.travelDateTo < v ? "" : form.travelDateTo })}
+                  placeholder="Select departure date"
+                  min={TODAY_ISO}
+                />
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-slate-700">Return date</label>
-                <input type="date" value={form.travelDateTo} onChange={(e) => setForm({ ...form, travelDateTo: e.target.value })} className={inputCls} />
+                <DatePicker
+                  value={form.travelDateTo}
+                  onChange={(v) => setForm({ ...form, travelDateTo: v })}
+                  placeholder="Select return date"
+                  min={form.travelDateFrom || TODAY_ISO}
+                />
               </div>
             </div>
 

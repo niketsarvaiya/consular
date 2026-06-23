@@ -6,6 +6,7 @@ import {
   ExternalLink, ChevronDown, ChevronUp, ArrowRight,
 } from "lucide-react";
 import type { ExploreCountry } from "@/lib/explore-data";
+import { DatePicker } from "@/components/shared/DatePicker";
 
 // ── IATA airport codes for each Consular destination ────────────────────────
 const IATA_BY_ISO2: Record<string, string> = {
@@ -179,12 +180,11 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                 </div>
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-1">Departure</label>
-                  <input
-                    type="date"
+                  <DatePicker
                     value={flightDate}
                     min={new Date().toISOString().slice(0, 10)}
-                    onChange={(e) => setFlightDate(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
+                    onChange={(v) => setFlightDate(v)}
+                    placeholder="Select date"
                   />
                 </div>
                 <div>
