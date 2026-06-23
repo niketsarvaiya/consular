@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -9,7 +9,7 @@ import {
   Marker,
 } from "react-simple-maps";
 import { geoCentroid } from "d3-geo";
-import { Check, Plane, Plus, Minus } from "lucide-react";
+import { Plane, Plus, Minus } from "lucide-react";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 
@@ -28,9 +28,11 @@ export interface PlannedTrip {
 }
 
 interface ProfileMapProps {
-  initialVisited: string[];       // ISO numeric codes
+  visited: Set<string>;           // ISO numeric codes (controlled by parent)
+  onToggle: (geoId: string) => void;
   planned: PlannedTrip[];
   editable?: boolean;
+  savingId?: string | null;
 }
 
 interface Tooltip {
@@ -45,11 +47,10 @@ function norm(id: string | number): string {
   return String(parseInt(String(id), 10));
 }
 
-export function ProfileMap({ initialVisited, planned, editable = true }: ProfileMapProps) {
-  const [visited, setVisited] = useState<Set<string>>(() => new Set(initialVisited.map(norm)));
+export function ProfileMap({ visited, onToggle, planned, editable = true, savingId = null }: ProfileMapProps) {
   const [tooltip, setTooltip] = useState<Tooltip | null>(null);
   const [zoom, setZoom] = useState(1);
-  const [saving, setSaving] = useState<string | null>(null);
+  const saving = savingId;
 
   const plannedSet = useMemo(() => new Set(planned.map((p) => norm(p.geoId))), [planned]);
   const plannedByGeo = useMemo(() => {
@@ -58,43 +59,10 @@ export function ProfileMap({ initialVisited, planned, editable = true }: Profile
     return m;
   }, [planned]);
 
-  const toggleVisited = useCallback(
-    async (geoId: string, name: string) => {
-      if (!editable) return;
-      const id = norm(geoId);
-      const willVisit = !visited.has(id);
-
-      // optimistic
-      setVisited((prev) => {
-        const next = new Set(prev);
-        if (willVisit) next.add(id);
-        else next.delete(id);
-        return next;
-      });
-      setSaving(id);
-
-      try {
-        const res = await fetch("/api/profile/visited", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ geoId: id, visited: willVisit }),
-        });
-        if (!res.ok) throw new Error();
-      } catch {
-        // revert on failure
-        setVisited((prev) => {
-          const next = new Set(prev);
-          if (willVisit) next.delete(id);
-          else next.add(id);
-          return next;
-        });
-      } finally {
-        setSaving((s) => (s === id ? null : s));
-      }
-      void name;
-    },
-    [editable, visited]
-  );
+  const toggleVisited = (geoId: string) => {
+    if (!editable) return;
+    onToggle(norm(geoId));
+  };
 
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: BG }}>
@@ -135,7 +103,7 @@ export function ProfileMap({ initialVisited, planned, editable = true }: Profile
                         setTooltip((t) => (t ? { ...t, x: (e as React.MouseEvent).clientX - rect.left, y: (e as React.MouseEvent).clientY - rect.top } : t));
                       }}
                       onMouseLeave={() => setTooltip(null)}
-                      onClick={() => toggleVisited(id, name)}
+                      onClick={() => toggleVisited(id)}
                       style={{
                         default: {
                           fill,

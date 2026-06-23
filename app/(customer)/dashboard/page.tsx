@@ -3,9 +3,10 @@ import { authOptions } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db/prisma";
 import Link from "next/link";
-import { ArrowRight, MapPin, Plane, Globe2, FileCheck2 } from "lucide-react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
-import { ProfileMap, type PlannedTrip } from "@/components/customer/ProfileMap";
+import { TravelProfile } from "@/components/customer/TravelProfile";
+import type { PlannedTrip } from "@/components/customer/ProfileMap";
 import { EXPLORE_COUNTRIES } from "@/lib/explore-data";
 import type { Metadata } from "next";
 
@@ -79,62 +80,24 @@ export default async function DashboardPage() {
 
   const inProgress = applications.filter((a) => a.status !== "CLOSED").length;
 
+  const memberSince = customer?.createdAt
+    ? new Date(customer.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })
+    : "—";
+
   return (
-    <div className="bg-slate-50/60 min-h-screen">
-      {/* ── Map cover ── */}
-      <section className="relative h-[300px] w-full overflow-hidden sm:h-[380px]">
-        <ProfileMap initialVisited={visited} planned={planned} editable />
-
-        {/* gradient fade into page */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-slate-50/60" />
-
-        {/* greeting overlay */}
-        <div className="pointer-events-none absolute left-0 top-0 p-6 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-indigo-300">{getGreeting()},</p>
-          <h1 className="mt-1 text-3xl font-bold tracking-tight text-white drop-shadow-sm sm:text-4xl">
-            {firstName}&apos;s travel map
-          </h1>
-          <p className="mt-2 max-w-md text-sm text-slate-300">
-            Tap any country to mark it visited. Your planned trips glow ✈
-          </p>
-        </div>
-      </section>
+    <div className="bg-slate-50/60 min-h-screen pb-4">
+      <TravelProfile
+        initialVisited={visited}
+        planned={planned}
+        greeting={getGreeting()}
+        firstName={firstName}
+        fullName={session.user.name ?? firstName}
+        initials={initials}
+        memberSince={memberSince}
+        inProgress={inProgress}
+      />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        {/* ── Profile + stats card (overlaps the map) ── */}
-        <div className="relative -mt-12 mb-10 rounded-3xl border border-slate-100 bg-white p-5 shadow-xl shadow-slate-900/5 sm:p-6">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-lg font-bold text-white shadow-md shadow-indigo-200">
-                {initials}
-              </div>
-              <div>
-                <p className="text-base font-bold text-slate-900">{session.user.name}</p>
-                <p className="text-xs text-slate-400">
-                  Traveller since{" "}
-                  {customer?.createdAt
-                    ? new Date(customer.createdAt).toLocaleDateString("en-IN", { month: "short", year: "numeric" })
-                    : "—"}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { icon: Globe2, label: "Visited", value: visited.length, color: "text-emerald-600" },
-                { icon: Plane, label: "Planned", value: planned.length, color: "text-indigo-600" },
-                { icon: FileCheck2, label: "In progress", value: inProgress, color: "text-amber-600" },
-              ].map((s) => (
-                <div key={s.label} className="rounded-2xl bg-slate-50 px-4 py-3 text-center">
-                  <s.icon className={`mx-auto mb-1 h-4 w-4 ${s.color}`} />
-                  <p className="text-xl font-black text-slate-900">{s.value}</p>
-                  <p className="text-[10px] font-medium uppercase tracking-wide text-slate-400">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* ── Applications ── */}
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold tracking-tight text-slate-900">Your applications</h2>
