@@ -4,27 +4,27 @@
 
 @layer base {
   :root {
-    /* ── Editorial Premium palette (ivory / ink / gold) ── */
-    --background: 40 45% 96%;          /* ivory */
-    --foreground: 205 34% 13%;         /* ink */
+    /* ── Modern Wanderlust palette (white / near-black / sunset) ── */
+    --background: 0 0% 100%;            /* crisp white */
+    --foreground: 228 11% 10%;          /* near-black ink */
     --card: 0 0% 100%;
-    --card-foreground: 205 34% 13%;
+    --card-foreground: 228 11% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 205 34% 13%;
-    --primary: 205 34% 13%;            /* ink */
-    --primary-foreground: 40 45% 96%;  /* ivory */
-    --secondary: 40 30% 92%;
-    --secondary-foreground: 205 34% 13%;
-    --muted: 40 28% 93%;
-    --muted-foreground: 205 12% 40%;
-    --accent: 36 65% 47%;              /* gold */
-    --accent-foreground: 40 45% 97%;
+    --popover-foreground: 228 11% 10%;
+    --primary: 228 11% 10%;             /* ink */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 228 11% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 228 6% 45%;
+    --accent: 252 100% 68%;             /* iris */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
-    --destructive-foreground: 40 45% 97%;
-    --border: 40 22% 87%;
-    --input: 40 22% 87%;
-    --ring: 36 65% 47%;
-    --radius: 0.75rem;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 252 100% 68%;
+    --radius: 1rem;
   }
 }
 
@@ -34,13 +34,31 @@
     @apply bg-ivory text-ink;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  /* Headlines default to the editorial display serif */
+  /* Headlines default to the bold contemporary grotesk */
   h1, h2, h3 {
-    font-family: var(--font-display), Georgia, serif;
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
-  .font-display { font-family: var(--font-display), Georgia, serif; }
+  .font-display { font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif; }
+
+  /* ── Signature sunset gradient ── coral → iris → azure */
+  .bg-sunset {
+    background-image: linear-gradient(100deg, #FF6B4A 0%, #7C5CFF 52%, #3BA0FF 100%);
+  }
+  .bg-sunset-soft {
+    background-image: linear-gradient(100deg, rgba(255,107,74,0.12) 0%, rgba(124,92,255,0.12) 52%, rgba(59,160,255,0.12) 100%);
+  }
+  .text-gradient {
+    background-image: linear-gradient(100deg, #FF6B4A 0%, #7C5CFF 52%, #3BA0FF 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ring-sunset {
+    border-image: linear-gradient(100deg, #FF6B4A, #7C5CFF, #3BA0FF) 1;
+  }
 }

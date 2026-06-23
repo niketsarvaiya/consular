@@ -122,7 +122,7 @@ export function DashboardClient({
         <ProfileMap visited={visited} onToggle={toggle} planned={planned} savingId={savingId} editable />
 
         {/* vignettes */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-slate-950/85 via-slate-950/30 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-ink-900/85 via-ink-900/30 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-ivory via-ivory/40 to-transparent" />
 
         {/* headline */}
@@ -202,7 +202,7 @@ export function DashboardClient({
         {/* Profile chip row */}
         <div className="mb-5 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-ink to-ink-700 text-sm font-bold text-white shadow-lg shadow-ink/30 ring-2 ring-white">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sunset text-sm font-bold text-white shadow-lg shadow-ink/30 ring-2 ring-white">
               {initials}
             </div>
             <div className="rounded-2xl bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur">
@@ -212,7 +212,7 @@ export function DashboardClient({
           </div>
           <Link
             href="/destinations"
-            className="flex shrink-0 items-center gap-2 rounded-2xl bg-ink px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-ink/20 transition-all hover:bg-ink-700 hover:shadow-ink/30"
+            className="flex shrink-0 items-center gap-2 rounded-2xl bg-sunset px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-iris-600/40 transition-all hover:brightness-110"
           >
             <Plane className="h-4 w-4" />
             <span className="hidden sm:inline">Plan a new trip</span>
@@ -249,7 +249,7 @@ export function DashboardClient({
 
               <Link
                 href={primary.next.href}
-                className="group flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-slate-800"
+                className="group flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-sunset px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:brightness-110"
               >
                 {primary.next.label}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -268,8 +268,8 @@ export function DashboardClient({
                     style={{
                       width: `${primary.progressPct}%`,
                       background: primary.progressPct === 100
-                        ? "linear-gradient(90deg,#C8892B,#E0AC54)"
-                        : "linear-gradient(90deg,#C8892B,#f59e0b)",
+                        ? "linear-gradient(90deg,#FF6B4A,#7C5CFF)"
+                        : "linear-gradient(90deg,#FF6B4A,#7C5CFF)",
                     }}
                   />
                 </div>

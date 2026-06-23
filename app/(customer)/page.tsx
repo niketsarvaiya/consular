@@ -22,32 +22,32 @@ const HOW_IT_WORKS = [
   {
     step: "01",
     icon: Globe,
-    iconBg: "bg-indigo-100",
-    iconColor: "text-indigo-600",
+    iconBg: "bg-coral-50",
+    iconColor: "text-coral-600",
     title: "Pick your destination",
     description: "Browse 12+ countries with verified, official-source visa requirements. Filter by visa type, processing time, or fee.",
   },
   {
     step: "02",
     icon: ClipboardList,
-    iconBg: "bg-violet-100",
-    iconColor: "text-violet-600",
+    iconBg: "bg-iris-50",
+    iconColor: "text-iris-600",
     title: "Get your personalised checklist",
     description: "We generate a precise, country-specific document list based on your profile. No guesswork, no missing papers.",
   },
   {
     step: "03",
     icon: FileCheck,
-    iconBg: "bg-amber-100",
-    iconColor: "text-amber-600",
+    iconBg: "bg-azure-50",
+    iconColor: "text-azure-600",
     title: "Upload & we review",
     description: "Upload once. Our team reviews everything — flags issues, corrects formats, and ensures nothing slips through.",
   },
   {
     step: "04",
     icon: Shield,
-    iconBg: "bg-emerald-100",
-    iconColor: "text-emerald-600",
+    iconBg: "bg-sage-50",
+    iconColor: "text-sage-700",
     title: "We file. You travel.",
     description: "We handle the paperwork and submission. You get real-time updates until your visa lands in your inbox.",
   },
@@ -94,7 +94,7 @@ export default function HomePage() {
           alt=""
           className="absolute inset-0 h-full w-full object-cover object-center opacity-30 mix-blend-luminosity"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/60 via-slate-900/50 to-slate-950/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-ink-900/70 via-ink-900/55 to-ink-900/90" />
 
         <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-20 sm:px-6 lg:px-8 lg:pt-32">
           <div className="mx-auto max-w-3xl text-center">
@@ -110,7 +110,7 @@ export default function HomePage() {
 
             <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
               Your visa,{" "}
-              <span className="bg-gradient-to-r from-gold-200 via-gold-300 to-gold-200 bg-clip-text italic text-transparent">
+              <span className="text-gradient">
                 handled with care.
               </span>
             </h1>
@@ -122,7 +122,7 @@ export default function HomePage() {
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/destinations"
-                className="flex items-center gap-2 rounded-2xl bg-gold px-8 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/30 transition-all hover:bg-gold-400 hover:shadow-black/40"
+                className="flex items-center gap-2 rounded-2xl bg-sunset px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-iris-600/40 transition-all hover:brightness-110 hover:shadow-iris-600/50"
               >
                 Browse destinations <ArrowRight className="h-4 w-4" />
               </Link>
@@ -152,12 +152,12 @@ export default function HomePage() {
       </section>
 
       {/* ── FEATURED DESTINATIONS ── */}
-      <section className="border-b border-slate-100 bg-slate-50 py-16">
+      <section className="border-b border-ink/5 bg-ivory-100 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-8 flex items-end justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">Top picks</p>
-              <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">Popular for Indian travellers</h2>
+              <h2 className="mt-1 text-2xl font-bold tracking-tight text-ink">Popular for Indian travellers</h2>
             </div>
             <Link href="/destinations" className="hidden items-center gap-1 text-sm font-medium text-gold-700 hover:text-gold-800 sm:flex">
               View all <ArrowRight className="h-3.5 w-3.5" />
@@ -202,7 +202,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">How VisaSetGo works</p>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             From planning to approval in 4 steps
           </h2>
           <p className="mt-4 text-base text-slate-500">
@@ -219,7 +219,7 @@ export default function HomePage() {
                 </div>
                 <span className="text-3xl font-black tracking-tight text-slate-100">{item.step}</span>
               </div>
-              <h3 className="text-sm font-bold text-slate-900">{item.title}</h3>
+              <h3 className="text-sm font-bold text-ink">{item.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-500">{item.description}</p>
             </div>
           ))}
@@ -239,7 +239,7 @@ export default function HomePage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {WHY_VISASETGO.map((item) => (
               <div key={item.title} className="rounded-2xl border border-white/8 bg-white/5 p-6 backdrop-blur-sm">
-                <item.icon className="mb-4 h-6 w-6 text-indigo-400" />
+                <item.icon className="mb-4 h-6 w-6 text-iris-300" />
                 <h3 className="text-sm font-bold text-white">{item.title}</h3>
                 <p className="mt-2 text-sm text-white/55 leading-relaxed">{item.description}</p>
               </div>
@@ -249,11 +249,11 @@ export default function HomePage() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section className="bg-gradient-to-b from-indigo-50/50 to-white py-24">
+      <section className="bg-gradient-to-b from-iris-50/40 to-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto mb-14 max-w-2xl text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gold-600">Stories from our travellers</p>
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Real journeys, real care</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Real journeys, real care</h2>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3">
@@ -270,7 +270,7 @@ export default function HomePage() {
                     {t.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{t.name}</p>
+                    <p className="text-sm font-semibold text-ink">{t.name}</p>
                     <p className="text-xs text-slate-400">{t.location}</p>
                   </div>
                 </div>
@@ -282,20 +282,20 @@ export default function HomePage() {
 
       {/* ── FINAL CTA ── */}
       <section className="mx-auto max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-ink to-ink-700 px-8 py-20 text-center shadow-xl shadow-ink/30">
+        <div className="relative overflow-hidden rounded-3xl bg-sunset px-8 py-20 text-center shadow-xl shadow-iris-600/30">
           <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/5" />
           <div className="pointer-events-none absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-white/5" />
           <div className="relative">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-300">Your journey starts here</p>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/80">Your journey starts here</p>
             <h2 className="text-3xl font-bold text-white sm:text-4xl">
               Ready to travel?<br className="hidden sm:block" /> We&apos;ll handle the paperwork.
             </h2>
-            <p className="mx-auto mt-4 max-w-md text-base text-indigo-200">
+            <p className="mx-auto mt-4 max-w-md text-base text-white/80">
               Tell us where you want to go, and we&apos;ll handle everything from document checklist to submission.
             </p>
             <Link
               href="/destinations"
-              className="mt-9 inline-flex items-center gap-2 rounded-2xl bg-gold px-9 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/25 transition-colors hover:bg-gold-400"
+              className="mt-9 inline-flex items-center gap-2 rounded-2xl bg-white px-9 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/25 transition-colors hover:bg-ink-50"
             >
               Start your application <ArrowRight className="h-4 w-4" />
             </Link>
