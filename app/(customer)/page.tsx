@@ -88,65 +88,62 @@ export default function HomePage() {
     <div className="bg-white">
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-ink-900 via-ink to-ink-900">
-        {/* Background image */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1920&q=80"
-          alt=""
-          className="animate-kenburns absolute inset-0 h-full w-full object-cover object-center opacity-30 mix-blend-luminosity"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink-900/70 via-ink-900/55 to-ink-900/90" />
+      <section className="relative overflow-hidden bg-white">
+        {/* Soft welcoming sunset glow */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-coral-50/50 via-white to-white" />
+        <div className="pointer-events-none absolute -left-24 -top-28 h-80 w-80 rounded-full bg-coral-100/50 blur-3xl" />
+        <div className="pointer-events-none absolute -top-10 right-0 h-96 w-96 rounded-full bg-azure-100/50 blur-3xl" />
+        <div className="pointer-events-none absolute left-1/3 top-36 h-72 w-72 rounded-full bg-iris-100/40 blur-3xl" />
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-20 sm:px-6 lg:px-8 lg:pt-32">
+        <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-16 sm:px-6 lg:px-8 lg:pt-24">
           <Reveal className="mx-auto max-w-3xl text-center">
 
             {/* Live badge */}
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-medium text-white/80 backdrop-blur-sm">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/80 px-4 py-2 text-xs font-medium text-ink-600 shadow-sm backdrop-blur">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sage-300 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-sage" />
               </span>
               Verified visa data — updated from official sources
             </div>
 
-            <h1 className="text-5xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <h1 className="text-5xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl lg:text-7xl">
               Your visa,{" "}
               <span className="text-gradient">
                 handled with care.
               </span>
             </h1>
 
-            <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-white/65">
+            <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-ink-500">
               VisaSetGo guides Indian passport holders through every step of the visa process — from verified checklists to expert document review.
             </p>
 
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <Link
                 href="/destinations"
-                className="group flex items-center gap-2 rounded-2xl bg-sunset px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-iris-600/40 transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-iris-600/50"
+                className="group flex items-center gap-2 rounded-2xl bg-sunset px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-iris-600/30 transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-iris-600/40"
               >
                 Browse destinations <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/auth/register"
-                className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/8 px-8 py-4 text-sm font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/15"
+                className="flex items-center gap-2 rounded-2xl border border-ink/15 bg-white px-8 py-4 text-sm font-semibold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-md"
               >
                 Create free account
               </Link>
             </div>
 
-            <p className="mt-5 text-xs text-white/40">
+            <p className="mt-5 text-xs text-ink-400">
               Free to start · No card required · 12+ countries covered
             </p>
           </Reveal>
 
           {/* Stats strip */}
-          <Reveal delay={0.15} className="mx-auto mt-20 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+          <Reveal delay={0.15} className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
             {STATS.map((s) => (
-              <div key={s.label} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center backdrop-blur-sm">
-                <p className="text-2xl font-bold text-white"><CountUp value={s.value} /></p>
-                <p className="mt-1 text-xs text-white/50">{s.label}</p>
+              <div key={s.label} className="rounded-2xl border border-ink/10 bg-white px-4 py-4 text-center shadow-sm">
+                <p className="text-2xl font-bold text-ink"><CountUp value={s.value} /></p>
+                <p className="mt-1 text-xs text-ink-400">{s.label}</p>
               </div>
             ))}
           </Reveal>
