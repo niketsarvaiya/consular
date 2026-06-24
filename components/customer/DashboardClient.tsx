@@ -39,7 +39,7 @@ const WORLD_TOTAL = 195; // sovereign countries
 const VISA_TYPE_COLORS: Record<string, string> = {
   TOURIST: "bg-sky-50 text-sky-700 ring-sky-100",
   BUSINESS: "bg-amber-50 text-amber-700 ring-amber-100",
-  STUDENT: "bg-violet-50 text-violet-700 ring-violet-100",
+  STUDENT: "bg-iris-50 text-iris-700 ring-iris-100",
   TRANSIT: "bg-slate-100 text-slate-600 ring-slate-200",
 };
 
@@ -206,7 +206,7 @@ export function DashboardClient({
               {initials}
             </div>
             <div className="rounded-2xl bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur">
-              <p className="text-sm font-bold leading-tight text-slate-900">{fullName}</p>
+              <p className="text-sm font-bold leading-tight text-ink">{fullName}</p>
               <p className="text-[11px] leading-tight text-slate-400">Traveller since {memberSince}</p>
             </div>
           </div>
@@ -225,7 +225,7 @@ export function DashboardClient({
           <div className="overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-xl shadow-slate-900/5">
             <div className="relative flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:gap-6 sm:p-7">
               {/* accent strip */}
-              <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-indigo-500 to-violet-500" />
+              <div className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-iris-500 to-iris-500" />
 
               <div className="flex flex-1 items-center gap-4 pl-2">
                 {primary.flagUrl ? (
@@ -236,7 +236,7 @@ export function DashboardClient({
                 )}
                 <div className="min-w-0">
                   <p className="text-[11px] font-semibold uppercase tracking-widest text-gold-600">Active application</p>
-                  <h2 className="mt-0.5 truncate text-xl font-bold text-slate-900">{primary.countryName}</h2>
+                  <h2 className="mt-0.5 truncate text-xl font-bold text-ink">{primary.countryName}</h2>
                   <div className="mt-1.5 flex flex-wrap items-center gap-2">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${VISA_TYPE_COLORS[primary.visaType] ?? "bg-slate-100 text-slate-600 ring-slate-200"}`}>
                       {primary.visaLabel} Visa
@@ -307,7 +307,7 @@ export function DashboardClient({
                     <div className="flex h-10 w-[56px] shrink-0 items-center justify-center rounded-lg bg-slate-100 text-2xl">🌐</div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-slate-900">{app.countryName}</p>
+                    <p className="truncate text-sm font-bold text-ink">{app.countryName}</p>
                     <div className="mt-1"><StatusBadge status={app.status as BadgeStatus} type="application" /></div>
                   </div>
                   <ChevronRight className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-gold-600" />
@@ -320,7 +320,7 @@ export function DashboardClient({
         {/* ── Your travels ── */}
         <div className="mt-8 rounded-[28px] border border-slate-100 bg-white p-6 shadow-sm sm:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-slate-900">
+            <h3 className="flex items-center gap-2 text-sm font-bold text-ink">
               <Globe2 className="h-4 w-4 text-emerald-500" /> Your travels
             </h3>
             <span className="text-xs font-medium text-slate-400">

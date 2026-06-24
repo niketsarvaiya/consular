@@ -62,7 +62,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
             ) : (
               <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 flex-shrink-0">
                 <div>
-                  <p className="text-xl font-bold text-slate-900">
+                  <p className="text-xl font-bold text-ink">
                     {country.flag} {country.name}
                   </p>
                   {country.tagline && (
@@ -97,44 +97,44 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
               {/* Quick stats */}
               <div className="mt-5 grid grid-cols-2 gap-3">
                 {country.processingDays && (
-                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-3.5">
+                  <div className="rounded-xl border border-slate-100 bg-ivory-100 p-3.5">
                     <div className="flex items-center gap-2 text-slate-500">
                       <Clock className="h-4 w-4" />
                       <span className="text-xs font-medium">Processing</span>
                     </div>
-                    <p className="mt-1.5 text-base font-bold text-slate-900">
+                    <p className="mt-1.5 text-base font-bold text-ink">
                       {country.processingDays}
                     </p>
                   </div>
                 )}
                 {country.totalFeeINR !== undefined && (
-                  <div className="rounded-xl border border-slate-100 bg-slate-50 p-3.5">
+                  <div className="rounded-xl border border-slate-100 bg-ivory-100 p-3.5">
                     <div className="flex items-center gap-2 text-slate-500">
                       <DollarSign className="h-4 w-4" />
                       <span className="text-xs font-medium">From</span>
                     </div>
-                    <p className="mt-1.5 text-base font-bold text-slate-900">
+                    <p className="mt-1.5 text-base font-bold text-ink">
                       {country.totalFeeINR === 0
                         ? "Free"
                         : `₹${country.totalFeeINR.toLocaleString("en-IN")}`}
                     </p>
                   </div>
                 )}
-                <div className="rounded-xl border border-slate-100 bg-slate-50 p-3.5">
+                <div className="rounded-xl border border-slate-100 bg-ivory-100 p-3.5">
                   <div className="flex items-center gap-2 text-slate-500">
                     <MapPin className="h-4 w-4" />
                     <span className="text-xs font-medium">Region</span>
                   </div>
-                  <p className="mt-1.5 text-base font-bold text-slate-900">
+                  <p className="mt-1.5 text-base font-bold text-ink">
                     {country.region}
                   </p>
                 </div>
-                <div className="rounded-xl border border-slate-100 bg-slate-50 p-3.5">
+                <div className="rounded-xl border border-slate-100 bg-ivory-100 p-3.5">
                   <div className="flex items-center gap-2 text-slate-500">
                     <Globe className="h-4 w-4" />
                     <span className="text-xs font-medium">Passport</span>
                   </div>
-                  <p className="mt-1.5 text-base font-bold text-slate-900">
+                  <p className="mt-1.5 text-base font-bold text-ink">
                     Indian 🇮🇳
                   </p>
                 </div>
@@ -154,7 +154,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
                     "Return flight tickets",
                   ].map((doc) => (
                     <li key={doc} className="flex items-start gap-2 text-sm text-slate-600">
-                      <span className="mt-0.5 h-1.5 w-1.5 rounded-full bg-indigo-500 flex-shrink-0" />
+                      <span className="mt-0.5 h-1.5 w-1.5 rounded-full bg-iris-500 flex-shrink-0" />
                       {doc}
                     </li>
                   ))}
@@ -166,7 +166,7 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
                 <div className="mt-5 space-y-2.5">
                   <Link
                     href={`/apply/${country.slug}/tourist`}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-md hover:shadow-indigo-300 active:scale-95"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-iris-100 transition-all hover:bg-ink-700 hover:shadow-md hover:shadow-iris-300 active:scale-95"
                     onClick={onClose}
                   >
                     Apply for tourist visa
@@ -174,14 +174,14 @@ export function CountryDrawer({ country, onClose }: CountryDrawerProps) {
                   </Link>
                   <Link
                     href={`/apply/${country.slug}/business`}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition-all hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-medium text-slate-700 transition-all hover:border-iris-100 hover:bg-iris-50 hover:text-iris-700"
                     onClick={onClose}
                   >
                     Business visa
                   </Link>
                 </div>
               ) : (
-                <div className="mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-center">
+                <div className="mt-5 rounded-xl border border-dashed border-slate-200 bg-ivory-100 p-4 text-center">
                   <p className="text-sm font-medium text-slate-500">
                     Coming soon on VisaSetGo
                   </p>

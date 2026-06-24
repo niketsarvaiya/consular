@@ -33,7 +33,7 @@ export function FilterBar({ active, onChange, counts }: FilterBarProps) {
             onClick={() => onChange(key)}
             className={`relative flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
               isActive
-                ? "bg-indigo-600 text-white shadow-sm shadow-indigo-200"
+                ? "bg-ink text-white shadow-sm shadow-iris-100"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800"
             }`}
           >
@@ -61,7 +61,7 @@ export function FilterBar({ active, onChange, counts }: FilterBarProps) {
             {isActive && (
               <motion.div
                 layoutId="filter-highlight"
-                className="absolute inset-0 rounded-full bg-indigo-600 -z-10"
+                className="absolute inset-0 rounded-full bg-ink -z-10"
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}

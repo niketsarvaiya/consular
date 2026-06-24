@@ -133,15 +133,15 @@ export default function PassportStepPage() {
   if (loadingSaved) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-indigo-400" />
+        <Loader2 className="h-6 w-6 animate-spin text-iris-400" />
       </div>
     );
   }
 
-  const inputCls = "w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-shadow";
+  const inputCls = "w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm text-ink outline-none focus:ring-2 focus:ring-iris-500 focus:border-transparent transition-shadow";
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-ivory-100">
       {/* Progress bar header */}
       <div className="bg-white border-b border-slate-100">
         <div className="mx-auto max-w-2xl px-4 py-5 sm:px-6">
@@ -162,10 +162,10 @@ export default function PassportStepPage() {
             ].map((step, i) => (
               <div key={step.label} className="flex items-center">
                 <div className="flex items-center gap-2">
-                  <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${i === 0 ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-400"}`}>
+                  <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold ${i === 0 ? "bg-ink text-white" : "bg-slate-100 text-slate-400"}`}>
                     {i === 0 ? <step.icon className="h-3.5 w-3.5" /> : i + 1}
                   </div>
-                  <span className={`text-xs font-medium ${i === 0 ? "text-indigo-600" : "text-slate-400"}`}>{step.label}</span>
+                  <span className={`text-xs font-medium ${i === 0 ? "text-iris-600" : "text-slate-400"}`}>{step.label}</span>
                 </div>
                 {i < 3 && <div className="mx-3 h-px w-8 bg-slate-200" />}
               </div>
@@ -176,7 +176,7 @@ export default function PassportStepPage() {
 
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">Passport details</h1>
+          <h1 className="text-2xl font-bold text-ink">Passport details</h1>
           <p className="mt-1 text-sm text-slate-500">Enter exactly as printed on your passport. Your data is encrypted and stored securely.</p>
         </div>
 
@@ -188,12 +188,12 @@ export default function PassportStepPage() {
 
           {/* Saved passport card */}
           {saved && (
-            <div className={`rounded-2xl border-2 p-5 transition-colors ${useSaved ? "border-indigo-300 bg-indigo-50" : "border-slate-200 bg-white"}`}>
+            <div className={`rounded-2xl border-2 p-5 transition-colors ${useSaved ? "border-iris-300 bg-iris-50" : "border-slate-200 bg-white"}`}>
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    {useSaved && <CheckCircle2 className="h-4 w-4 text-indigo-600" />}
-                    <p className="text-sm font-semibold text-slate-900">Use saved passport</p>
+                    {useSaved && <CheckCircle2 className="h-4 w-4 text-iris-600" />}
+                    <p className="text-sm font-semibold text-ink">Use saved passport</p>
                   </div>
                   <p className="mt-1 text-xs text-slate-500 font-mono">{saved.fullName}</p>
                   <p className="text-xs text-slate-400">Expires {toDateInput(saved.expiryDate)}</p>
@@ -201,13 +201,13 @@ export default function PassportStepPage() {
                 <button
                   type="button"
                   onClick={() => setUseSaved(!useSaved)}
-                  className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${useSaved ? "bg-indigo-600 text-white hover:bg-indigo-700" : "border border-slate-200 text-slate-700 hover:bg-slate-50"}`}
+                  className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${useSaved ? "bg-ink text-white hover:bg-ink-700" : "border border-slate-200 text-slate-700 hover:bg-ivory-100"}`}
                 >
                   {useSaved ? "Selected ✓" : "Use this"}
                 </button>
               </div>
               {useSaved && (
-                <button type="button" onClick={() => setUseSaved(false)} className="mt-3 text-xs text-indigo-500 hover:text-indigo-700 underline">
+                <button type="button" onClick={() => setUseSaved(false)} className="mt-3 text-xs text-iris-500 hover:text-iris-700 underline">
                   Enter different passport details instead
                 </button>
               )}
@@ -217,7 +217,7 @@ export default function PassportStepPage() {
           {/* Passport form */}
           {!useSaved && (
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
-              <h2 className="text-sm font-semibold text-slate-900">Passport information</h2>
+              <h2 className="text-sm font-semibold text-ink">Passport information</h2>
               <p className="text-xs text-slate-400 -mt-2">All fields must match exactly as printed on your passport.</p>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -318,7 +318,7 @@ export default function PassportStepPage() {
           {/* Travel dates */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">Travel dates <span className="text-slate-400 font-normal">(optional)</span></h2>
+              <h2 className="text-sm font-semibold text-ink">Travel dates <span className="text-slate-400 font-normal">(optional)</span></h2>
               <p className="mt-0.5 text-xs text-slate-400">Helps us process your application faster.</p>
             </div>
 
@@ -359,7 +359,7 @@ export default function PassportStepPage() {
           <button
             type="submit"
             disabled={submitting}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60 shadow-sm shadow-indigo-200"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3.5 text-sm font-semibold text-white transition-colors hover:bg-ink-700 disabled:opacity-60 shadow-sm shadow-iris-100"
           >
             {submitting ? (
               <><Loader2 className="h-4 w-4 animate-spin" /> Creating your application…</>

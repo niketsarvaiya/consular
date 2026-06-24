@@ -191,7 +191,7 @@ export function VisaPageClient({
             {/* 1. Required documents */}
             <section>
               <div className="flex items-baseline justify-between mb-1">
-                <h2 className="text-xl font-bold text-slate-900">Required documents</h2>
+                <h2 className="text-xl font-bold text-ink">Required documents</h2>
                 <span className="text-sm text-slate-400">{reqDocs.length} items</span>
               </div>
               <p className="text-sm text-slate-500 mb-6">Everything needed to complete your {countryName} {visaTypeLabel} Visa application.</p>
@@ -203,7 +203,7 @@ export function VisaPageClient({
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-slate-900 leading-snug">{doc.title}</p>
+                      <p className="text-[15px] font-semibold text-ink leading-snug">{doc.title}</p>
                       {doc.notes && (
                         <p className="mt-0.5 text-sm text-slate-500 leading-relaxed">{doc.notes}</p>
                       )}
@@ -233,7 +233,7 @@ export function VisaPageClient({
 
             {/* 2. Eligibility */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-1">Eligibility</h2>
+              <h2 className="text-xl font-bold text-ink mb-1">Eligibility</h2>
               <p className="text-sm text-slate-500 mb-6">Core requirements for Indian passport holders applying for a {countryName} {visaTypeLabel} Visa.</p>
 
               <div className="space-y-3">
@@ -257,7 +257,7 @@ export function VisaPageClient({
 
             {/* 3. How it works — horizontal grid */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-1">How it works</h2>
+              <h2 className="text-xl font-bold text-ink mb-1">How it works</h2>
               <p className="text-sm text-slate-500 mb-8">Four steps from passport to stamp — we handle the hard parts.</p>
 
               <div className="grid grid-cols-2 gap-x-6 gap-y-8">
@@ -266,7 +266,7 @@ export function VisaPageClient({
                     <span className="text-3xl font-black text-slate-100 leading-none tabular-nums select-none">
                       {step.num}
                     </span>
-                    <p className="mt-2 text-[15px] font-bold text-slate-900">{step.title}</p>
+                    <p className="mt-2 text-[15px] font-bold text-ink">{step.title}</p>
                     <p className="mt-1 text-sm text-slate-500 leading-relaxed">{step.desc}</p>
                   </div>
                 ))}
@@ -277,7 +277,7 @@ export function VisaPageClient({
 
             {/* 4. FAQ */}
             <section>
-              <h2 className="text-xl font-bold text-slate-900 mb-6">Common questions</h2>
+              <h2 className="text-xl font-bold text-ink mb-6">Common questions</h2>
 
               {/* Category tabs */}
               <div className="flex gap-1 mb-4 bg-slate-100 rounded-lg p-1 w-fit">
@@ -287,7 +287,7 @@ export function VisaPageClient({
                     onClick={() => { setFaqCat(i); setOpenFaq(null); }}
                     className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all whitespace-nowrap ${
                       faqCat === i
-                        ? "bg-white text-slate-900 shadow-sm"
+                        ? "bg-white text-ink shadow-sm"
                         : "text-slate-500 hover:text-slate-700"
                     }`}
                   >
@@ -303,7 +303,7 @@ export function VisaPageClient({
                       onClick={() => setOpenFaq(openFaq === i ? null : i)}
                       className="w-full flex items-center justify-between gap-4 py-4 text-left group"
                     >
-                      <span className="text-[15px] font-medium text-slate-800 group-hover:text-slate-900 transition-colors">{item.q}</span>
+                      <span className="text-[15px] font-medium text-slate-800 group-hover:text-ink transition-colors">{item.q}</span>
                       <motion.span
                         animate={{ rotate: openFaq === i ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
@@ -353,27 +353,27 @@ export function VisaPageClient({
                     <>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-slate-500">Government fee</span>
-                        <span className="text-sm font-semibold text-slate-900">₹{fee.governmentFeeINR.toLocaleString("en-IN")}</span>
+                        <span className="text-sm font-semibold text-ink">₹{fee.governmentFeeINR.toLocaleString("en-IN")}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-slate-500">VisaSetGo service</span>
-                        <span className="text-sm font-semibold text-slate-900">₹{fee.serviceFeeINR.toLocaleString("en-IN")}</span>
+                        <span className="text-sm font-semibold text-ink">₹{fee.serviceFeeINR.toLocaleString("en-IN")}</span>
                       </div>
                       <div className="border-t border-slate-100 pt-2.5 flex items-center justify-between">
-                        <span className="text-sm font-semibold text-slate-900">Total</span>
-                        <span className="text-xl font-bold text-slate-900">₹{totalFee.toLocaleString("en-IN")}</span>
+                        <span className="text-sm font-semibold text-ink">Total</span>
+                        <span className="text-xl font-bold text-ink">₹{totalFee.toLocaleString("en-IN")}</span>
                       </div>
                     </>
                   ) : (
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-slate-900">Total</span>
-                      <span className="text-xl font-bold text-slate-900">Free</span>
+                      <span className="text-sm font-semibold text-ink">Total</span>
+                      <span className="text-xl font-bold text-ink">Free</span>
                     </div>
                   )}
                 </div>
 
                 {/* Processing pill */}
-                <div className="mx-5 mb-4 flex items-center gap-2.5 rounded-lg bg-slate-50 border border-slate-100 px-3.5 py-2.5">
+                <div className="mx-5 mb-4 flex items-center gap-2.5 rounded-lg bg-ivory-100 border border-slate-100 px-3.5 py-2.5">
                   <Clock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
                   <span className="text-xs font-medium text-slate-600">Processing: <span className="font-semibold text-slate-800">{processingText}</span></span>
                 </div>
@@ -383,7 +383,7 @@ export function VisaPageClient({
                   {isLoggedIn ? (
                     <Link
                       href={applyPath}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-ink-700 transition-colors"
                     >
                       Start my application <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -391,13 +391,13 @@ export function VisaPageClient({
                     <>
                       <Link
                         href={registerPath}
-                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700 transition-colors"
+                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-ink px-5 py-3 text-sm font-bold text-white hover:bg-ink-700 transition-colors"
                       >
                         Get started — it&apos;s free <ArrowRight className="h-4 w-4" />
                       </Link>
                       <Link
                         href={loginPath}
-                        className="flex w-full items-center justify-center rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                        className="flex w-full items-center justify-center rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-ivory-100 transition-colors"
                       >
                         I have an account
                       </Link>
@@ -426,17 +426,17 @@ export function VisaPageClient({
                 <div className="flex items-center gap-3">
                   <div className="h-9 w-9 rounded-full bg-zinc-900 flex items-center justify-center text-white text-sm font-bold shrink-0">C</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">VisaSetGo Team</p>
+                    <p className="text-sm font-semibold text-ink">VisaSetGo Team</p>
                     <p className="text-[11px] text-slate-400">Responds within 2 hours</p>
                   </div>
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <div className="rounded-lg bg-slate-50 py-2 text-center">
-                    <p className="text-[15px] font-bold text-slate-900">2,000+</p>
+                  <div className="rounded-lg bg-ivory-100 py-2 text-center">
+                    <p className="text-[15px] font-bold text-ink">2,000+</p>
                     <p className="text-[10px] text-slate-400">Visas processed</p>
                   </div>
-                  <div className="rounded-lg bg-slate-50 py-2 text-center">
-                    <p className="text-[15px] font-bold text-slate-900">98%</p>
+                  <div className="rounded-lg bg-ivory-100 py-2 text-center">
+                    <p className="text-[15px] font-bold text-ink">98%</p>
                     <p className="text-[10px] text-slate-400">Approval rate</p>
                   </div>
                 </div>
@@ -457,11 +457,11 @@ export function VisaPageClient({
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 px-4 py-3 flex items-center gap-3">
           <div className="flex-1">
             <p className="text-xs text-slate-500">Total</p>
-            <p className="text-base font-bold text-slate-900">{totalFee > 0 ? `₹${totalFee.toLocaleString("en-IN")}` : "Free"}</p>
+            <p className="text-base font-bold text-ink">{totalFee > 0 ? `₹${totalFee.toLocaleString("en-IN")}` : "Free"}</p>
           </div>
           <Link
             href={ctaHref}
-            className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-bold text-white"
+            className="flex items-center gap-2 rounded-lg bg-ink px-5 py-3 text-sm font-bold text-white"
           >
             Get started <ArrowRight className="h-4 w-4" />
           </Link>
@@ -469,16 +469,16 @@ export function VisaPageClient({
       </div>
 
       {/* ── WHY CONSULAR — full-width section ────────────────────────────── */}
-      <div className="border-t border-slate-100 bg-slate-50">
+      <div className="border-t border-slate-100 bg-ivory-100">
         <div className="mx-auto max-w-6xl px-4 py-12 md:px-8">
-          <h2 className="text-xl font-bold text-slate-900 mb-8">Why VisaSetGo</h2>
+          <h2 className="text-xl font-bold text-ink mb-8">Why VisaSetGo</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {WHY_VISASETGO.map((item) => (
               <div key={item.title}>
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-200 mb-3">
                   <item.icon className="h-4 w-4 text-slate-700" />
                 </div>
-                <p className="text-sm font-bold text-slate-900">{item.title}</p>
+                <p className="text-sm font-bold text-ink">{item.title}</p>
                 <p className="mt-1 text-sm text-slate-500 leading-relaxed">{item.desc}</p>
               </div>
             ))}

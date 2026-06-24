@@ -26,7 +26,7 @@ const WorldMap = dynamic(
     loading: () => (
       <div className="absolute inset-0 flex items-center justify-center bg-[#0a1628]">
         <div className="flex flex-col items-center gap-3">
-          <Globe className="h-10 w-10 animate-pulse text-indigo-400" />
+          <Globe className="h-10 w-10 animate-pulse text-iris-400" />
           <span className="text-sm text-slate-400">Loading map…</span>
         </div>
       </div>
@@ -256,12 +256,12 @@ export function ExploreClient() {
       </div>
 
       {/* ── DISCOVERY SECTION — below the viewport map ────────────── */}
-      <div ref={discoveryRef} className="bg-slate-50">
+      <div ref={discoveryRef} className="bg-ivory-100">
         {/* Grid toggle header */}
         <div className="border-b border-slate-100 bg-white px-4 py-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl flex items-center justify-between flex-wrap gap-4">
             <div>
-              <h2 className="text-xl font-black text-slate-900">Browse destinations</h2>
+              <h2 className="text-xl font-black text-ink">Browse destinations</h2>
               <p className="text-sm text-slate-500">
                 {counts.all} destinations · Indian passport holders
               </p>
@@ -270,7 +270,7 @@ export function ExploreClient() {
               onClick={() => setShowGrid(!showGrid)}
               className={`flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
                 showGrid
-                  ? "border-indigo-200 bg-indigo-50 text-indigo-600"
+                  ? "border-iris-100 bg-iris-50 text-iris-600"
                   : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
               }`}
             >
@@ -338,11 +338,11 @@ export function ExploreClient() {
               <section key={row.title}>
                 <div className="mb-5 flex items-end justify-between">
                   <div>
-                    <h2 className="text-xl font-black text-slate-900">{row.title}</h2>
+                    <h2 className="text-xl font-black text-ink">{row.title}</h2>
                     <p className="text-sm text-slate-500">{row.subtitle}</p>
                   </div>
                   <button
-                    className="hidden sm:flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                    className="hidden sm:flex items-center gap-1 text-sm font-medium text-iris-600 hover:text-iris-700"
                     onClick={() => {
                       setShowGrid(true);
                       setTimeout(() => discoveryRef.current?.scrollIntoView({ behavior: "smooth" }), 100);

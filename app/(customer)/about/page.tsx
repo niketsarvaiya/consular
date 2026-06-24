@@ -50,22 +50,22 @@ export default function AboutPage() {
     <div className="bg-white">
 
       {/* ── HERO ── */}
-      <section className="border-b border-slate-100 bg-gradient-to-br from-slate-50 to-indigo-50/40 py-20">
+      <section className="border-b border-slate-100 bg-gradient-to-br from-slate-50 to-iris-50/40 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-indigo-500">About VisaSetGo</p>
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-iris-500">About VisaSetGo</p>
+            <h1 className="text-4xl font-bold tracking-tight text-ink sm:text-5xl">
               Built for Indian travellers.<br />
-              <span className="text-indigo-600">Backed by real sources.</span>
+              <span className="text-iris-600">Backed by real sources.</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-500">
               VisaSetGo is a visa assistance platform that combines verified, official-source data with expert human review — so Indian passport holders can travel with confidence, not anxiety.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Link href="/destinations" className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition-all hover:bg-indigo-700">
+              <Link href="/destinations" className="flex items-center gap-2 rounded-2xl bg-ink px-6 py-3 text-sm font-semibold text-white shadow-sm shadow-iris-100 transition-all hover:bg-ink-700">
                 Browse destinations <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/contact" className="flex items-center gap-2 rounded-2xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50">
+              <Link href="/contact" className="flex items-center gap-2 rounded-2xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition-all hover:border-slate-300 hover:bg-ivory-100">
                 Get in touch
               </Link>
             </div>
@@ -77,8 +77,8 @@ export default function AboutPage() {
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">Our story</p>
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-iris-500">Our story</p>
+            <h2 className="text-3xl font-bold tracking-tight text-ink">
               We started because visa paperwork is broken.
             </h2>
             <p className="mt-5 text-base leading-relaxed text-slate-500">
@@ -92,16 +92,16 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-2xl bg-indigo-50 p-6">
-              <p className="text-4xl font-black text-indigo-600">12+</p>
+            <div className="rounded-2xl bg-iris-50 p-6">
+              <p className="text-4xl font-black text-iris-600">12+</p>
               <p className="mt-1 text-sm font-medium text-slate-600">Countries covered</p>
             </div>
             <div className="rounded-2xl bg-emerald-50 p-6">
               <p className="text-4xl font-black text-emerald-600">98%</p>
               <p className="mt-1 text-sm font-medium text-slate-600">Approval rate</p>
             </div>
-            <div className="rounded-2xl bg-violet-50 p-6">
-              <p className="text-4xl font-black text-violet-600">10k+</p>
+            <div className="rounded-2xl bg-iris-50 p-6">
+              <p className="text-4xl font-black text-iris-600">10k+</p>
               <p className="mt-1 text-sm font-medium text-slate-600">Travellers helped</p>
             </div>
             <div className="rounded-2xl bg-amber-50 p-6">
@@ -113,17 +113,17 @@ export default function AboutPage() {
       </section>
 
       {/* ── VALUES ── */}
-      <section className="bg-slate-50 py-20">
+      <section className="bg-ivory-100 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center mb-12">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">What drives us</p>
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">Our principles</h2>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-iris-500">What drives us</p>
+            <h2 className="text-3xl font-bold tracking-tight text-ink">Our principles</h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {VALUES.map((v) => (
               <div key={v.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <v.icon className="mb-4 h-6 w-6 text-indigo-600" />
-                <h3 className="text-sm font-bold text-slate-900">{v.title}</h3>
+                <v.icon className="mb-4 h-6 w-6 text-iris-600" />
+                <h3 className="text-sm font-bold text-ink">{v.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-500">{v.description}</p>
               </div>
             ))}
@@ -134,17 +134,17 @@ export default function AboutPage() {
       {/* ── TEAM ── */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center mb-12">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-indigo-500">The people behind VisaSetGo</p>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">A small team with deep focus</h2>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-iris-500">The people behind VisaSetGo</p>
+          <h2 className="text-3xl font-bold tracking-tight text-ink">A small team with deep focus</h2>
         </div>
         <div className="mx-auto grid max-w-2xl gap-6 sm:grid-cols-2">
           {TEAM.map((m) => (
             <div key={m.name} className="rounded-2xl border border-slate-100 bg-white p-6 text-center shadow-sm">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-base font-bold text-white">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-ink to-ink-700 text-base font-bold text-white">
                 {m.initials}
               </div>
-              <p className="font-bold text-slate-900">{m.name}</p>
-              <p className="text-xs font-medium text-indigo-600 mt-0.5">{m.role}</p>
+              <p className="font-bold text-ink">{m.name}</p>
+              <p className="text-xs font-medium text-iris-600 mt-0.5">{m.role}</p>
               <p className="mt-3 text-sm leading-relaxed text-slate-500">{m.description}</p>
             </div>
           ))}
@@ -152,15 +152,15 @@ export default function AboutPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="border-t border-slate-100 bg-gradient-to-br from-indigo-600 to-violet-700 py-16">
+      <section className="border-t border-slate-100 bg-gradient-to-br from-ink to-ink-700 py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">Ready to start your application?</h2>
-          <p className="mx-auto mt-3 max-w-md text-base text-indigo-200">
+          <p className="mx-auto mt-3 max-w-md text-base text-iris-100">
             Browse 12+ verified destinations and get your personalised visa checklist in minutes.
           </p>
           <Link
             href="/destinations"
-            className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-semibold text-indigo-700 shadow-md transition-colors hover:bg-indigo-50"
+            className="mt-8 inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-semibold text-iris-700 shadow-md transition-colors hover:bg-iris-50"
           >
             Browse destinations <ArrowRight className="h-4 w-4" />
           </Link>

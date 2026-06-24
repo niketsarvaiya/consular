@@ -122,11 +122,11 @@ export default function DestinationsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-ivory-100">
       {/* ── PAGE HEADER ── */}
       <div className="bg-white border-b border-slate-100">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-bold tracking-tight text-ink">
             Where do you want to go?
           </h1>
           <p className="mt-1.5 text-slate-500">
@@ -145,7 +145,7 @@ export default function DestinationsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search any country…"
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-slate-900 shadow-sm outline-none placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all"
+              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm text-ink shadow-sm outline-none placeholder:text-slate-400 focus:border-iris-400 focus:ring-2 focus:ring-iris-100 transition-all"
             />
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function DestinationsPage() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {loading ? (
           <div className="flex items-center justify-center py-32">
-            <div className="h-7 w-7 animate-spin rounded-full border-2 border-slate-200 border-t-indigo-600" />
+            <div className="h-7 w-7 animate-spin rounded-full border-2 border-slate-200 border-t-iris-600" />
           </div>
         ) : (
           <>
@@ -168,13 +168,13 @@ export default function DestinationsPage() {
                     onClick={() => setActiveFilter(tab.value)}
                     className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
                       activeFilter === tab.value
-                        ? "bg-indigo-600 text-white shadow-sm shadow-indigo-200"
-                        : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                        ? "bg-ink text-white shadow-sm shadow-iris-100"
+                        : "bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-ivory-100"
                     }`}
                   >
                     {tab.label}
                     {tab.value !== "ALL" && !q && (
-                      <span className={`ml-1.5 text-[10px] ${activeFilter === tab.value ? "text-indigo-200" : "text-slate-400"}`}>
+                      <span className={`ml-1.5 text-[10px] ${activeFilter === tab.value ? "text-iris-100" : "text-slate-400"}`}>
                         {available.filter((c) => c.policies.some((p) => p.visaCategory === tab.value)).length}
                       </span>
                     )}
@@ -217,20 +217,20 @@ export default function DestinationsPage() {
                         />
 
                         {/* Gradient overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/30 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-ink-900/30 to-transparent" />
 
                         {/* Top badges row */}
                         {policy && (
                           <div className="absolute top-3 right-3 flex flex-col items-end gap-1.5">
                             {/* Visa category badge */}
-                            <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold backdrop-blur-sm ${VISA_CATEGORY_COLORS[policy.visaCategory] ?? "bg-slate-500/80 text-white"}`}>
+                            <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold backdrop-blur-sm ${VISA_CATEGORY_COLORS[policy.visaCategory] ?? "bg-ivory-1000/80 text-white"}`}>
                               {VISA_CATEGORY_LABELS[policy.visaCategory] ?? policy.visaCategory}
                             </span>
                             {/* Schengen group badge */}
                             {policy.ruleGroupId === "schengen_short_stay" && (
-                              <span className="flex items-center gap-1 rounded-full bg-indigo-600/80 px-2 py-0.5 backdrop-blur-sm">
-                                <Globe className="h-2.5 w-2.5 text-indigo-200" />
-                                <span className="text-[9px] font-semibold text-indigo-100">Schengen</span>
+                              <span className="flex items-center gap-1 rounded-full bg-ink/80 px-2 py-0.5 backdrop-blur-sm">
+                                <Globe className="h-2.5 w-2.5 text-iris-100" />
+                                <span className="text-[9px] font-semibold text-iris-100">Schengen</span>
                               </span>
                             )}
                             {/* Medium confidence warning */}
@@ -296,7 +296,7 @@ export default function DestinationsPage() {
                             </div>
 
                             {/* Apply arrow */}
-                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm group-hover:bg-indigo-600 transition-colors">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 backdrop-blur-sm group-hover:bg-ink transition-colors">
                               <ArrowRight className="h-3.5 w-3.5 text-white" />
                             </div>
                           </div>
@@ -324,7 +324,7 @@ export default function DestinationsPage() {
                 {(q || activeFilter !== "ALL") && (
                   <button
                     onClick={() => { setQuery(""); setActiveFilter("ALL"); }}
-                    className="mt-3 text-xs text-indigo-600 hover:underline"
+                    className="mt-3 text-xs text-iris-600 hover:underline"
                   >
                     Clear filters
                   </button>

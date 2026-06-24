@@ -278,7 +278,7 @@ export function WorldMap({ activeFilter, onCountryClick, selectedCountry }: Worl
               <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: tooltip.color }} />
               <p className="text-xs text-slate-400">{tooltip.status}</p>
             </div>
-            <p className="mt-0.5 text-[10px] font-medium text-indigo-400">Click for details →</p>
+            <p className="mt-0.5 text-[10px] font-medium text-iris-400">Click for details →</p>
           </div>
           <div className="mx-auto h-1.5 w-1.5 rotate-45 -mt-px" style={{ background: "#1e293b", border: "1px solid #334155" }} />
         </div>

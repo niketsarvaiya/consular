@@ -113,14 +113,14 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
       {/* ── Toggle header ── */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-left transition-colors hover:bg-slate-100"
+        className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-ivory-100 px-4 py-3 text-left transition-colors hover:bg-slate-100"
       >
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-100">
-            <Plane className="h-4 w-4 text-indigo-600" />
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-iris-100">
+            <Plane className="h-4 w-4 text-iris-600" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-900">Plan your trip</p>
+            <p className="text-sm font-semibold text-ink">Plan your trip</p>
             <p className="text-xs text-slate-500">Flights &amp; hotels to {country.name}</p>
           </div>
         </div>
@@ -141,7 +141,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                 onClick={() => setTab(t)}
                 className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold capitalize transition-all ${
                   tab === t
-                    ? "bg-white text-indigo-600 shadow-sm"
+                    ? "bg-white text-iris-600 shadow-sm"
                     : "text-slate-500 hover:text-slate-700"
                 }`}
               >
@@ -164,7 +164,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                   <select
                     value={origin}
                     onChange={(e) => setOrigin(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-iris-400 focus:outline-none"
                   >
                     {INDIAN_AIRPORTS.map((a) => (
                       <option key={a.code} value={a.code}>{a.city} ({a.code})</option>
@@ -173,7 +173,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                 </div>
                 <div>
                   <label className="block text-[10px] font-semibold uppercase tracking-widest text-slate-400 mb-1">To</label>
-                  <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-2 h-[38px]">
+                  <div className="flex items-center rounded-lg border border-slate-200 bg-ivory-100 px-2.5 py-2 h-[38px]">
                     <span className="text-sm font-semibold text-slate-800">{iataCode}</span>
                     <span className="ml-1.5 truncate text-xs text-slate-400">{country.name}</span>
                   </div>
@@ -192,7 +192,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                   <select
                     value={adults}
                     onChange={(e) => setAdults(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-iris-400 focus:outline-none"
                   >
                     {[1,2,3,4,5,6].map((n) => (
                       <option key={n} value={String(n)}>{n} adult{n > 1 ? "s" : ""}</option>
@@ -268,7 +268,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                     value={checkIn}
                     min={new Date().toISOString().slice(0, 10)}
                     onChange={(e) => setCheckIn(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-iris-400 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -278,7 +278,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                     value={checkOut}
                     min={checkIn}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-iris-400 focus:outline-none"
                   />
                 </div>
                 <div className="col-span-2">
@@ -286,7 +286,7 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                   <select
                     value={hotelAdults}
                     onChange={(e) => setHotelAdults(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-800 focus:border-iris-400 focus:outline-none"
                   >
                     {[1,2,3,4].map((n) => (
                       <option key={n} value={String(n)}>{n} guest{n > 1 ? "s" : ""}</option>
@@ -315,8 +315,8 @@ export function TravelSearch({ country }: { country: ExploreCountry }) {
                       logo: "🟣",
                       desc: "Best rates in Asia & beyond",
                       href: agodaHotel(country.name, checkIn, checkOut, hotelAdults),
-                      color: "border-violet-200 hover:bg-violet-50",
-                      textColor: "text-violet-700",
+                      color: "border-iris-100 hover:bg-iris-50",
+                      textColor: "text-iris-700",
                     },
                     {
                       name: "MakeMyTrip Hotels",

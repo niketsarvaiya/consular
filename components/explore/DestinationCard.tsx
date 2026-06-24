@@ -62,7 +62,7 @@ export function DestinationCard({ country, onClick, index = 0 }: DestinationCard
       <div className="flex flex-1 flex-col p-3.5">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="font-bold text-slate-900 leading-snug">
+            <p className="font-bold text-ink leading-snug">
               {country.flag} {country.name}
             </p>
             {country.tagline && (
@@ -100,7 +100,7 @@ export function DestinationCard({ country, onClick, index = 0 }: DestinationCard
           <Link
             href={`/apply/${country.slug}/tourist`}
             onClick={(e) => e.stopPropagation()}
-            className="mt-3 flex items-center justify-center gap-1.5 rounded-lg border border-indigo-100 bg-indigo-50 py-2 text-xs font-semibold text-indigo-600 transition-colors hover:bg-indigo-100 hover:text-indigo-700"
+            className="mt-3 flex items-center justify-center gap-1.5 rounded-lg border border-iris-100 bg-iris-50 py-2 text-xs font-semibold text-iris-600 transition-colors hover:bg-iris-100 hover:text-iris-700"
           >
             Apply now <ArrowRight className="h-3 w-3" />
           </Link>
