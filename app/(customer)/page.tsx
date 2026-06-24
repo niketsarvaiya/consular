@@ -20,6 +20,14 @@ const STATS = [
   { value: "4.8★", label: "Customer rating" },
 ];
 
+// Overlapping destination thumbnails for the hero
+const HERO_THUMBS = [
+  { code: "JP", name: "Japan", rotate: "-8deg" },
+  { code: "AE", name: "Dubai", rotate: "-2deg" },
+  { code: "TH", name: "Thailand", rotate: "4deg" },
+  { code: "SG", name: "Singapore", rotate: "10deg" },
+];
+
 const HOW_IT_WORKS = [
   {
     step: "01",
@@ -88,86 +96,87 @@ export default function HomePage() {
     <div className="bg-white">
 
       {/* ── HERO ── */}
-      <section className="relative overflow-hidden bg-white">
-        {/* Soft welcoming sunset glow */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-coral-50/40 via-white to-white" />
-        <div className="pointer-events-none absolute -left-24 -top-28 h-80 w-80 rounded-full bg-coral-100/40 blur-3xl" />
-        <div className="pointer-events-none absolute right-0 top-10 h-96 w-96 rounded-full bg-azure-100/40 blur-3xl" />
+      <section className="relative isolate overflow-hidden">
+        {/* Full-bleed bright travel image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=2000&q=80&auto=format&fit=crop"
+          alt="A bright turquoise tropical shoreline"
+          className="animate-kenburns absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+        {/* Soft legibility scrim — kept light so the image stays bright */}
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-ink-900/70 via-ink-900/35 to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink-900/55 to-transparent" />
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-12 sm:px-6 lg:px-8 lg:pt-20">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+        <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 sm:px-6 lg:px-8 lg:pb-24 lg:pt-28">
+          <Reveal className="max-w-2xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium text-white shadow-sm backdrop-blur">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sage-300 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-sage-300" />
+              </span>
+              Verified visa data — updated from official sources
+            </div>
 
-            {/* LEFT — copy */}
-            <Reveal className="text-center lg:text-left">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-ink/10 bg-white/80 px-4 py-2 text-xs font-medium text-ink-600 shadow-sm backdrop-blur">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sage-300 opacity-75" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-sage" />
-                </span>
-                Verified visa data — updated from official sources
-              </div>
+            <h1 className="text-4xl font-bold leading-[1.04] tracking-tight text-white drop-shadow-sm sm:text-5xl lg:text-6xl">
+              Your visa,{" "}
+              <span className="bg-gradient-to-r from-coral-300 via-white to-azure-200 bg-clip-text text-transparent">
+                handled with care.
+              </span>
+            </h1>
 
-              <h1 className="text-4xl font-bold leading-[1.05] tracking-tight text-ink sm:text-5xl lg:text-6xl">
-                Your visa,{" "}
-                <span className="text-gradient">handled with care.</span>
-              </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/85 drop-shadow-sm">
+              VisaSetGo guides Indian passport holders through every step — from verified, official-source checklists to expert human document review.
+            </p>
 
-              <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-500 lg:mx-0">
-                VisaSetGo guides Indian passport holders through every step — from verified, official-source checklists to expert human document review.
-              </p>
+            <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row">
+              <Link
+                href="/destinations"
+                className="group flex items-center gap-2 rounded-2xl bg-sunset px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-black/25 transition-all hover:-translate-y-0.5 hover:brightness-110"
+              >
+                Browse destinations <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <Link
+                href="/auth/register"
+                className="flex items-center gap-2 rounded-2xl border border-white/30 bg-white/10 px-8 py-4 text-sm font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:bg-white/20"
+              >
+                Create free account
+              </Link>
+            </div>
 
-              <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row lg:justify-start sm:justify-center">
-                <Link
-                  href="/destinations"
-                  className="group flex items-center gap-2 rounded-2xl bg-sunset px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-iris-600/30 transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-iris-600/40"
-                >
-                  Browse destinations <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  href="/auth/register"
-                  className="flex items-center gap-2 rounded-2xl border border-ink/15 bg-white px-8 py-4 text-sm font-semibold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-md"
-                >
-                  Create free account
-                </Link>
-              </div>
+            <p className="mt-5 text-xs text-white/60">
+              Free to start · No card required · 12+ countries covered
+            </p>
+          </Reveal>
 
-              <p className="mt-5 text-xs text-ink-400">
-                Free to start · No card required · 12+ countries covered
-              </p>
-            </Reveal>
-
-            {/* RIGHT — travel image with floating cards */}
-            <Reveal delay={0.15} className="relative">
-              <div className="relative overflow-hidden rounded-[2rem] shadow-2xl shadow-ink/15 ring-1 ring-ink/5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1100&q=80&auto=format&fit=crop"
-                  alt="An aircraft wing above the clouds at golden hour"
-                  className="h-[360px] w-full object-cover sm:h-[460px] lg:h-[520px]"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900/20 via-transparent to-transparent" />
-              </div>
-
-              {/* floating "destinations" pill */}
-              <div className="animate-float absolute -right-2 top-6 rounded-full bg-sunset px-4 py-2 text-xs font-semibold text-white shadow-lg sm:-right-4">
-                ✈ 12+ destinations
-              </div>
-
-              {/* floating "visa approved" card */}
-              <div className="animate-float absolute -left-3 bottom-6 flex items-center gap-3 rounded-2xl border border-ink/10 bg-white/90 px-4 py-3 shadow-xl backdrop-blur sm:-left-5" style={{ animationDelay: "1.2s" }}>
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sage-50 text-sage">
-                  <CheckCircle className="h-5 w-5" />
-                </span>
-                <div className="text-left">
-                  <p className="text-sm font-bold leading-tight text-ink">Visa approved</p>
-                  <p className="text-[11px] leading-tight text-ink-400">Japan · 4 days</p>
-                </div>
-              </div>
-            </Reveal>
+          {/* Overlapping destination thumbnails */}
+          <div className="mt-14 hidden items-end lg:flex">
+            {HERO_THUMBS.map((t, i) => {
+              const img = COUNTRY_HERO_IMAGES[t.code]?.[0] ?? "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=400&q=80";
+              return (
+                <Reveal key={t.code} delay={0.25 + i * 0.08}>
+                  <div
+                    className="relative -ml-7 h-40 w-32 overflow-hidden rounded-2xl shadow-2xl ring-4 ring-white/90 transition-transform duration-300 hover:z-10 hover:-translate-y-2 first:ml-0"
+                    style={{ rotate: t.rotate }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt={t.name} className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-ink-900/70 to-transparent" />
+                    <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={`https://flagcdn.com/w40/${t.code.toLowerCase()}.png`} alt="" className="h-3 w-4 rounded-[2px] object-cover" />
+                      <span className="text-xs font-bold text-white">{t.name}</span>
+                    </div>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
+        </div>
 
-          {/* Stats strip */}
-          <Reveal delay={0.2} className="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
+        {/* Stats strip — light cards on white below the image */}
+        <div className="relative bg-white">
+          <Reveal className="mx-auto grid max-w-5xl grid-cols-2 gap-4 px-4 py-10 sm:grid-cols-4 sm:px-6 lg:px-8">
             {STATS.map((s) => (
               <div key={s.label} className="rounded-2xl border border-ink/10 bg-white px-4 py-4 text-center shadow-sm">
                 <p className="text-2xl font-bold text-ink"><CountUp value={s.value} /></p>
