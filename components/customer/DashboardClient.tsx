@@ -180,44 +180,47 @@ export function DashboardClient({
           )}
         </div>
 
-        {/* glass stats (bottom left) */}
-        <div className="absolute bottom-7 left-5 z-10 flex items-stretch gap-px overflow-hidden rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md sm:left-10">
-          {[
-            { icon: Globe2, label: "Visited", value: visitedRows.length, tint: "text-emerald-300" },
-            { icon: Plane, label: "Planned", value: planned.length, tint: "text-gold-300" },
-            { icon: MapPin, label: "of world", value: `${worldPct}%`, tint: "text-amber-300" },
-          ].map((s) => (
-            <div key={s.label} className="px-5 py-3 text-center">
-              <s.icon className={`mx-auto mb-1 h-4 w-4 ${s.tint}`} />
-              <p className="text-lg font-black leading-none text-white">{s.value}</p>
-              <p className="mt-1 text-[10px] font-medium uppercase tracking-wide text-white/50">{s.label}</p>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* ───────────────── CONTENT ───────────────── */}
       <div className="relative z-10 mx-auto -mt-20 max-w-5xl px-4 pb-20 sm:px-6">
 
         {/* Profile chip row */}
-        <div className="mb-5 flex items-center justify-between gap-4">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sunset text-sm font-bold text-white shadow-lg shadow-ink/30 ring-2 ring-white">
               {initials}
             </div>
-            <div className="rounded-2xl bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur">
+            <div className="rounded-2xl bg-white/90 px-3.5 py-2 shadow-sm backdrop-blur">
               <p className="text-sm font-bold leading-tight text-ink">{fullName}</p>
               <p className="text-[11px] leading-tight text-slate-400">Traveller since {memberSince}</p>
             </div>
           </div>
-          <Link
-            href="/destinations"
-            className="flex shrink-0 items-center gap-2 rounded-2xl bg-sunset px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-iris-600/40 transition-all hover:brightness-110"
-          >
-            <Plane className="h-4 w-4" />
-            <span className="hidden sm:inline">Plan a new trip</span>
-            <span className="sm:hidden">New</span>
-          </Link>
+
+          <div className="flex items-center gap-3">
+            {/* compact stats */}
+            <div className="flex items-center divide-x divide-ink/10 overflow-hidden rounded-2xl bg-white/90 shadow-sm backdrop-blur">
+              {[
+                { icon: Globe2, label: "Visited", value: visitedRows.length, tint: "text-emerald-500" },
+                { icon: Plane, label: "Planned", value: planned.length, tint: "text-iris-500" },
+                { icon: MapPin, label: "of world", value: `${worldPct}%`, tint: "text-coral-500" },
+              ].map((s) => (
+                <div key={s.label} className="px-3.5 py-1.5 text-center">
+                  <s.icon className={`mx-auto mb-0.5 h-3.5 w-3.5 ${s.tint}`} />
+                  <p className="text-sm font-black leading-none text-ink">{s.value}</p>
+                  <p className="mt-0.5 text-[9px] font-medium uppercase tracking-wide text-slate-400">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/destinations"
+              className="flex shrink-0 items-center gap-2 rounded-2xl bg-sunset px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-iris-600/40 transition-all hover:brightness-110"
+            >
+              <Plane className="h-4 w-4" />
+              <span className="hidden sm:inline">Plan a new trip</span>
+              <span className="sm:hidden">New</span>
+            </Link>
+          </div>
         </div>
 
         {/* ── Spotlight active application ── */}
