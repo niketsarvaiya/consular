@@ -3,6 +3,7 @@ import { ArrowRight, Shield, FileCheck, ClipboardList, Star, CheckCircle, Globe,
 import { COUNTRY_HERO_IMAGES } from "@/lib/visa-content";
 import { Reveal } from "@/components/shared/Reveal";
 import { CountUp } from "@/components/shared/CountUp";
+import { HeroSlideshow } from "@/components/customer/HeroSlideshow";
 
 const FEATURED = [
   { code: "AE", name: "UAE", label: "Tourist Visa", time: "3–5 days" },
@@ -18,6 +19,14 @@ const STATS = [
   { value: "12+", label: "Destinations covered" },
   { value: "98%", label: "Approval rate" },
   { value: "4.8★", label: "Customer rating" },
+];
+
+// Rotating full-bleed hero backgrounds — different travel styles
+const HERO_SLIDES = [
+  { src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=2000&q=80&auto=format&fit=crop", alt: "A bright turquoise tropical shoreline" },
+  { src: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=2000&q=80&auto=format&fit=crop", alt: "A grand city skyline at golden hour" },
+  { src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=2000&q=80&auto=format&fit=crop", alt: "Snow-capped mountain peaks above a still lake" },
+  { src: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=2000&q=80&auto=format&fit=crop", alt: "An aircraft wing above the clouds at golden hour" },
 ];
 
 // Overlapping destination thumbnails for the hero
@@ -97,13 +106,8 @@ export default function HomePage() {
 
       {/* ── HERO ── */}
       <section className="relative isolate overflow-hidden">
-        {/* Full-bleed bright travel image */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=2000&q=80&auto=format&fit=crop"
-          alt="A bright turquoise tropical shoreline"
-          className="animate-kenburns absolute inset-0 -z-10 h-full w-full object-cover"
-        />
+        {/* Full-bleed rotating travel images (crossfade) */}
+        <HeroSlideshow slides={HERO_SLIDES} />
         {/* Soft legibility scrim — kept light so the image stays bright */}
         <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-ink-900/70 via-ink-900/35 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink-900/55 to-transparent" />
@@ -163,7 +167,7 @@ export default function HomePage() {
             </div>
 
             {/* Rating */}
-            <div className="animate-float absolute right-32 top-[19rem] rounded-2xl border border-white/40 bg-white/90 px-4 py-3 shadow-2xl backdrop-blur" style={{ animationDelay: "1.3s" }}>
+            <div className="animate-float absolute right-12 top-[12rem] rounded-2xl border border-white/40 bg-white/90 px-4 py-3 shadow-2xl backdrop-blur" style={{ animationDelay: "1.3s" }}>
               <div className="flex items-center gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
@@ -172,21 +176,10 @@ export default function HomePage() {
               </div>
               <p className="mt-0.5 text-[11px] text-ink-400">Loved by 10,000+ travellers</p>
             </div>
-
-            {/* Docs reviewed */}
-            <div className="animate-float absolute right-16 top-[27rem] flex items-center gap-3 rounded-2xl border border-white/40 bg-white/90 px-4 py-3 shadow-2xl backdrop-blur" style={{ animationDelay: "0.7s" }}>
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-iris-50 text-iris">
-                <FileCheck className="h-5 w-5" />
-              </span>
-              <div className="text-left">
-                <p className="text-sm font-bold leading-tight text-ink">Documents reviewed</p>
-                <p className="text-[11px] leading-tight text-ink-400">by a real specialist</p>
-              </div>
-            </div>
           </div>
 
-          {/* Overlapping destination thumbnails */}
-          <div className="mt-14 hidden items-end lg:flex">
+          {/* Overlapping destination thumbnails (right side) */}
+          <div className="mt-14 hidden items-end justify-end lg:flex">
             {HERO_THUMBS.map((t, i) => {
               const img = COUNTRY_HERO_IMAGES[t.code]?.[0] ?? "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=400&q=80";
               return (
