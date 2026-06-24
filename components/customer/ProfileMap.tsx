@@ -13,6 +13,10 @@ import { geoCentroid } from "d3-geo";
 import { Plus, Minus } from "lucide-react";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
+// Official India boundary (incl. full J&K) overlaid on top of Natural Earth,
+// which otherwise renders India cut off at the Line of Control.
+const INDIA_GEO_URL = "/india-boundary.json";
+const INDIA_GEO_ID = "356";
 
 const BG = "#0b1220";
 const BASE = "#1e293b";
@@ -192,6 +196,41 @@ export function ProfileMap({ visited, onToggle, planned, editable = true, saving
                 })}
               </>
             );
+          }}
+        </Geographies>
+
+        {/* ── India official boundary overlay (completes J&K) ── */}
+        <Geographies geography={INDIA_GEO_URL}>
+          {({ geographies }: { geographies: any[] }) => {
+            const isVisited = visited.has(INDIA_GEO_ID);
+            const isPlanned = plannedSet.has(INDIA_GEO_ID);
+            const fill = isVisited ? VISITED : isPlanned ? "rgba(255,107,74,0.35)" : BASE;
+            return geographies.map((geo: any) => (
+              <Geography
+                key={geo.rsmKey}
+                geography={geo}
+                onMouseEnter={(e) => {
+                  const rect = (e.currentTarget as Element).closest("svg")!.getBoundingClientRect();
+                  setTooltip({
+                    name: "India",
+                    sub: isVisited ? "Visited ✓" : editable ? "Click to mark visited" : "",
+                    x: (e as React.MouseEvent).clientX - rect.left,
+                    y: (e as React.MouseEvent).clientY - rect.top,
+                  });
+                }}
+                onMouseMove={(e) => {
+                  const rect = (e.currentTarget as Element).closest("svg")!.getBoundingClientRect();
+                  setTooltip((t) => (t ? { ...t, x: (e as React.MouseEvent).clientX - rect.left, y: (e as React.MouseEvent).clientY - rect.top } : t));
+                }}
+                onMouseLeave={() => setTooltip(null)}
+                onClick={() => toggleVisited(INDIA_GEO_ID)}
+                style={{
+                  default: { fill, stroke: BG, strokeWidth: 0.3, outline: "none", cursor: editable ? "pointer" : "default", transition: "fill 0.18s ease" },
+                  hover: { fill: isVisited ? VISITED_HOVER : BASE_HOVER, stroke: BG, strokeWidth: 0.3, outline: "none", cursor: editable ? "pointer" : "default" },
+                  pressed: { fill: VISITED, stroke: BG, strokeWidth: 0.3, outline: "none" },
+                }}
+              />
+            ));
           }}
         </Geographies>
         </ZoomableGroup>
