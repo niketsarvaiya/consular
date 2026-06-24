@@ -355,28 +355,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── FINAL CTA ── */}
+      {/* ── FINAL CTA — cinematic travel band ── */}
       <section className="mx-auto max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-sunset px-8 py-20 text-center shadow-xl shadow-iris-600/30">
-          <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/5" />
-          <div className="pointer-events-none absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-white/5" />
-          <div className="relative">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/80">Your journey starts here</p>
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
-              Ready to travel?<br className="hidden sm:block" /> We&apos;ll handle the paperwork.
-            </h2>
-            <p className="mx-auto mt-4 max-w-md text-base text-white/80">
-              Tell us where you want to go, and we&apos;ll handle everything from document checklist to submission.
-            </p>
-            <Link
-              href="/destinations"
-              className="mt-9 inline-flex items-center gap-2 rounded-2xl bg-white px-9 py-4 text-sm font-semibold text-ink shadow-lg shadow-black/25 transition-colors hover:bg-ink-50"
-            >
-              Start your application <ArrowRight className="h-4 w-4" />
-            </Link>
-            <p className="mt-5 text-xs text-ivory/50">Free to start · No card required</p>
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[2rem] shadow-2xl shadow-ink/20">
+            {/* travel image */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1800&q=80&auto=format&fit=crop"
+              alt=""
+              className="animate-kenburns absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-ink-900/90 via-ink-900/75 to-ink-900/60" />
+            {/* subtle sunset accent glow */}
+            <div className="pointer-events-none absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-coral-500/20 blur-3xl" />
+
+            <div className="relative px-8 py-20 text-center sm:py-24">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-coral-300">Your journey starts here</p>
+              <h2 className="text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+                Ready to travel?<br className="hidden sm:block" /> We&apos;ll handle the paperwork.
+              </h2>
+              <p className="mx-auto mt-5 max-w-md text-base text-white/80">
+                Tell us where you want to go, and we&apos;ll handle everything from document checklist to submission.
+              </p>
+              <Link
+                href="/destinations"
+                className="group mt-9 inline-flex items-center gap-2 rounded-2xl bg-sunset px-9 py-4 text-sm font-semibold text-white shadow-lg shadow-black/30 transition-all hover:-translate-y-0.5 hover:brightness-110"
+              >
+                Start your application <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+              <p className="mt-5 text-xs text-white/50">Free to start · No card required</p>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
     </div>
