@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Clock, Search, SlidersHorizontal, CheckCircle2, AlertCircle, AlertTriangle, Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 import { COUNTRY_HERO_IMAGES } from "@/lib/visa-content";
+import { Reveal } from "@/components/shared/Reveal";
 
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=800&q=80";
 
@@ -192,7 +193,7 @@ export default function DestinationsPage() {
                   </p>
                 )}
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {filteredAvailable.map((country) => {
+                  {filteredAvailable.map((country, idx) => {
                     const heroImg = COUNTRY_HERO_IMAGES[country.code]?.[0] ?? FALLBACK_IMG;
                     const policy = country.policies[0];
                     const fee = policy?.feeDetails;
@@ -202,10 +203,10 @@ export default function DestinationsPage() {
                     const visaLabel = policy?.productLabel || VISA_CATEGORY_LABELS[policy?.visaCategory] || policy?.visaCategory;
 
                     return (
+                      <Reveal key={country.id} delay={Math.min(idx, 8) * 0.05}>
                       <Link
-                        key={country.id}
                         href={applyPath}
-                        className="group relative overflow-hidden rounded-2xl bg-slate-900 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                        className="group relative block overflow-hidden rounded-2xl bg-slate-900 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                         style={{ height: "260px" }}
                       >
                         {/* Background image */}
@@ -309,6 +310,7 @@ export default function DestinationsPage() {
                           )}
                         </div>
                       </Link>
+                      </Reveal>
                     );
                   })}
                 </div>

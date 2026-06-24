@@ -80,7 +80,7 @@ export function CaseDocumentsPanel({
                   );
                   openAt(Math.max(0, firstPending));
                 }}
-                className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors"
+                className="flex items-center gap-1.5 rounded-xl bg-ink px-3 py-1.5 text-xs font-semibold text-white hover:bg-ink-700 transition-colors"
               >
                 <Eye className="h-3.5 w-3.5" />
                 Review all

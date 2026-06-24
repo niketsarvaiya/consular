@@ -208,7 +208,7 @@ function SortableDocRow({
   };
 
   return (
-    <div ref={setNodeRef} style={style} className={`rounded-xl border ${isDragging ? "border-indigo-300 bg-indigo-50" : "border-slate-200 bg-white"} overflow-hidden`}>
+    <div ref={setNodeRef} style={style} className={`rounded-xl border ${isDragging ? "border-iris-300 bg-iris-50" : "border-slate-200 bg-white"} overflow-hidden`}>
       <div className="flex items-center gap-3 px-4 py-3">
         <button
           type="button"
@@ -241,7 +241,7 @@ function SortableDocRow({
                   key={p.key}
                   type="button"
                   onClick={() => onChange({ ...item, title: p.title, key: p.key, description: p.description })}
-                  className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-600 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 transition-colors"
+                  className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-medium text-slate-600 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 transition-colors"
                 >
                   {p.title}
                 </button>
@@ -255,7 +255,7 @@ function SortableDocRow({
             type="checkbox"
             checked={item.isRequired}
             onChange={(e) => onChange({ ...item, isRequired: e.target.checked })}
-            className="h-3.5 w-3.5 rounded border-slate-300 accent-indigo-600"
+            className="h-3.5 w-3.5 rounded border-slate-300 accent-iris-600"
           />
           Required
         </label>
@@ -277,7 +277,7 @@ function SortableDocRow({
               value={item.description}
               onChange={(e) => onChange({ ...item, description: e.target.value })}
               rows={2}
-              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none resize-none"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:border-iris-400 focus:outline-none resize-none"
               placeholder="What should the customer upload?"
             />
           </div>
@@ -289,7 +289,7 @@ function SortableDocRow({
                   key={fmt}
                   type="button"
                   onClick={() => toggleFormat(fmt)}
-                  className={`rounded-md px-2.5 py-1 text-xs font-medium border transition-colors ${item.acceptedFormats.includes(fmt) ? "border-indigo-300 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-500 hover:border-slate-300"}`}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium border transition-colors ${item.acceptedFormats.includes(fmt) ? "border-iris-300 bg-iris-50 text-iris-700" : "border-slate-200 text-slate-500 hover:border-slate-300"}`}
                 >
                   .{fmt}
                 </button>
@@ -304,7 +304,7 @@ function SortableDocRow({
               max={50}
               value={item.maxFileSizeMb}
               onChange={(e) => onChange({ ...item, maxFileSizeMb: Number(e.target.value) })}
-              className="w-24 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none"
+              className="w-24 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:border-iris-400 focus:outline-none"
             />
           </div>
         </div>
@@ -581,7 +581,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-60 transition-all"
+          className="flex items-center gap-2 rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-ink-700 disabled:opacity-60 transition-all"
         >
           {saving ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {saving ? "Saving…" : "Save changes"}
@@ -597,7 +597,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
               activeTab === tab.id
-                ? "border-indigo-600 text-indigo-700 bg-indigo-50/50"
+                ? "border-iris-600 text-iris-700 bg-iris-50/50"
                 : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
             }`}
           >
@@ -618,7 +618,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
               <select
                 value={visaCategory}
                 onChange={(e) => setVisaCategory(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-iris-400 focus:outline-none"
               >
                 {VISA_CATEGORIES.map((c) => (
                   <option key={c} value={c}>{c.replace(/_/g, " ")}</option>
@@ -636,7 +636,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                     min={1}
                     value={procMin}
                     onChange={(e) => setProcMin(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-iris-400 focus:outline-none"
                   />
                 </div>
                 <span className="text-slate-400 mt-5">–</span>
@@ -647,7 +647,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                     min={1}
                     value={procMax}
                     onChange={(e) => setProcMax(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-iris-400 focus:outline-none"
                   />
                 </div>
               </div>
@@ -659,7 +659,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 value={procNotes}
                 onChange={(e) => setProcNotes(e.target.value)}
                 rows={3}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none resize-none"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-iris-400 focus:outline-none resize-none"
                 placeholder="e.g. Processing times may be longer during peak seasons"
               />
             </div>
@@ -676,7 +676,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
               <button
                 type="button"
                 onClick={() => addDoc(true)}
-                className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
+                className="flex items-center gap-1.5 rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold text-white hover:bg-ink-700"
               >
                 <Plus className="h-3.5 w-3.5" /> Add document
               </button>
@@ -731,7 +731,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                   <select
                     value={feeCurrency}
                     onChange={(e) => setFeeCurrency(e.target.value)}
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none shrink-0"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-iris-400 focus:outline-none shrink-0"
                   >
                     {SUPPORTED_CURRENCIES.map((c) => (
                       <option key={c.code} value={c.code}>{c.label}</option>
@@ -743,7 +743,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                     step={0.01}
                     value={foreignGovFee}
                     onChange={(e) => setForeignGovFee(Number(e.target.value))}
-                    className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+                    className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-iris-400 focus:outline-none"
                     placeholder="0"
                   />
                 </div>
@@ -768,7 +768,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                     min={0}
                     value={serviceFeeINR}
                     onChange={(e) => setServiceFeeINR(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-200 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-indigo-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-white pl-7 pr-3 py-2.5 text-sm text-slate-900 focus:border-iris-400 focus:outline-none"
                     placeholder="0"
                   />
                 </div>
@@ -785,7 +785,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                   step={0.1}
                   value={gatewayFeePct}
                   onChange={(e) => setGatewayFeePct(Number(e.target.value))}
-                  className="w-full accent-indigo-600"
+                  className="w-full accent-iris-600"
                 />
                 <div className="flex justify-between text-[10px] text-slate-400 mt-0.5">
                   <span>0%</span><span>2.5%</span><span>5%</span>
@@ -803,7 +803,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                       key={pct}
                       type="button"
                       onClick={() => setGstPct(pct)}
-                      className={`flex-1 rounded-lg border py-1.5 text-xs font-medium transition-colors ${gstPct === pct ? "border-indigo-400 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-500 hover:border-slate-300"}`}
+                      className={`flex-1 rounded-lg border py-1.5 text-xs font-medium transition-colors ${gstPct === pct ? "border-iris-400 bg-iris-50 text-iris-700" : "border-slate-200 text-slate-500 hover:border-slate-300"}`}
                     >
                       {pct}%
                     </button>
@@ -817,7 +817,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                   type="text"
                   value={feeNotes}
                   onChange={(e) => setFeeNotes(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-iris-400 focus:outline-none"
                   placeholder="e.g. Excludes courier charges"
                 />
               </div>
@@ -849,7 +849,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 </div>
                 <div className="border-t-2 border-slate-300 pt-3 flex justify-between">
                   <span className="font-bold text-slate-900">Total charged to customer</span>
-                  <span className="text-xl font-black text-indigo-700">₹{totalINR.toLocaleString("en-IN")}</span>
+                  <span className="text-xl font-black text-iris-700">₹{totalINR.toLocaleString("en-IN")}</span>
                 </div>
                 {feeNotes && (
                   <p className="text-xs text-slate-400 italic">{feeNotes}</p>
@@ -1032,7 +1032,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                   type="text"
                   value={tagline}
                   onChange={(e) => setTagline(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-iris-400 focus:outline-none"
                   placeholder="e.g. Land of cherry blossoms and bullet trains"
                 />
               </div>
@@ -1046,7 +1046,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                     <button
                       type="button"
                       onClick={() => setHeroImages((prev) => [...prev, ""])}
-                      className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                      className="flex items-center gap-1 text-xs text-iris-600 hover:text-iris-700 font-medium"
                     >
                       <Plus className="h-3.5 w-3.5" /> Add image
                     </button>
@@ -1064,7 +1064,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                   {heroImages.map((url, idx) => (
                     <div key={idx} className="rounded-xl border border-slate-200 overflow-hidden">
                       <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border-b border-slate-100">
-                        <span className={`text-[10px] font-bold rounded px-1.5 py-0.5 ${idx === 0 ? "bg-indigo-100 text-indigo-700" : "bg-slate-200 text-slate-500"}`}>
+                        <span className={`text-[10px] font-bold rounded px-1.5 py-0.5 ${idx === 0 ? "bg-iris-100 text-iris-700" : "bg-slate-200 text-slate-500"}`}>
                           {idx === 0 ? "MAIN HERO" : `MOSAIC ${idx}`}
                         </span>
                         <input
@@ -1108,7 +1108,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400">FAQ Categories</h3>
                 <button
                   onClick={addFaqCategory}
-                  className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
+                  className="flex items-center gap-1.5 rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold text-white hover:bg-ink-700"
                 >
                   <Plus className="h-3.5 w-3.5" /> Add category
                 </button>
@@ -1135,7 +1135,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                       />
                       <button
                         onClick={() => addFaqQuestion(cat.id)}
-                        className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                        className="flex items-center gap-1 text-xs text-iris-600 hover:text-iris-700 font-medium"
                       >
                         <Plus className="h-3.5 w-3.5" /> Add Q&A
                       </button>
@@ -1154,7 +1154,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                             <input
                               value={q.q}
                               onChange={(e) => updateFaqQuestion(cat.id, q.id, "q", e.target.value)}
-                              className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-indigo-400 focus:outline-none"
+                              className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-iris-400 focus:outline-none"
                               placeholder="Question…"
                             />
                             <button onClick={() => deleteFaqQuestion(cat.id, q.id)} className="text-red-300 hover:text-red-500 mt-1">
@@ -1167,7 +1167,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                               value={q.a}
                               onChange={(e) => updateFaqQuestion(cat.id, q.id, "a", e.target.value)}
                               rows={2}
-                              className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none resize-none"
+                              className="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:border-iris-400 focus:outline-none resize-none"
                               placeholder="Answer…"
                             />
                           </div>
@@ -1190,7 +1190,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 value={apptNotes}
                 onChange={(e) => setApptNotes(e.target.value)}
                 rows={4}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none resize-none"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-iris-400 focus:outline-none resize-none"
                 placeholder="Instructions about scheduling appointments at the consulate or visa centre…"
               />
             </div>
@@ -1201,7 +1201,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 value={bioNotes}
                 onChange={(e) => setBioNotes(e.target.value)}
                 rows={4}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none resize-none"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-iris-400 focus:outline-none resize-none"
                 placeholder="Information about biometric data collection requirements…"
               />
             </div>
@@ -1212,7 +1212,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                 value={vacNotes}
                 onChange={(e) => setVacNotes(e.target.value)}
                 rows={4}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none resize-none"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:border-iris-400 focus:outline-none resize-none"
                 placeholder="Details about Visa Application Centres — locations, hours, fees…"
               />
             </div>
@@ -1240,7 +1240,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                           prev.map((l) => (l.id === link.id ? { ...l, label: e.target.value } : l))
                         )
                       }
-                      className="w-36 shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none"
+                      className="w-36 shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 focus:border-iris-400 focus:outline-none"
                       placeholder="Label"
                     />
                     <div className="flex-1 relative">
@@ -1253,7 +1253,7 @@ export function PolicyEditor({ policyId, countryCode, countryName, visaType, ini
                             prev.map((l) => (l.id === link.id ? { ...l, url: e.target.value } : l))
                           )
                         }
-                        className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 py-2 text-xs text-slate-700 focus:border-indigo-400 focus:outline-none"
+                        className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 py-2 text-xs text-slate-700 focus:border-iris-400 focus:outline-none"
                         placeholder="https://…"
                       />
                     </div>

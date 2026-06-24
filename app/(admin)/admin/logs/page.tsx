@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Policy Activity Log" };
 
 const SOURCE_LABELS: Record<string, { label: string; cls: string }> = {
-  manual_edit:  { label: "Manual Edit",   cls: "bg-indigo-100 text-indigo-700" },
+  manual_edit:  { label: "Manual Edit",   cls: "bg-iris-100 text-iris-700" },
   auto_refresh: { label: "Auto Refresh",  cls: "bg-sky-100 text-sky-700" },
   initial:      { label: "Initial",       cls: "bg-slate-100 text-slate-500" },
 };
@@ -104,7 +104,7 @@ export default async function PolicyLogsPage({ searchParams }: Props) {
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { label: "Total Snapshots", value: totalCount, cls: "text-slate-900" },
-          { label: "Manual Edits",    value: manualCount, cls: "text-indigo-700" },
+          { label: "Manual Edits",    value: manualCount, cls: "text-iris-700" },
           { label: "Auto Refreshes",  value: autoCount,   cls: "text-sky-700" },
           { label: "Pending Review",  value: pendingCount, cls: "text-amber-700" },
         ].map((s) => (
@@ -123,7 +123,7 @@ export default async function PolicyLogsPage({ searchParams }: Props) {
             name="country"
             defaultValue={country}
             placeholder="Filter by country…"
-            className="h-8 rounded-l-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 placeholder:text-slate-400 focus:border-indigo-400 focus:outline-none w-44"
+            className="h-8 rounded-l-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 placeholder:text-slate-400 focus:border-iris-400 focus:outline-none w-44"
           />
           {source && <input type="hidden" name="source" value={source} />}
           {status && <input type="hidden" name="status" value={status} />}
@@ -215,7 +215,7 @@ export default async function PolicyLogsPage({ searchParams }: Props) {
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/logs?country=${encodeURIComponent(country.name)}`}
-                      className="text-xs font-medium text-slate-800 hover:text-indigo-700"
+                      className="text-xs font-medium text-slate-800 hover:text-iris-700"
                     >
                       {country.name}
                     </Link>
@@ -249,7 +249,7 @@ export default async function PolicyLogsPage({ searchParams }: Props) {
                   <td className="px-4 py-3">
                     <Link
                       href={`/admin/policy/${country.code.toLowerCase()}/${snap.policy.visaType.toLowerCase()}`}
-                      className="text-xs font-medium text-indigo-600 hover:text-indigo-800 whitespace-nowrap"
+                      className="text-xs font-medium text-iris-600 hover:text-iris-700 whitespace-nowrap"
                     >
                       View policy →
                     </Link>
@@ -288,7 +288,7 @@ export default async function PolicyLogsPage({ searchParams }: Props) {
                   href={pageUrl(p)}
                   className={`rounded-lg border px-3 py-1.5 font-medium transition-colors ${
                     p === page
-                      ? "border-indigo-600 bg-indigo-600 text-white"
+                      ? "border-iris-600 bg-ink text-white"
                       : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                   }`}
                 >

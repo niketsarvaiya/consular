@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Shield, Globe, Users, CheckCircle } from "lucide-react";
+import { Reveal } from "@/components/shared/Reveal";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -120,12 +121,14 @@ export default function AboutPage() {
             <h2 className="text-3xl font-bold tracking-tight text-ink">Our principles</h2>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {VALUES.map((v) => (
-              <div key={v.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <v.icon className="mb-4 h-6 w-6 text-iris-600" />
-                <h3 className="text-sm font-bold text-ink">{v.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-500">{v.description}</p>
-              </div>
+            {VALUES.map((v, i) => (
+              <Reveal key={v.title} delay={i * 0.08} className="h-full">
+                <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                  <v.icon className="mb-4 h-6 w-6 text-iris-600" />
+                  <h3 className="text-sm font-bold text-ink">{v.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-500">{v.description}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -138,15 +141,17 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold tracking-tight text-ink">A small team with deep focus</h2>
         </div>
         <div className="mx-auto grid max-w-2xl gap-6 sm:grid-cols-2">
-          {TEAM.map((m) => (
-            <div key={m.name} className="rounded-2xl border border-slate-100 bg-white p-6 text-center shadow-sm">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-ink to-ink-700 text-base font-bold text-white">
-                {m.initials}
+          {TEAM.map((m, i) => (
+            <Reveal key={m.name} delay={i * 0.1} className="h-full">
+              <div className="h-full rounded-2xl border border-slate-100 bg-white p-6 text-center shadow-sm">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-ink to-ink-700 text-base font-bold text-white">
+                  {m.initials}
+                </div>
+                <p className="font-bold text-ink">{m.name}</p>
+                <p className="text-xs font-medium text-iris-600 mt-0.5">{m.role}</p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">{m.description}</p>
               </div>
-              <p className="font-bold text-ink">{m.name}</p>
-              <p className="text-xs font-medium text-iris-600 mt-0.5">{m.role}</p>
-              <p className="mt-3 text-sm leading-relaxed text-slate-500">{m.description}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>

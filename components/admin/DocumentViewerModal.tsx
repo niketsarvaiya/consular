@@ -141,7 +141,7 @@ function PreviewArea({ file }: { file: NonNullable<DocumentForViewer["file"]> })
         href={file.downloadUrl}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+        className="flex items-center gap-2 rounded-xl bg-ink px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink-700"
       >
         <Download className="h-4 w-4" />
         Download to preview
@@ -251,7 +251,7 @@ export function DocumentViewerModal({
                   <button
                     key={doc.checklistItemId}
                     onClick={() => { setCurrentIndex(idx); setShowRejectInput(false); }}
-                    className={`w-full text-left flex items-start gap-3 px-4 py-3 transition-colors ${isActive ? "bg-white border-r-2 border-indigo-500" : "hover:bg-white/60"}`}
+                    className={`w-full text-left flex items-start gap-3 px-4 py-3 transition-colors ${isActive ? "bg-white border-r-2 border-iris-500" : "hover:bg-white/60"}`}
                   >
                     <div className="mt-0.5 shrink-0">
                       {doc.file ? (
@@ -261,7 +261,7 @@ export function DocumentViewerModal({
                       )}
                     </div>
                     <div className="min-w-0">
-                      <p className={`text-xs font-medium leading-tight ${isActive ? "text-indigo-700" : "text-slate-700"} truncate`}>
+                      <p className={`text-xs font-medium leading-tight ${isActive ? "text-iris-700" : "text-slate-700"} truncate`}>
                         {doc.checklistTitle}
                       </p>
                       <div className="flex items-center gap-1.5 mt-1">

@@ -62,8 +62,8 @@ export function PolicyRefreshButton({ policyId, countryName }: PolicyRefreshButt
 
   const meta: Record<RefreshState, { icon: React.ReactNode; label: string; cls: string }> = {
     idle:           { icon: <RefreshCw className="h-3.5 w-3.5 text-slate-400" />,               label: "Refresh policy",    cls: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50" },
-    queuing:        { icon: <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-500" />,   label: "Queuing…",          cls: "border-indigo-200 bg-indigo-50 text-indigo-700 opacity-80" },
-    polling:        { icon: <Loader2 className="h-3.5 w-3.5 animate-spin text-indigo-500" />,   label: "Checking sources…", cls: "border-indigo-200 bg-indigo-50 text-indigo-700 opacity-80" },
+    queuing:        { icon: <Loader2 className="h-3.5 w-3.5 animate-spin text-iris-500" />,   label: "Queuing…",          cls: "border-iris-100 bg-iris-50 text-iris-700 opacity-80" },
+    polling:        { icon: <Loader2 className="h-3.5 w-3.5 animate-spin text-iris-500" />,   label: "Checking sources…", cls: "border-iris-100 bg-iris-50 text-iris-700 opacity-80" },
     changes_found:  { icon: <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />,           label: "Changes found!",    cls: "border-amber-300 bg-amber-50 text-amber-800" },
     no_changes:     { icon: <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />,          label: "Up to date",        cls: "border-emerald-200 bg-emerald-50 text-emerald-700" },
     error:          { icon: <Info className="h-3.5 w-3.5 text-red-500" />,                      label: "Error",             cls: "border-red-200 bg-red-50 text-red-700" },

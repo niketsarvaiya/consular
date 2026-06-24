@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Mail, Clock, MessageCircle, Phone, CheckCircle } from "lucide-react";
+import { Reveal } from "@/components/shared/Reveal";
 
 const TOPICS = [
   "Application status",
@@ -27,13 +28,13 @@ export default function ContactPage() {
       {/* ── HEADER ── */}
       <div className="border-b border-slate-100 bg-gradient-to-br from-slate-50 to-iris-50/40 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-iris-500">Get in touch</p>
             <h1 className="text-4xl font-bold tracking-tight text-ink">How can we help?</h1>
             <p className="mt-4 text-base leading-relaxed text-slate-500">
               Our team responds to every message. Whether you have a question about your application, a document query, or just need guidance — we&apos;re here.
             </p>
-          </div>
+          </Reveal>
         </div>
       </div>
 

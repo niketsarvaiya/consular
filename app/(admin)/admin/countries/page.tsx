@@ -55,7 +55,7 @@ export default async function AdminCountriesPage() {
         {[
           { label: "Total countries", value: stats.total, color: "text-slate-900" },
           { label: "Active", value: stats.active, color: "text-emerald-700" },
-          { label: "Have policies", value: stats.withPolicies, color: "text-indigo-700" },
+          { label: "Have policies", value: stats.withPolicies, color: "text-iris-700" },
           { label: "Needs review", value: stats.needsReview, color: "text-amber-700" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">

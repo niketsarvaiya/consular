@@ -98,7 +98,7 @@ export function CountryManager({ countries: initial }: CountryManagerProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search countries…"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:bg-white"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-4 py-2 text-sm text-slate-700 focus:border-iris-400 focus:outline-none focus:bg-white"
           />
         </div>
 
