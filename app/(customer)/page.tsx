@@ -362,9 +362,9 @@ export default function HomePage() {
             {/* travel image */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1800&q=80&auto=format&fit=crop"
+              src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1800&q=80&auto=format&fit=crop"
               alt=""
-              className="animate-kenburns absolute inset-0 h-full w-full object-cover"
+              className="animate-kenburns absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-br from-ink-900/90 via-ink-900/75 to-ink-900/60" />
             {/* subtle sunset accent glow */}
