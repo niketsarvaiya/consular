@@ -108,7 +108,7 @@ export default function HomePage() {
         <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-ink-900/70 via-ink-900/35 to-transparent" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink-900/55 to-transparent" />
 
-        <div className="mx-auto max-w-7xl px-4 pb-16 pt-20 sm:px-6 lg:px-8 lg:pb-24 lg:pt-28">
+        <div className="relative mx-auto max-w-7xl px-4 pb-16 pt-20 sm:px-6 lg:px-8 lg:pb-24 lg:pt-28">
           <Reveal className="max-w-2xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium text-white shadow-sm backdrop-blur">
               <span className="relative flex h-2 w-2">
@@ -118,9 +118,9 @@ export default function HomePage() {
               Verified visa data — updated from official sources
             </div>
 
-            <h1 className="text-4xl font-bold leading-[1.04] tracking-tight text-white drop-shadow-sm sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-bold leading-[1.04] tracking-tight text-white [text-shadow:0_2px_18px_rgba(13,14,18,0.45)] sm:text-5xl lg:text-6xl">
               Your visa,{" "}
-              <span className="bg-gradient-to-r from-coral-300 via-white to-azure-200 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-coral-300 via-iris-200 to-azure-200 bg-clip-text text-transparent [text-shadow:none]">
                 handled with care.
               </span>
             </h1>
@@ -148,6 +148,42 @@ export default function HomePage() {
               Free to start · No card required · 12+ countries covered
             </p>
           </Reveal>
+
+          {/* Floating product cards (right side) */}
+          <div className="pointer-events-none absolute inset-0 hidden lg:block">
+            {/* Visa approved */}
+            <div className="animate-float absolute right-12 top-28 flex items-center gap-3 rounded-2xl border border-white/40 bg-white/90 px-4 py-3 shadow-2xl backdrop-blur">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-sage-50 text-sage">
+                <CheckCircle className="h-5 w-5" />
+              </span>
+              <div className="text-left">
+                <p className="text-sm font-bold leading-tight text-ink">Visa approved</p>
+                <p className="text-[11px] leading-tight text-ink-400">Japan · 4 days</p>
+              </div>
+            </div>
+
+            {/* Rating */}
+            <div className="animate-float absolute right-32 top-[19rem] rounded-2xl border border-white/40 bg-white/90 px-4 py-3 shadow-2xl backdrop-blur" style={{ animationDelay: "1.3s" }}>
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                ))}
+                <span className="ml-1 text-sm font-bold text-ink">4.8</span>
+              </div>
+              <p className="mt-0.5 text-[11px] text-ink-400">Loved by 10,000+ travellers</p>
+            </div>
+
+            {/* Docs reviewed */}
+            <div className="animate-float absolute right-16 top-[27rem] flex items-center gap-3 rounded-2xl border border-white/40 bg-white/90 px-4 py-3 shadow-2xl backdrop-blur" style={{ animationDelay: "0.7s" }}>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-iris-50 text-iris">
+                <FileCheck className="h-5 w-5" />
+              </span>
+              <div className="text-left">
+                <p className="text-sm font-bold leading-tight text-ink">Documents reviewed</p>
+                <p className="text-[11px] leading-tight text-ink-400">by a real specialist</p>
+              </div>
+            </div>
+          </div>
 
           {/* Overlapping destination thumbnails */}
           <div className="mt-14 hidden items-end lg:flex">
