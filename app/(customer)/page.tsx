@@ -176,7 +176,7 @@ export default function HomePage() {
 
             <h1 className="text-4xl font-bold leading-[1.04] tracking-tight text-white [text-shadow:0_2px_20px_rgba(13,14,18,0.55)] sm:text-5xl lg:text-6xl">
               Your visa,{" "}
-              <span className="bg-gradient-to-r from-coral-300 via-coral-200 to-iris-200 bg-clip-text text-transparent [text-shadow:0_2px_16px_rgba(13,14,18,0.5)]">
+              <span className="bg-gradient-to-r from-coral-400 via-coral-400 to-iris-400 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(0,0,0,0.65)]">
                 handled with care.
               </span>
             </h1>
