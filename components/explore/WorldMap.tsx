@@ -20,6 +20,10 @@ import {
 // 50m = smooth, realistic borders
 const GEO_URL =
   "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
+// Official India boundary (incl. full J&K) overlaid on top of Natural Earth,
+// which otherwise renders India cut off at the Line of Control.
+const INDIA_GEO_URL = "/india-boundary.json";
+const INDIA_GEO_ID = "356";
 
 const BASE_COUNTRY = "#1e3a5f";
 const BG_COLOR = "#0a1628";
@@ -221,6 +225,31 @@ export function WorldMap({ activeFilter, onCountryClick, selectedCountry }: Worl
                 );
               })
             }
+          </Geographies>
+
+          {/* ── India official boundary overlay (completes J&K) ── */}
+          <Geographies geography={INDIA_GEO_URL}>
+            {({ geographies }: { geographies: any[] }) => {
+              const fill = getFill(INDIA_GEO_ID);
+              const isSelected = selectedCountry?.isoNumeric === INDIA_GEO_ID;
+              const country = COUNTRY_BY_NUMERIC[INDIA_GEO_ID];
+              const isLive = !!country?.hasLivePage;
+              return geographies.map((geo: any) => (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  style={{
+                    default: { fill: isSelected ? "#f1f5f9" : fill, stroke: "#0a1628", strokeWidth: 0.2, outline: "none", cursor: isLive ? "pointer" : "default", transition: "fill 0.18s ease" },
+                    hover: { fill: isSelected ? "#ffffff" : (HOVER[fill] ?? "#2d5080"), stroke: "#0a1628", strokeWidth: 0.2, outline: "none", cursor: isLive ? "pointer" : "default" },
+                    pressed: { fill: "#e2e8f0", stroke: "#0a1628", strokeWidth: 0.2, outline: "none" },
+                  }}
+                  onMouseEnter={(e) => handleMove(e as unknown as React.MouseEvent<SVGPathElement>, INDIA_GEO_ID)}
+                  onMouseMove={(e) => handleMove(e as unknown as React.MouseEvent<SVGPathElement>, INDIA_GEO_ID)}
+                  onMouseLeave={() => setTooltip(null)}
+                  onClick={() => { if (country && isLive) onCountryClick(country); }}
+                />
+              ));
+            }}
           </Geographies>
 
           {/* ── Country name labels ── */}
