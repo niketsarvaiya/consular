@@ -14,9 +14,15 @@ export async function uploadChecklistDocument(params: {
 }) {
   const { applicationId, checklistItemId, customerId } = params;
 
-  // Verify ownership
+  // Verify ownership: the checklist item must belong to an application owned by
+  // THIS customer. Prevents a logged-in user from uploading into (or tampering
+  // with) another customer's application.
   const item = await prisma.checklistItem.findFirst({
-    where: { id: checklistItemId, applicationId },
+    where: {
+      id: checklistItemId,
+      applicationId,
+      application: { customerId },
+    },
   });
 
   if (!item) throw new Error("Checklist item not found.");
@@ -109,11 +115,22 @@ export async function uploadPassportDocument(params: {
  */
 export async function getApplicationDocuments(
   applicationId: string,
+  customerId: string,
   options?: { activeOnly?: boolean }
 ) {
+  // Ownership gate: only return documents that belong to this customer's
+  // application. Prevents IDOR — a logged-in user cannot fetch another
+  // customer's documents (and their signed download URLs) by guessing an ID.
+  const owns = await prisma.application.findFirst({
+    where: { id: applicationId, customerId },
+    select: { id: true },
+  });
+  if (!owns) return [];
+
   const documents = await prisma.document.findMany({
     where: {
       applicationId,
+      customerId,
       ...(options?.activeOnly !== false && { isActive: true }),
     },
     include: {

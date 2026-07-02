@@ -12,7 +12,7 @@ export async function GET(
   if (response) return response;
 
   try {
-    const documents = await getApplicationDocuments(params.id, { activeOnly: true });
+    const documents = await getApplicationDocuments(params.id, session!.user.id, { activeOnly: true });
     return NextResponse.json({ success: true, data: documents });
   } catch (error) {
     console.error("[documents GET]", error);
