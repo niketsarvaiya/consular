@@ -199,8 +199,12 @@ function RegisterForm() {
                 {form.consentGiven && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
               </div>
               <span className="text-xs text-slate-500">
-                I consent to the storage and processing of my personal documents for visa application purposes. I
-                understand visa approval is at embassy discretion.
+                I consent to the storage and processing of my personal documents for visa application purposes, and I
+                agree to the{" "}
+                <a href="/privacy" target="_blank" className="font-medium text-iris-600 hover:underline">Privacy Policy</a>{" "}
+                and{" "}
+                <a href="/terms" target="_blank" className="font-medium text-iris-600 hover:underline">Terms</a>.
+                I understand visa approval is at embassy discretion.
               </span>
             </label>
 

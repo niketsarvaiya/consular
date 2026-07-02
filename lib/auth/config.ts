@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import { loginSchema } from "@/lib/utils/validators";
+import { rateLimit } from "@/lib/security/rate-limit";
 
 // Extend NextAuth types
 declare module "next-auth" {
@@ -50,6 +51,10 @@ export const authOptions: NextAuthOptions = {
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
+        // Throttle password attempts per email (brute-force protection)
+        const rl = await rateLimit(`login:cust:${parsed.data.email.toLowerCase()}`, 10, 300);
+        if (!rl.ok) throw new Error("Too many login attempts. Please try again in a few minutes.");
+
         const customer = await prisma.customer.findUnique({
           where: { email: parsed.data.email, deletedAt: null },
         });
@@ -82,6 +87,9 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
+
+        const rl = await rateLimit(`login:ops:${parsed.data.email.toLowerCase()}`, 10, 300);
+        if (!rl.ok) throw new Error("Too many login attempts. Please try again in a few minutes.");
 
         const opsUser = await prisma.opsUser.findUnique({
           where: { email: parsed.data.email, isActive: true, deletedAt: null },

@@ -4,6 +4,7 @@ import { uploadPassportDocument } from "@/lib/services/document.service";
 import { prisma } from "@/lib/db/prisma";
 import { passportCorrectionSchema } from "@/lib/utils/validators";
 import { encrypt } from "@/lib/utils/crypto";
+import { rateLimit, tooManyRequests } from "@/lib/security/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -14,6 +15,9 @@ export async function POST(
 ) {
   const { session, response } = await requireCustomer();
   if (response) return response;
+
+  const rl = await rateLimit(`upload:${session!.user.id}`, 30, 60);
+  if (!rl.ok) return NextResponse.json(tooManyRequests(), { status: 429 });
 
   try {
     const formData = await req.formData();

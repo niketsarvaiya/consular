@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireCustomer } from "@/lib/auth/guards";
 import { uploadChecklistDocument, getApplicationDocuments } from "@/lib/services/document.service";
+import { rateLimit, tooManyRequests } from "@/lib/security/rate-limit";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -26,6 +27,9 @@ export async function POST(
 ) {
   const { session, response } = await requireCustomer();
   if (response) return response;
+
+  const rl = await rateLimit(`upload:${session!.user.id}`, 30, 60);
+  if (!rl.ok) return NextResponse.json(tooManyRequests(), { status: 429 });
 
   try {
     const formData = await req.formData();

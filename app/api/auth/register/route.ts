@@ -4,9 +4,14 @@ import { prisma } from "@/lib/db/prisma";
 import { registerSchema } from "@/lib/utils/validators";
 import { logAction } from "@/lib/services/audit.service";
 import { enqueueNotification } from "@/lib/services/notification.service";
+import { rateLimit, clientIp, tooManyRequests } from "@/lib/security/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
+    // Throttle sign-ups per IP (anti-abuse / bot registration)
+    const rl = await rateLimit(`register:${clientIp(req)}`, 5, 60);
+    if (!rl.ok) return NextResponse.json(tooManyRequests(), { status: 429 });
+
     const body = await req.json();
     const parsed = registerSchema.safeParse(body);
 

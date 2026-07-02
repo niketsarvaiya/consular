@@ -8,6 +8,7 @@ import {
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ProfileMap, type PlannedTrip } from "@/components/customer/ProfileMap";
 import { ALL_COUNTRIES, COUNTRY_BY_NUMERIC } from "@/lib/countries-data";
+import { DangerZone } from "@/components/customer/DangerZone";
 
 export interface DashboardApp {
   id: string;
@@ -357,6 +358,9 @@ export function DashboardClient({
             </p>
           )}
         </div>
+
+        {/* ── Danger zone: right to erasure ── */}
+        <DangerZone />
       </div>
     </div>
   );

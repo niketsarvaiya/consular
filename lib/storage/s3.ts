@@ -6,6 +6,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { randomUUID } from "crypto";
+import { assertAllowedFile } from "@/lib/security/file-validate";
 
 // ─── Cloudflare R2 (S3-compatible) ───────────────────────────────────────────
 
@@ -63,8 +64,11 @@ export async function uploadDocument(
   }
 
   if (buffer.byteLength > MAX_FILE_SIZE_BYTES) {
-    throw new Error(`File exceeds the 10MB limit.`);
+    throw new Error(`File exceeds the 5MB limit.`);
   }
+
+  // Verify real content via magic bytes — the client MIME type is spoofable.
+  assertAllowedFile(buffer);
 
   const ext = originalName.split(".").pop() ?? "bin";
   const fileKey = `${folder}/${randomUUID()}.${ext}`;
