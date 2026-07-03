@@ -49,6 +49,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
                   { href: "/contact", label: "Contact Us" },
                   { href: "/privacy", label: "Privacy Policy" },
                   { href: "/terms", label: "Terms of Service" },
+                  { href: "/refund", label: "Refund Policy" },
                 ].map((l) => (
                   <Link key={l.href} href={l.href} className="text-sm font-medium text-ivory/70 transition-colors hover:text-gold">
                     {l.label}
