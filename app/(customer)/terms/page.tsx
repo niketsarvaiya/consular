@@ -165,9 +165,9 @@ export default function TermsPage() {
           <Section n="18" title="Governing law & dispute resolution">
             These Terms are governed by the laws of India. Subject to any mandatory
             consumer-protection rights you may have, the courts at
-            <span className="italic"> [your city/jurisdiction] </span> shall have
-            exclusive jurisdiction. The parties will first attempt to resolve any
-            dispute amicably before pursuing legal remedies.
+            <strong> Mumbai, Maharashtra</strong> shall have exclusive jurisdiction.
+            The parties will first attempt to resolve any dispute amicably before
+            pursuing legal remedies.
           </Section>
 
           <Section n="19" title="Contact & grievance redressal">
