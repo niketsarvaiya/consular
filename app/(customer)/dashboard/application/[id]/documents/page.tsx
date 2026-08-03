@@ -24,8 +24,8 @@ export default function DocumentsPage() {
 
   const [application, setApplication] = useState<ApplicationData | null>(null);
   const [uploading, setUploading] = useState<string | null>(null); // checklistItemId being uploaded
+  const [progress, setProgress] = useState<Record<string, number>>({}); // itemId → 0–100
   const [error, setError] = useState("");
-  const [successItemId, setSuccessItemId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/applications/${id}`).then((r) => r.json()).then((data) => {
@@ -33,28 +33,53 @@ export default function DocumentsPage() {
     });
   }, [id]);
 
-  const handleDrop = useCallback(async (acceptedFiles: File[], itemId: string) => {
+  const handleDrop = useCallback((acceptedFiles: File[], itemId: string) => {
     const file = acceptedFiles[0];
     if (!file) return;
     setError("");
     setUploading(itemId);
+    setProgress((p) => ({ ...p, [itemId]: 0 }));
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("checklistItemId", itemId);
+    // XHR (not fetch) so we get real upload-progress events for the progress bar.
+    const xhr = new XMLHttpRequest();
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("checklistItemId", itemId);
 
-    const res = await fetch(`/api/applications/${id}/documents`, { method: "POST", body: formData });
-    const data = await res.json();
-    setUploading(null);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        setProgress((p) => ({ ...p, [itemId]: Math.round((e.loaded / e.total) * 100) }));
+      }
+    };
 
-    if (!data.success) { setError(data.error ?? "Upload failed."); return; }
+    xhr.onload = async () => {
+      setUploading(null);
+      let ok = false;
+      try { ok = xhr.status >= 200 && xhr.status < 300 && JSON.parse(xhr.responseText).success; } catch { ok = false; }
 
-    setSuccessItemId(itemId);
-    setTimeout(() => setSuccessItemId(null), 3000);
+      if (!ok) {
+        let msg = "Upload failed. Please try again.";
+        try { msg = JSON.parse(xhr.responseText).error ?? msg; } catch {}
+        setError(typeof msg === "string" ? msg : "Upload failed.");
+        setProgress((p) => { const n = { ...p }; delete n[itemId]; return n; });
+        return;
+      }
 
-    // Refresh application data
-    const refreshed = await fetch(`/api/applications/${id}`).then((r) => r.json());
-    if (refreshed.success) setApplication(refreshed.data);
+      setProgress((p) => ({ ...p, [itemId]: 100 }));
+      // Refresh so the item's status flips to "Uploaded"
+      const refreshed = await fetch(`/api/applications/${id}`).then((r) => r.json());
+      if (refreshed.success) setApplication(refreshed.data);
+      setTimeout(() => setProgress((p) => { const n = { ...p }; delete n[itemId]; return n; }), 1200);
+    };
+
+    xhr.onerror = () => {
+      setUploading(null);
+      setError("Network error during upload. Please try again.");
+      setProgress((p) => { const n = { ...p }; delete n[itemId]; return n; });
+    };
+
+    xhr.open("POST", `/api/applications/${id}/documents`);
+    xhr.send(fd);
   }, [id]);
 
   if (!application) {
@@ -75,11 +100,6 @@ export default function DocumentsPage() {
         <p className="mt-1 text-sm text-slate-500">{application.country.name} visa application</p>
       </div>
 
-      <div className="mb-4 flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700">
-        <AlertCircle className="h-4 w-4 shrink-0" />
-        You can upload documents below. File previews are unavailable until cloud storage is configured — your uploads are still recorded.
-      </div>
-
       {error && (
         <div className="mb-4 flex items-center gap-2 rounded-xl bg-red-50 p-4 text-sm text-red-700">
           <AlertCircle className="h-4 w-4 shrink-0" />{error}
@@ -87,17 +107,17 @@ export default function DocumentsPage() {
       )}
 
       <div className="space-y-6">
-        <DocumentSection title="Required Documents" items={requiredItems} onDrop={handleDrop} uploading={uploading} successItemId={successItemId} />
-        {optionalItems.length > 0 && <DocumentSection title="Optional Documents" items={optionalItems} onDrop={handleDrop} uploading={uploading} successItemId={successItemId} optional />}
+        <DocumentSection title="Required Documents" items={requiredItems} onDrop={handleDrop} uploading={uploading} progress={progress} />
+        {optionalItems.length > 0 && <DocumentSection title="Optional Documents" items={optionalItems} onDrop={handleDrop} uploading={uploading} progress={progress} optional />}
       </div>
     </div>
   );
 }
 
-function DocumentSection({ title, items, onDrop, uploading, successItemId, optional }: {
+function DocumentSection({ title, items, onDrop, uploading, progress, optional }: {
   title: string; items: ChecklistItem[];
   onDrop: (files: File[], itemId: string) => void;
-  uploading: string | null; successItemId: string | null; optional?: boolean;
+  uploading: string | null; progress: Record<string, number>; optional?: boolean;
 }) {
   return (
     <div>
@@ -107,21 +127,23 @@ function DocumentSection({ title, items, onDrop, uploading, successItemId, optio
       </h2>
       <div className="space-y-3">
         {items.map((item) => (
-          <DocumentItemCard key={item.id} item={item} onDrop={onDrop} uploading={uploading} successItemId={successItemId} />
+          <DocumentItemCard key={item.id} item={item} onDrop={onDrop} uploading={uploading} progress={progress[item.id]} />
         ))}
       </div>
     </div>
   );
 }
 
-function DocumentItemCard({ item, onDrop, uploading, successItemId }: {
+function DocumentItemCard({ item, onDrop, uploading, progress }: {
   item: ChecklistItem; onDrop: (files: File[], itemId: string) => void;
-  uploading: string | null; successItemId: string | null;
+  uploading: string | null; progress: number | undefined;
 }) {
   const isUploading = uploading === item.id;
-  const isSuccess = successItemId === item.id;
   const isApproved = item.status === "APPROVED";
   const isRejected = item.status === "REJECTED";
+  // Persistent "uploaded" state driven by the item's real status (survives refresh).
+  const isUploaded = ["UPLOADED", "UNDER_REVIEW"].includes(item.status);
+  const pct = progress ?? 0;
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (files) => onDrop(files, item.id),
@@ -137,7 +159,7 @@ function DocumentItemCard({ item, onDrop, uploading, successItemId }: {
   });
 
   return (
-    <div className={`rounded-2xl border p-5 ${isRejected ? "border-red-200 bg-red-50/30" : isApproved ? "border-emerald-200 bg-emerald-50/20" : "border-slate-100 bg-white"} shadow-sm`}>
+    <div className={`rounded-2xl border p-5 ${isRejected ? "border-red-200 bg-red-50/30" : isApproved ? "border-emerald-200 bg-emerald-50/20" : isUploaded ? "border-emerald-100 bg-emerald-50/10" : "border-slate-100 bg-white"} shadow-sm`}>
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
           <p className="font-medium text-slate-900">{item.title}</p>
@@ -154,22 +176,36 @@ function DocumentItemCard({ item, onDrop, uploading, successItemId }: {
         </div>
       )}
 
-      {!isApproved && (
-        <div {...getRootProps()} className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 transition-colors ${isDragActive ? "border-slate-400 bg-slate-50" : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"}`}>
-          <input {...getInputProps()} />
-          {isUploading ? (
-            <><Loader2 className="h-6 w-6 animate-spin text-slate-400" /><p className="mt-2 text-xs text-slate-400">Uploading...</p></>
-          ) : isSuccess ? (
-            <><Check className="h-6 w-6 text-emerald-500" /><p className="mt-2 text-xs text-emerald-600">Uploaded successfully</p></>
-          ) : (
-            <><Upload className="h-6 w-6 text-slate-300" /><p className="mt-2 text-sm text-slate-500">{isDragActive ? "Drop here" : "Click or drag to upload"}</p></>
-          )}
+      {/* Uploading — live progress bar */}
+      {isUploading ? (
+        <div className="rounded-xl border-2 border-dashed border-indigo-200 bg-indigo-50/40 p-5">
+          <div className="flex items-center justify-between text-xs font-medium text-indigo-700">
+            <span className="flex items-center gap-1.5"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Uploading…</span>
+            <span>{pct}%</span>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-indigo-100">
+            <div className="h-2 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-200" style={{ width: `${pct}%` }} />
+          </div>
         </div>
-      )}
-
-      {isApproved && (
-        <div className="flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-xs text-emerald-700">
+      ) : isApproved ? (
+        <div className="flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-xs font-medium text-emerald-700">
           <Check className="h-4 w-4" /> Document approved
+        </div>
+      ) : isUploaded ? (
+        <div className="flex items-center justify-between gap-2 rounded-xl bg-emerald-50 p-3">
+          <span className="flex items-center gap-2 text-xs font-medium text-emerald-700">
+            <Check className="h-4 w-4" /> Uploaded — awaiting review
+          </span>
+          <div {...getRootProps()} className="cursor-pointer text-xs font-medium text-indigo-600 hover:text-indigo-800">
+            <input {...getInputProps()} />
+            Replace
+          </div>
+        </div>
+      ) : (
+        <div {...getRootProps()} className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 transition-colors ${isDragActive ? "border-indigo-400 bg-indigo-50" : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"}`}>
+          <input {...getInputProps()} />
+          <Upload className="h-6 w-6 text-slate-300" />
+          <p className="mt-2 text-sm text-slate-500">{isDragActive ? "Drop here" : "Click or drag to upload"}</p>
         </div>
       )}
     </div>
