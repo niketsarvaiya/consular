@@ -114,7 +114,22 @@ export async function verifyPayment(params: {
     throw new Error("Payment signature verification failed.");
   }
 
-  const paymentOrder = await prisma.paymentOrder.findUniqueOrThrow({
+  return markOrderPaid({ razorpayOrderId, razorpayPaymentId, razorpaySignature });
+}
+
+/**
+ * Idempotently marks an order PAID + advances the application + notifies.
+ * Shared by the client-callback verify flow and the Razorpay webhook, so a
+ * payment is recorded even if the customer closes the tab before the callback.
+ */
+export async function markOrderPaid(params: {
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature?: string;
+}) {
+  const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = params;
+
+  const paymentOrder = await prisma.paymentOrder.findUnique({
     where: { razorpayOrderId },
     include: {
       application: {
@@ -122,6 +137,11 @@ export async function verifyPayment(params: {
       },
     },
   });
+
+  if (!paymentOrder) {
+    // Unknown order (e.g. webhook for an order we didn't create) — ignore safely.
+    return { unknownOrder: true };
+  }
 
   if (paymentOrder.status === "PAID") {
     return { alreadyPaid: true };
