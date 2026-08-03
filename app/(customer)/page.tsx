@@ -4,15 +4,52 @@ import { COUNTRY_HERO_IMAGES } from "@/lib/visa-content";
 import { Reveal } from "@/components/shared/Reveal";
 import { CountUp } from "@/components/shared/CountUp";
 import { HeroSlideshow } from "@/components/customer/HeroSlideshow";
+import { prisma } from "@/lib/db/prisma";
 
-const FEATURED = [
-  { code: "AE", name: "UAE", label: "Tourist Visa", time: "3–5 days" },
-  { code: "TH", name: "Thailand", label: "Visa-free", time: "Instant" },
-  { code: "SG", name: "Singapore", label: "Entry Visa", time: "5–7 days" },
-  { code: "JP", name: "Japan", label: "Visitor Visa", time: "5–7 days" },
-  { code: "NZ", name: "New Zealand", label: "Visitor Visa", time: "10–14 days" },
-  { code: "CA", name: "Canada", label: "TRV", time: "70–99 days" },
-];
+export const dynamic = "force-dynamic";
+
+const VISA_CAT_LABEL: Record<string, string> = {
+  REQUIRED: "Tourist Visa",
+  E_VISA: "e-Visa",
+  ETA: "ETA",
+  VISA_EXEMPT: "Visa-free",
+  VISA_ON_ARRIVAL: "Visa on Arrival",
+};
+
+/** Only destinations that are actually live (active country + active TOURIST policy). */
+async function getFeaturedDestinations() {
+  const countries = await prisma.country.findMany({
+    where: {
+      isActive: true,
+      policies: { some: { status: "ACTIVE", nationality: "IND", visaType: "TOURIST" } },
+    },
+    include: {
+      policies: {
+        where: { status: "ACTIVE", nationality: "IND", visaType: "TOURIST" },
+        select: { productLabel: true, visaCategory: true, processingTimeMin: true, processingTimeMax: true },
+        take: 1,
+      },
+    },
+    orderBy: { sortOrder: "asc" },
+    take: 6,
+  });
+
+  return countries.map((c) => {
+    const p = c.policies[0];
+    const time =
+      p?.processingTimeMin && p?.processingTimeMax
+        ? `${p.processingTimeMin}–${p.processingTimeMax} days`
+        : p?.visaCategory === "VISA_EXEMPT"
+          ? "Visa-free"
+          : "Varies";
+    return {
+      code: c.code,
+      name: c.name,
+      label: p?.productLabel || VISA_CAT_LABEL[p?.visaCategory ?? ""] || "Tourist Visa",
+      time,
+    };
+  });
+}
 
 const STATS = [
   { value: "10,000+", label: "Indian travellers helped" },
@@ -100,7 +137,8 @@ const WHY_VISASETGO = [
   { icon: Shield, title: "Data encrypted", description: "Passport data is AES-256 encrypted. We never share your documents without consent." },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featured = await getFeaturedDestinations();
   return (
     <div className="bg-white">
 
@@ -233,7 +271,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-            {FEATURED.map((d, i) => {
+            {featured.map((d, i) => {
               const img = COUNTRY_HERO_IMAGES[d.code]?.[0] ?? "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80";
               return (
                 <Reveal key={d.code} delay={i * 0.06}>
