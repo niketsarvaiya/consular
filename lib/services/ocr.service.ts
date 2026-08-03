@@ -1,14 +1,45 @@
 import type { PassportOCRResult } from "@/types";
 
 export async function extractPassportData(imageBuffer: Buffer, mimeType: string): Promise<PassportOCRResult> {
-  const provider = process.env.OCR_PROVIDER ?? "google";
   try {
-    if (provider === "google") return await extractWithGoogleVision(imageBuffer, mimeType);
-    throw new Error(`Unsupported OCR provider: ${provider}`);
+    // Auto-select provider by whichever key is configured.
+    if (process.env.GOOGLE_VISION_API_KEY) return await extractWithGoogleVision(imageBuffer, mimeType);
+    if (process.env.OCR_SPACE_API_KEY) return await extractWithOCRSpace(imageBuffer, mimeType);
+    throw new Error("No OCR provider configured (set GOOGLE_VISION_API_KEY or OCR_SPACE_API_KEY).");
   } catch (error) {
     console.error("[OCR] Extraction failed:", error);
     return { confidence: {}, rawResponse: { error: String(error) } };
   }
+}
+
+/** OCR.space — free tier, no billing setup required. */
+async function extractWithOCRSpace(imageBuffer: Buffer, mimeType: string): Promise<PassportOCRResult> {
+  const apiKey = process.env.OCR_SPACE_API_KEY!;
+  const body = new URLSearchParams();
+  body.set("base64Image", `data:${mimeType};base64,${imageBuffer.toString("base64")}`);
+  body.set("OCREngine", "2");
+  body.set("scale", "true");
+  body.set("detectOrientation", "true");
+
+  const res = await fetch("https://api.ocr.space/parse/image", {
+    method: "POST",
+    headers: { apikey: apiKey, "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString(),
+  });
+  if (!res.ok) throw new Error(`OCR.space API error: ${res.status}`);
+
+  const data = (await res.json()) as {
+    IsErroredOnProcessing?: boolean;
+    ErrorMessage?: string | string[];
+    ParsedResults?: Array<{ ParsedText?: string }>;
+  };
+  if (data.IsErroredOnProcessing) {
+    throw new Error(Array.isArray(data.ErrorMessage) ? data.ErrorMessage.join("; ") : String(data.ErrorMessage));
+  }
+
+  const fullText = data.ParsedResults?.[0]?.ParsedText ?? "";
+  const parsed = parseMRZ(fullText);
+  return { ...parsed, rawResponse: { fullText: fullText.slice(0, 2000) } };
 }
 
 async function extractWithGoogleVision(imageBuffer: Buffer, _mimeType: string): Promise<PassportOCRResult> {

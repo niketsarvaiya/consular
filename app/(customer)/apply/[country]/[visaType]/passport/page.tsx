@@ -33,6 +33,43 @@ export default function PassportStepPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  // ── Passport OCR autofill ──
+  const [ocrState, setOcrState] = useState<"idle" | "reading" | "done" | "error">("idle");
+  const [ocrMsg, setOcrMsg] = useState("");
+
+  const handleAutofill = async (file: File | undefined) => {
+    if (!file) return;
+    setOcrState("reading");
+    setOcrMsg("");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/passport/ocr", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error ?? "Could not read passport.");
+      if (!data.extracted) {
+        setOcrState("error");
+        setOcrMsg("Couldn't read the details clearly. Please enter them manually below.");
+        return;
+      }
+      const d = data.data;
+      setForm((f) => ({
+        ...f,
+        fullName: d.fullName || f.fullName,
+        passportNumber: d.passportNumber || f.passportNumber,
+        dateOfBirth: d.dateOfBirth || f.dateOfBirth,
+        expiryDate: d.expiryDate || f.expiryDate,
+        nationality: d.nationality || f.nationality,
+        gender: d.gender || f.gender,
+      }));
+      setOcrState("done");
+      setOcrMsg("We filled in what we could read — please double-check every field against your passport.");
+    } catch (e) {
+      setOcrState("error");
+      setOcrMsg(e instanceof Error ? e.message : "Could not read passport.");
+    }
+  };
+
   const [form, setForm] = useState({
     fullName: "",
     passportNumber: "",
@@ -219,6 +256,43 @@ export default function PassportStepPage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
               <h2 className="text-sm font-semibold text-ink">Passport information</h2>
               <p className="text-xs text-slate-400 -mt-2">All fields must match exactly as printed on your passport.</p>
+
+              {/* Autofill from passport */}
+              <div className="rounded-xl border border-dashed border-iris-200 bg-iris-50/50 p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                      ⚡ Autofill from your passport
+                    </p>
+                    <p className="mt-0.5 text-xs text-slate-500">
+                      Upload a clear photo or scan of the photo page — we&apos;ll read the details for you to review.
+                    </p>
+                  </div>
+                  <label className={`shrink-0 cursor-pointer rounded-xl px-4 py-2 text-sm font-semibold text-white transition-colors ${ocrState === "reading" ? "bg-iris-400" : "bg-ink hover:bg-ink-700"}`}>
+                    {ocrState === "reading" ? (
+                      <span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Reading…</span>
+                    ) : (
+                      "Upload passport"
+                    )}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,application/pdf"
+                      className="hidden"
+                      disabled={ocrState === "reading"}
+                      onChange={(e) => handleAutofill(e.target.files?.[0])}
+                    />
+                  </label>
+                </div>
+                {ocrMsg && (
+                  <p className={`mt-2 text-xs ${ocrState === "error" ? "text-amber-600" : "text-emerald-600"}`}>
+                    {ocrState === "done" && <CheckCircle2 className="mr-1 inline h-3.5 w-3.5" />}
+                    {ocrMsg}
+                  </p>
+                )}
+                <p className="mt-2 text-[10px] text-slate-400">
+                  The image is used only to read your details and isn&apos;t stored by this step. Your data is encrypted.
+                </p>
+              </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="sm:col-span-2">
