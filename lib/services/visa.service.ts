@@ -33,9 +33,30 @@ export async function uploadVisaDocument(params: {
     `visas/${params.applicationId}`
   );
 
-  await prisma.application.update({
-    where: { id: params.applicationId },
-    data: { visaFileKey: fileKey, visaFileName: params.originalName, visaIssuedAt: new Date() },
+  // Attach the file AND advance the application to APPROVED (final step of the
+  // customer's progress tracker), recording the transition — unless already closed.
+  const advance = app.status !== "APPROVED" && app.status !== "CLOSED" && app.status !== "REJECTED";
+  await prisma.$transaction(async (tx) => {
+    await tx.application.update({
+      where: { id: params.applicationId },
+      data: {
+        visaFileKey: fileKey,
+        visaFileName: params.originalName,
+        visaIssuedAt: new Date(),
+        ...(advance && { status: "APPROVED" }),
+      },
+    });
+    if (advance) {
+      await tx.caseStatusHistory.create({
+        data: {
+          applicationId: params.applicationId,
+          fromStatus: app.status,
+          toStatus: "APPROVED",
+          changedById: params.opsUserId,
+          notes: "Visa document issued and delivered to the customer.",
+        },
+      });
+    }
   });
 
   await logAction({

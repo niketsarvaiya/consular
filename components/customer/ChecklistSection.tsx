@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { CheckCircle2, AlertCircle, Circle, Upload, Loader2, Eye } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function ChecklistSection({ applicationId, items }: Props) {
+  const router = useRouter();
   const [uploading, setUploading] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successes, setSuccesses] = useState<Set<string>>(new Set());
@@ -47,10 +49,13 @@ export function ChecklistSection({ applicationId, items }: Props) {
     }
 
     setSuccesses((s) => new Set(s).add(itemId));
+    // Re-fetch the server component so the item's status flips from Rejected →
+    // Uploaded (back under review) instead of showing the stale rejected state.
+    router.refresh();
     setTimeout(() => {
       setSuccesses((s) => { const n = new Set(s); n.delete(itemId); return n; });
     }, 1500);
-  }, [applicationId]);
+  }, [applicationId, router]);
 
   return (
     <div className="space-y-2">
