@@ -137,7 +137,7 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
 
   // ── Phase 2 countries ────────────────────────────────────────────────────
   LK: [
-    "https://images.unsplash.com/photo-1562602833-0f4ab2fc46e5?w=1200&q=80",    // Sigiriya rock fortress
+    "https://images.unsplash.com/photo-1566296314736-6eaac1ca0cb9?w=1200&q=80",    // Sigiriya rock fortress
     "https://images.unsplash.com/photo-1590379492966-e076d8f84c2d?w=600&q=80",  // tea estate
     "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=600&q=80",  // temple
     "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80",  // coast
@@ -151,14 +151,14 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
   ],
   TW: [
-    "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1200&q=80", // Taipei cityscape
-    "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=600&q=80",  // Taipei 101
+    "https://images.unsplash.com/photo-1470004914212-05527e49370b?w=1200&q=80", // Taipei cityscape
+    "https://images.unsplash.com/photo-1470004914212-05527e49370b?w=600&q=80",  // Taipei 101
     "https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?w=600&q=80",  // Taiwan landscape
     "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // mountains
     "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=600&q=80",  // travel
   ],
   HK: [
-    "https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?w=1200&q=80", // Hong Kong harbour night
+    "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=1200&q=80", // Hong Kong harbour night
     "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=600&q=80",  // skyline
     "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80",  // cityscape
     "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // harbour
@@ -172,14 +172,14 @@ export const COUNTRY_HERO_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1469521669194-babb45599def?w=600&q=80",  // landscape
   ],
   QA: [
-    "https://images.unsplash.com/photo-1507666405895-422eee7c5d4e?w=1200&q=80", // Doha skyline
+    "https://images.unsplash.com/photo-1548013146-72479768bada?w=1200&q=80", // Doha skyline
     "https://images.unsplash.com/photo-1562280963-8a5475740a10?w=600&q=80",     // Qatar cityscape
     "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=600&q=80",     // desert city
     "https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?w=600&q=80",  // Gulf
     "https://images.unsplash.com/photo-1477091087fb5acf52e15e?w=600&q=80",      // skyline
   ],
   OM: [
-    "https://images.unsplash.com/photo-1580127885535-2a450eb76ea9?w=1200&q=80", // Oman desert fort
+    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200&q=80", // Oman desert fort
     "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&q=80",  // Muscat
     "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",     // architecture
     "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80",  // desert

@@ -214,6 +214,11 @@ export default function DestinationsPage() {
                         <img
                           src={heroImg}
                           alt={country.name}
+                          loading="lazy"
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            if (img.src !== FALLBACK_IMG) img.src = FALLBACK_IMG;
+                          }}
                           className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
 
