@@ -10,6 +10,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { CaseStatusActions } from "@/components/admin/CaseStatusActions";
 import { CaseDocumentsPanel } from "@/components/admin/CaseDocumentsPanel";
+import { VisaUpload } from "@/components/admin/VisaUpload";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -145,6 +146,13 @@ export default async function AdminCaseDetailPage({ params }: Props) {
           <CaseStatusActions
             applicationId={params.id}
             currentStatus={app.status}
+          />
+
+          {/* Issued visa document */}
+          <VisaUpload
+            applicationId={params.id}
+            initialFileName={app.visaFileName}
+            initialIssuedAt={app.visaIssuedAt ? app.visaIssuedAt.toISOString() : null}
           />
 
           <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">

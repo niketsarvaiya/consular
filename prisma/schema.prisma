@@ -321,6 +321,11 @@ model Application {
   travelDateTo     DateTime?
   purposeNotes     String?
 
+  // Final issued visa document (uploaded by ops after the embassy issues it)
+  visaFileKey      String?
+  visaFileName     String?
+  visaIssuedAt     DateTime?
+
   checklistItems  ChecklistItem[]
   documents       Document[]
   statusHistory   CaseStatusHistory[]

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, CreditCard, CheckCircle2 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ChecklistSection } from "@/components/customer/ChecklistSection";
+import { VisaReadyCard } from "@/components/customer/VisaReadyCard";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -65,6 +66,11 @@ export default async function ApplicationDetailPage({ params }: Props) {
         </div>
         <StatusBadge status={app.status} type="application" />
       </div>
+
+      {/* Issued visa — shown prominently once ops uploads it */}
+      {app.visaFileKey && (
+        <VisaReadyCard applicationId={app.id} fileName={app.visaFileName} issuedAt={app.visaIssuedAt ? app.visaIssuedAt.toISOString() : null} />
+      )}
 
       {/* Progress stepper */}
       <div className="mb-8 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
