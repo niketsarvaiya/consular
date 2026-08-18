@@ -49,7 +49,7 @@ export async function uploadVisaDocument(params: {
 
   if (app.customer) {
     await enqueueNotification({
-      eventType: "visa_issued",
+      eventType: "visa_outcome",
       customerId: app.customer.id,
       applicationId: params.applicationId,
       channel: "EMAIL",
