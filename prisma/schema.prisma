@@ -115,6 +115,7 @@ model Country {
 
   policies     VisaPolicy[]
   applications Application[]
+  agents       OpsUser[]    @relation("AgentCountries")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -468,6 +469,7 @@ model OpsUser {
   deletedAt    DateTime?
 
   assignedCases     Application[]      @relation("AssignedCases")
+  countries         Country[]          @relation("AgentCountries")
   approvedPolicies  VisaPolicy[]       @relation("PolicyApprovedBy")
   statusChanges     CaseStatusHistory[] @relation("StatusChanges")
   caseNotes         CaseNote[]         @relation("CaseNotes")

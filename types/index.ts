@@ -150,6 +150,7 @@ export interface NotificationPayload {
 export interface CaseFilters {
   status?: ApplicationStatus;
   countryId?: string;
+  countryIds?: string[]; // agent scoping — restrict to these countries
   visaType?: VisaType;
   assignedToId?: string;
   paymentStatus?: PaymentStatus;

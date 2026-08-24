@@ -1,4 +1,7 @@
 import { getCases } from "@/lib/services/application.service";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/config";
+import { agentCountryIds } from "@/lib/auth/scope";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { MaskedText } from "@/components/shared/MaskedText";
@@ -11,8 +14,12 @@ export const dynamic = "force-dynamic";
 interface Props { searchParams: CaseFilters }
 
 export default async function AdminCasesPage({ searchParams }: Props) {
+  const session = await getServerSession(authOptions);
+  const scoped = await agentCountryIds(session!.user);
+
   const result = await getCases({
     ...searchParams,
+    ...(scoped && { countryIds: scoped }),
     page: searchParams.page ?? 1,
     pageSize: 20,
   });

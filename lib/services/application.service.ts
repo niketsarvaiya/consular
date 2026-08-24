@@ -195,6 +195,8 @@ export async function getCases(filters: CaseFilters) {
   const where = {
     ...(status && { status }),
     ...(countryId && { countryId }),
+    // Agent scoping: restrict to assigned countries (undefined = no restriction)
+    ...(filters.countryIds && { countryId: { in: filters.countryIds } }),
     ...(visaType && { visaType }),
     ...(assignedToId && { assignedToId }),
     ...(dateFrom && { createdAt: { gte: new Date(dateFrom) } }),

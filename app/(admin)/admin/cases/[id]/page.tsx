@@ -10,6 +10,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { CaseStatusActions } from "@/components/admin/CaseStatusActions";
 import { CaseDocumentsPanel } from "@/components/admin/CaseDocumentsPanel";
+import { canAccessCountry } from "@/lib/auth/scope";
 import { VisaUpload } from "@/components/admin/VisaUpload";
 import type { Metadata } from "next";
 
@@ -19,7 +20,7 @@ interface Props { params: { id: string } }
 export const metadata: Metadata = { title: "Case Detail" };
 
 export default async function AdminCaseDetailPage({ params }: Props) {
-  await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
   const app = await prisma.application.findUnique({
     where: { id: params.id },
@@ -52,6 +53,8 @@ export default async function AdminCaseDetailPage({ params }: Props) {
   });
 
   if (!app) notFound();
+  // Agents may only open cases for their assigned countries.
+  if (!(await canAccessCountry(session!.user, app.countryId))) notFound();
 
   // Mask passport number
   const passportDisplay = app.passport
