@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
 }
 
 /** Model is told to return raw JSON, but tolerate a ```json fence around it. */
-export function parseLetters(raw: string): { traveler: string; letter_markdown: string }[] {
+function parseLetters(raw: string): { traveler: string; letter_markdown: string }[] {
   const json = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "");
   try {
     const parsed = JSON.parse(json);
