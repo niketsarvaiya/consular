@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const NAV_LINKS = [
   { href: "/destinations", label: "Destinations", match: (p: string) => p.startsWith("/destinations") },
   { href: "/explore",      label: "Explore",      match: (p: string) => p.startsWith("/explore") },
+  { href: "/tools",        label: "Tools",        match: (p: string) => p.startsWith("/tools") },
   { href: "/about",        label: "About",        match: (p: string) => p === "/about" },
   { href: "/contact",      label: "Contact",      match: (p: string) => p === "/contact" },
 ];

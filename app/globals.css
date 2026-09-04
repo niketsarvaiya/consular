@@ -99,3 +99,12 @@
     animation: none !important;
   }
 }
+
+/* Cover-letter tool: print only the letter itself */
+@media print {
+  body { background: #fff; }
+  header, footer, nav { display: none !important; }
+  .cover-letter { font-size: 12pt; line-height: 1.6; color: #000; }
+  .cover-letter mark { background: none; color: #000; }
+  .cover-letter table { page-break-inside: avoid; }
+}
