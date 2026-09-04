@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   // LLM calls cost money — cap per IP.
   const rl = await rateLimit(`cover-letter:${clientIp(req)}`, 10, 3600);
-  if (!rl.ok) return tooManyRequests("Letter limit reached. Please try again in an hour.");
+  if (!rl.ok) return NextResponse.json(tooManyRequests("Letter limit reached. Please try again in an hour."), { status: 429 });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
