@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       const orderId = payment?.order_id ?? event.payload?.order?.entity?.id;
       const paymentId = payment?.id;
       if (orderId && paymentId) {
-        await markOrderPaid({ razorpayOrderId: orderId, razorpayPaymentId: paymentId });
+        await markOrderPaid({ gatewayOrderId: orderId, gatewayPaymentId: paymentId });
       }
     }
     return NextResponse.json({ ok: true });

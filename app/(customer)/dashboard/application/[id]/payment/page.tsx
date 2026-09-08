@@ -11,10 +11,12 @@ declare global {
 }
 
 interface OrderData {
+  provider: "razorpay" | "payu";
   orderId: string;
   amount: number;
   currency: string;
   keyId: string;
+  payu: { paymentUrl: string; fields: Record<string, string> } | null;
   breakdown: { governmentFee: number; serviceFee: number; taxes: number; total: number };
 }
 
@@ -30,6 +32,14 @@ export default function PaymentPage() {
   const [order, setOrder] = useState<OrderData | null>(null);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+
+  // PayU redirects back here with ?status= when a payment fails or fails verification.
+  useEffect(() => {
+    // Read directly off the URL — useSearchParams would force a Suspense boundary here.
+    const status = new URLSearchParams(window.location.search).get("status");
+    if (status === "failed") setError("The payment did not go through. No money was taken — please try again.");
+    else if (status === "invalid") setError("We could not verify that payment. If money was debited, contact support with your transaction ID.");
+  }, []);
 
   useEffect(() => {
     // Load customer details
@@ -60,6 +70,21 @@ export default function PaymentPage() {
   const handlePay = () => {
     if (!order) return;
     setLoading(true);
+
+    // PayU is a redirect flow: POST the signed form and leave the SPA.
+    if (order.provider === "payu" && order.payu) {
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = order.payu.paymentUrl;
+      Object.entries(order.payu.fields).forEach(([name, value]) => {
+        const el = document.createElement("input");
+        el.type = "hidden"; el.name = name; el.value = value;
+        form.appendChild(el);
+      });
+      document.body.appendChild(form);
+      form.submit();
+      return;
+    }
 
     const rzp = new window.Razorpay({
       key: order.keyId,
@@ -143,7 +168,7 @@ export default function PaymentPage() {
 
           <div className="flex items-center gap-2 rounded-xl bg-slate-50 p-4 text-xs text-slate-500">
             <Shield className="h-4 w-4 shrink-0 text-slate-400" />
-            Secured by Razorpay. UPI, cards, net banking, and wallets accepted.
+            Secured by {order.provider === "payu" ? "PayU" : "Razorpay"}. UPI, cards, net banking, and wallets accepted.
           </div>
 
           <button onClick={handlePay} disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">

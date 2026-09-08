@@ -404,13 +404,15 @@ model PaymentOrder {
   applicationId String      @unique
   application   Application @relation(fields: [applicationId], references: [id])
 
-  razorpayOrderId   String  @unique
+  // Column names kept as-is (@map) so renaming these needs no data migration.
+  provider          String  @default("razorpay") // "razorpay" | "payu"
+  gatewayOrderId    String  @unique @map("razorpayOrderId")   // PayU: txnid
   amount            Int     // paise (INR * 100)
   currency          String  @default("INR")
   status            PaymentStatus @default(CREATED)
 
-  razorpayPaymentId String?
-  razorpaySignature String?
+  gatewayPaymentId  String? @map("razorpayPaymentId")         // PayU: mihpayid
+  gatewaySignature  String? @map("razorpaySignature")         // PayU: response hash
   paidAt            DateTime?
 
   breakdown Json? // { govFee, serviceFee, taxes, total }
@@ -418,7 +420,7 @@ model PaymentOrder {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([razorpayOrderId])
+  @@index([gatewayOrderId])
   @@map("payment_orders")
 }
 

@@ -1,5 +1,6 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
+import { buildPayuRequest, payuTxnId, verifyPayuResponse } from "@/lib/payments/payu";
 import { prisma } from "@/lib/db/prisma";
 import { logAction } from "@/lib/services/audit.service";
 import { updateApplicationStatus } from "@/lib/services/application.service";
@@ -13,8 +14,13 @@ function getRazorpay() {
   });
 }
 
+/** Which gateway new orders use. Existing unpaid orders keep the provider they were created with. */
+export function activeProvider(): "razorpay" | "payu" {
+  return process.env.PAYMENT_PROVIDER === "payu" ? "payu" : "razorpay";
+}
+
 /**
- * Creates a Razorpay payment order for an application.
+ * Creates a payment order for an application on the active gateway.
  * Only callable when checklist minimum is met.
  */
 export async function createPaymentOrder(applicationId: string) {
@@ -23,6 +29,7 @@ export async function createPaymentOrder(applicationId: string) {
     include: {
       policy: { select: { feeDetails: true } },
       paymentOrder: true,
+      customer: { select: { fullName: true, email: true, phone: true } },
     },
   });
 
@@ -42,23 +49,48 @@ export async function createPaymentOrder(applicationId: string) {
   const totalINR = subtotal + taxes;
   const totalPaise = totalINR * 100; // Razorpay uses smallest currency unit
 
-  // Create Razorpay order
-  const rzpOrder = await getRazorpay().orders.create({
-    amount: totalPaise,
-    currency: "INR",
-    receipt: `cons_${applicationId.slice(-8)}`,
-    notes: {
-      applicationId,
-      customerId: application.customerId,
-    },
-  });
+  const provider = activeProvider();
+  const breakdown = {
+    governmentFee: feeDetails.governmentFeeINR,
+    serviceFee: feeDetails.serviceFeeINR,
+    taxes,
+    total: totalINR,
+  };
 
-  // Upsert payment order record
-  const paymentOrder = await prisma.paymentOrder.upsert({
+  // PayU is a redirect POST flow — we hand the client a signed form to submit.
+  let gatewayOrderId: string;
+  let payu: ReturnType<typeof buildPayuRequest> | null = null;
+
+  if (provider === "payu") {
+    gatewayOrderId = payuTxnId(applicationId);
+    const base = (process.env.APP_URL ?? "https://visasetgo.com").replace(/\/$/, "");
+    payu = buildPayuRequest({
+      txnid: gatewayOrderId,
+      amountPaise: totalPaise,
+      productinfo: "Visa Application Fee",
+      firstname: application.customer?.fullName?.split(" ")[0] || "Applicant",
+      email: application.customer?.email ?? "",
+      phone: application.customer?.phone ?? "",
+      surl: `${base}/api/payments/payu/callback`,
+      furl: `${base}/api/payments/payu/callback`,
+      udf1: applicationId,
+    });
+  } else {
+    const rzpOrder = await getRazorpay().orders.create({
+      amount: totalPaise,
+      currency: "INR",
+      receipt: `cons_${applicationId.slice(-8)}`,
+      notes: { applicationId, customerId: application.customerId },
+    });
+    gatewayOrderId = rzpOrder.id;
+  }
+
+  await prisma.paymentOrder.upsert({
     where: { applicationId },
     create: {
       applicationId,
-      razorpayOrderId: rzpOrder.id,
+      provider,
+      gatewayOrderId,
       amount: totalPaise,
       currency: "INR",
       status: "CREATED",
@@ -69,28 +101,35 @@ export async function createPaymentOrder(applicationId: string) {
         total: totalPaise,
       },
     },
-    update: {
-      razorpayOrderId: rzpOrder.id,
-      amount: totalPaise,
-      status: "CREATED",
-    },
+    update: { provider, gatewayOrderId, amount: totalPaise, status: "CREATED" },
   });
 
-  // Update application status
   await updateApplicationStatus(applicationId, "PAYMENT_PENDING");
 
   return {
-    orderId: rzpOrder.id,
+    provider,
+    orderId: gatewayOrderId,
     amount: totalPaise,
     currency: "INR",
     keyId: process.env.RAZORPAY_KEY_ID,
-    breakdown: {
-      governmentFee: feeDetails.governmentFeeINR,
-      serviceFee: feeDetails.serviceFeeINR,
-      taxes,
-      total: totalINR,
-    },
+    payu: payu ? { paymentUrl: payu.paymentUrl, fields: payu.fields } : null,
+    breakdown,
   };
+}
+
+/**
+ * Verifies a PayU callback/webhook POST and marks the order paid.
+ * Safe to call twice — PayU posts to both the browser return URL and the webhook.
+ */
+export async function verifyPayuPayment(body: Record<string, string>) {
+  if (!verifyPayuResponse(body)) throw new Error("Payment signature verification failed.");
+  if (body.status !== "success") return { failed: true, applicationId: body.udf1 };
+
+  return markOrderPaid({
+    gatewayOrderId: body.txnid,
+    gatewayPaymentId: body.mihpayid ?? body.txnid,
+    gatewaySignature: body.hash,
+  });
 }
 
 /**
@@ -114,7 +153,11 @@ export async function verifyPayment(params: {
     throw new Error("Payment signature verification failed.");
   }
 
-  return markOrderPaid({ razorpayOrderId, razorpayPaymentId, razorpaySignature });
+  return markOrderPaid({
+    gatewayOrderId: razorpayOrderId,
+    gatewayPaymentId: razorpayPaymentId,
+    gatewaySignature: razorpaySignature,
+  });
 }
 
 /**
@@ -123,14 +166,14 @@ export async function verifyPayment(params: {
  * payment is recorded even if the customer closes the tab before the callback.
  */
 export async function markOrderPaid(params: {
-  razorpayOrderId: string;
-  razorpayPaymentId: string;
-  razorpaySignature?: string;
+  gatewayOrderId: string;
+  gatewayPaymentId: string;
+  gatewaySignature?: string;
 }) {
-  const { razorpayOrderId, razorpayPaymentId, razorpaySignature } = params;
+  const { gatewayOrderId, gatewayPaymentId, gatewaySignature } = params;
 
   const paymentOrder = await prisma.paymentOrder.findUnique({
-    where: { razorpayOrderId },
+    where: { gatewayOrderId },
     include: {
       application: {
         include: { customer: true },
@@ -153,8 +196,8 @@ export async function markOrderPaid(params: {
       where: { id: paymentOrder.id },
       data: {
         status: "PAID",
-        razorpayPaymentId,
-        razorpaySignature,
+        gatewayPaymentId,
+        gatewaySignature,
         paidAt: new Date(),
       },
     });
@@ -169,7 +212,7 @@ export async function markOrderPaid(params: {
         applicationId: paymentOrder.applicationId,
         fromStatus: "PAYMENT_PENDING",
         toStatus: "PAYMENT_RECEIVED",
-        notes: `Payment received. Razorpay ID: ${razorpayPaymentId}`,
+        notes: `Payment received. ${paymentOrder.provider === "payu" ? "PayU" : "Razorpay"} ID: ${gatewayPaymentId}`,
       },
     });
   });
@@ -179,7 +222,7 @@ export async function markOrderPaid(params: {
     action: "PAYMENT_VERIFIED",
     resourceType: "payment_order",
     resourceId: paymentOrder.id,
-    newValue: { razorpayPaymentId, amount: paymentOrder.amount },
+    newValue: { provider: paymentOrder.provider, gatewayPaymentId, amount: paymentOrder.amount },
   });
 
   // Notify customer
@@ -195,7 +238,7 @@ export async function markOrderPaid(params: {
         customerName: customer.fullName,
         applicationId: paymentOrder.applicationId,
         amountINR: Math.round(paymentOrder.amount / 100),
-        paymentId: razorpayPaymentId,
+        paymentId: gatewayPaymentId,
       },
     });
   }

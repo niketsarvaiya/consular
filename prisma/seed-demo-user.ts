@@ -95,9 +95,9 @@ async function main() {
   await prisma.paymentOrder.create({
     data: {
       applicationId: app1.id,
-      razorpayOrderId: "order_DEMO_UAE001",
-      razorpayPaymentId: "pay_DEMO_UAE001",
-      razorpaySignature: "demo_sig_uae001",
+      gatewayOrderId: "order_DEMO_UAE001",
+      gatewayPaymentId: "pay_DEMO_UAE001",
+      gatewaySignature: "demo_sig_uae001",
       amount: 888600, // ₹8,886 in paise
       currency: "INR",
       status: "PAID",
@@ -189,9 +189,9 @@ async function main() {
   await prisma.paymentOrder.create({
     data: {
       applicationId: app3.id,
-      razorpayOrderId: "order_DEMO_SG001",
-      razorpayPaymentId: "pay_DEMO_SG001",
-      razorpaySignature: "demo_sig_sg001",
+      gatewayOrderId: "order_DEMO_SG001",
+      gatewayPaymentId: "pay_DEMO_SG001",
+      gatewaySignature: "demo_sig_sg001",
       amount: 697800, // ₹6,978 in paise
       currency: "INR",
       status: "PAID",
