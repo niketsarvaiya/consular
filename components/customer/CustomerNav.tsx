@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { LogoLink } from "@/components/shared/Logo";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
@@ -32,15 +33,7 @@ export function CustomerNav() {
         <div className="flex h-16 items-center justify-between">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink transition-shadow group-hover:shadow-md group-hover:shadow-ink/20">
-              <span className="font-display text-sm font-semibold text-gold">VS</span>
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-display text-lg font-semibold tracking-tight text-ink">VisaSetGo</span>
-              <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-ink-400">Visa concierge</span>
-            </div>
-          </Link>
+          <LogoLink className="h-9 sm:h-10" />
 
           {/* Nav links */}
           <nav className="hidden items-center gap-1 md:flex">

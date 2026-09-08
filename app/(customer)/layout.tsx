@@ -1,3 +1,4 @@
+import { LogoMark } from "@/components/shared/Logo";
 import { CustomerNav } from "@/components/customer/CustomerNav";
 import Link from "next/link";
 
@@ -17,9 +18,7 @@ export default function CustomerLayout({ children }: { children: React.ReactNode
             {/* Left — Brand */}
             <div>
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 ring-1 ring-white/10">
-                  <span className="font-display text-sm font-semibold text-gold">VS</span>
-                </div>
+                <LogoMark className="h-10 w-10" onDark />
                 <span className="font-display text-xl font-semibold text-ivory">VisaSetGo</span>
               </div>
               <p className="mt-3 text-sm font-medium text-ivory/60">

@@ -3,6 +3,7 @@ import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { LogoMark, LogoLink } from "@/components/shared/Logo";
 import { Loader2, ShieldCheck, Globe2, BadgeIndianRupee } from "lucide-react";
 
 function LoginForm() {
@@ -48,9 +49,7 @@ function LoginForm() {
         {/* Logo */}
         <div className="relative">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 items-center justify-center rounded-lg bg-gradient-to-br from-iris-400 to-iris-400 px-2.5">
-              <span className="text-xs font-bold tracking-wide text-white">VS</span>
-            </div>
+            <LogoMark className="h-9 w-9" onDark />
             <span className="text-lg font-semibold text-white">VisaSetGo</span>
           </Link>
         </div>
@@ -112,12 +111,7 @@ function LoginForm() {
       <div className="flex flex-1 flex-col items-center justify-center bg-white px-6 py-12 sm:px-12">
         {/* Mobile logo */}
         <div className="mb-8 lg:hidden">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 items-center justify-center rounded-lg bg-gradient-to-br from-ink to-ink-700 px-2.5">
-              <span className="text-xs font-bold tracking-wide text-white">VS</span>
-            </div>
-            <span className="text-lg font-semibold text-ink">VisaSetGo</span>
-          </Link>
+          <LogoLink className="h-9" />
         </div>
 
         <div className="w-full max-w-sm">

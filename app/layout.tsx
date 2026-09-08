@@ -18,8 +18,18 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL ?? "https://visasetgo.com"),
   title: { default: "VisaSetGo – Visa Processing for Indian Passport Holders", template: "%s | VisaSetGo" },
   description: "Professional visa application assistance for Indian passport holders. Tourist and business visas, guided step-by-step.",
+  icons: { icon: "/logo-mark.png", apple: "/logo-mark.png" },
+  openGraph: {
+    title: "VisaSetGo – Visas made simple",
+    description: "Professional visa application assistance for Indian passport holders.",
+    url: "/",
+    siteName: "VisaSetGo",
+    images: [{ url: "/logo-full.png", width: 1200, height: 600, alt: "VisaSetGo" }],
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

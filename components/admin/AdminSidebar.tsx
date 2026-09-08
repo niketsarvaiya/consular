@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { LogoMark } from "@/components/shared/Logo";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils/cn";
@@ -22,9 +23,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
   return (
     <aside className="flex h-full w-60 flex-col border-r border-slate-200 bg-white">
       <div className="flex h-16 items-center gap-2 border-b border-slate-100 px-5">
-        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-900">
-          <span className="text-xs font-bold text-white">VS</span>
-        </div>
+        <LogoMark className="h-8 w-8" />
         <div>
           <p className="text-sm font-semibold text-slate-900">VisaSetGo</p>
           <p className="text-[10px] uppercase tracking-wide text-slate-400">Ops Dashboard</p>
