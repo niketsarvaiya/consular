@@ -506,7 +506,14 @@ export function VisaPageClient({
               >
                 {isLoggedIn ? "Start application" : "Create free account"} <ArrowRight className="h-4 w-4" />
               </Link>
-              {!isLoggedIn && (
+              {isLoggedIn ? (
+                <Link
+                  href={`${applyPath}${applyPath.includes("?") ? "&" : "?"}family=1`}
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-5 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                >
+                  <Users className="h-4 w-4" /> Apply for my family
+                </Link>
+              ) : (
                 <Link href={loginPath} className="text-sm font-medium text-white/40 hover:text-white/70 transition-colors">
                   Log in
                 </Link>

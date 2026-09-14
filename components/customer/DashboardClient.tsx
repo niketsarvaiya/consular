@@ -299,6 +299,9 @@ export function DashboardClient({
             <Link href="/destinations" className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-ink px-7 py-3.5 text-sm font-semibold text-white shadow-md shadow-ink/15 transition-all hover:bg-ink-700">
               Browse destinations <ArrowRight className="h-4 w-4" />
             </Link>
+            <p className="mt-4 text-xs text-slate-400">
+              Travelling with family? Pick a destination, then choose <span className="font-semibold text-slate-600">Apply for my family</span>.
+            </p>
           </div>
         )}
 

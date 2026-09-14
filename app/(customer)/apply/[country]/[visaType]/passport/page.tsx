@@ -37,7 +37,13 @@ export default function PassportStepPage() {
   const [ocrState, setOcrState] = useState<"idle" | "reading" | "done" | "error">("idle");
   // Adding a family member to an existing trip: /passport?trip=<id>
   const [tripId, setTripId] = useState<string | null>(null);
-  useEffect(() => { setTripId(new URLSearchParams(window.location.search).get("trip")); }, []);
+  // ?family=1 — first traveller of a family trip: wrap in a trip after creating, then add the next person.
+  const [familyStart, setFamilyStart] = useState(false);
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    setTripId(q.get("trip"));
+    setFamilyStart(q.get("family") === "1");
+  }, []);
   const [ocrMsg, setOcrMsg] = useState("");
 
   const handleAutofill = async (file: File | undefined) => {
@@ -166,7 +172,16 @@ export default function PassportStepPage() {
         return;
       }
 
-      router.push(tripId ? `/dashboard/trip/${tripId}` : `/dashboard/application/${appData.data.applicationId}`);
+      if (tripId) { router.push(`/dashboard/trip/${tripId}`); return; }
+      if (familyStart) {
+        const tRes = await fetch("/api/trips", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ applicationId: appData.data.applicationId }),
+        });
+        const tData = await tRes.json();
+        if (tRes.ok && tData.success) { router.push(`/dashboard/trip/${tData.data.tripId}`); return; }
+      }
+      router.push(`/dashboard/application/${appData.data.applicationId}`);
     } catch {
       setError("Something went wrong. Please try again.");
       setSubmitting(false);
@@ -219,7 +234,10 @@ export default function PassportStepPage() {
 
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-ink">{tripId ? "Add a traveller" : "Passport details"}</h1>
+          <h1 className="text-2xl font-bold text-ink">{tripId ? "Add a traveller" : familyStart ? "Start with your passport" : "Passport details"}</h1>
+          {familyStart && !tripId && (
+            <p className="mt-1 text-sm text-slate-500">You first — then you&apos;ll add each family member one by one.</p>
+          )}
           <p className="mt-1 text-sm text-slate-500">Enter exactly as printed on your passport. Your data is encrypted and stored securely.</p>
         </div>
 
