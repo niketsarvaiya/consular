@@ -248,6 +248,8 @@ model Customer {
   isVerified           Boolean   @default(false)
   verifyToken          String?
   verifyTokenExpiresAt DateTime?
+  resetTokenHash       String?   // sha256 of the emailed token
+  resetTokenExpiresAt  DateTime?
   consentGivenAt       DateTime?
   deletedAt            DateTime? // soft delete
 

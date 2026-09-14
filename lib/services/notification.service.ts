@@ -171,6 +171,15 @@ export function renderEmailTemplate(
         <p style="font-size:12px;color:#888;">Visa approval is at the sole discretion of the respective embassy or government authority.</p>
       `,
     },
+    password_reset: {
+      subject: "Reset your VisaSetGo password",
+      html: `
+        <p>Hi ${vars.customerName},</p>
+        <p>We received a request to reset your password. This link works for 1 hour:</p>
+        <p><a href="${vars.resetUrl}">Reset my password</a></p>
+        <p>If you didn't ask for this, you can ignore this email — your password won't change.</p>
+      `,
+    },
     trip_traveller_added: {
       subject: `${vars.appliedBy} has started your ${vars.countryName} visa application`,
       html: `

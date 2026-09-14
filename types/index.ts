@@ -135,6 +135,7 @@ export type NotificationEventType =
   | "additional_docs_requested"
   | "visa_outcome"
   | "trip_traveller_added"
+  | "password_reset"
   | "policy_refresh_alert";
 
 export interface NotificationPayload {
