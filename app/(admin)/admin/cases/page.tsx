@@ -58,8 +58,15 @@ export default async function AdminCasesPage({ searchParams }: Props) {
               <tr key={app.id} className="hover:bg-slate-50">
                 <td className="px-4 py-3 font-mono text-xs text-slate-500">{app.id.slice(-8).toUpperCase()}</td>
                 <td className="px-4 py-3">
-                  <p className="font-medium text-slate-900">{app.customer.fullName}</p>
-                  <p className="text-xs text-slate-400">{app.customer.email}</p>
+                  <p className="font-medium text-slate-900">{app.passport.fullName}</p>
+                  <p className="text-xs text-slate-400">
+                    {app.customer.fullName !== app.passport.fullName ? `via ${app.customer.fullName} · ` : ""}{app.customer.email}
+                  </p>
+                  {app.trip && (
+                    <span className="mt-1 inline-flex rounded-full bg-iris-50 px-2 py-0.5 text-[10px] font-semibold text-iris-700">
+                      Trip · {app.trip._count.applications} travellers
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-2">

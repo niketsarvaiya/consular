@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { logAction } from "@/lib/services/audit.service";
 import { generateChecklist } from "@/lib/services/checklist.service";
 import { enqueueNotification } from "@/lib/services/notification.service";
+import { notifyTravellerAdded } from "@/lib/services/trip.service";
 import type { ApplicationStatus, VisaType } from "@prisma/client";
 import type { CreateApplicationInput } from "@/lib/utils/validators";
 import type { CaseFilters } from "@/types";
@@ -24,10 +25,18 @@ export async function createApplication(
     throw new Error("No active visa policy found for this country and visa type.");
   }
 
+  // A trip can only be extended by its owner.
+  if (input.tripId) {
+    const trip = await prisma.trip.findFirst({ where: { id: input.tripId, customerId }, select: { id: true } });
+    if (!trip) throw new Error("Trip not found.");
+  }
+
   const application = await prisma.application.create({
     data: {
       customerId,
       passportId: input.passportId,
+      tripId: input.tripId,
+      travellerEmail: input.travellerEmail?.toLowerCase(),
       countryId: input.countryId,
       visaType: input.visaType as VisaType,
       policyId: policy.id,
@@ -84,6 +93,9 @@ export async function createApplication(
     resourceId: application.id,
     newValue: { countryId: input.countryId, visaType: input.visaType },
   }).catch((e) => console.warn("[createApplication] audit log failed:", e.message));
+
+  // Family member (different email from the account holder) gets a tracking link.
+  await notifyTravellerAdded(application.id);
 
   return application.id;
 }
@@ -218,6 +230,8 @@ export async function getCases(filters: CaseFilters) {
         country: { select: { name: true, flagUrl: true, code: true } },
         assignedTo: { select: { fullName: true } },
         paymentOrder: { select: { status: true, amount: true } },
+        passport: { select: { fullName: true } },
+        trip: { select: { id: true, name: true, _count: { select: { applications: true } } } },
         _count: {
           select: {
             checklistItems: true,

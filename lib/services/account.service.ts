@@ -31,6 +31,7 @@ export async function deleteCustomerData(customerId: string): Promise<{ filesDel
     prisma.caseNote.deleteMany({ where: { application: { customerId } } }),
     prisma.checklistItem.deleteMany({ where: { application: { customerId } } }),
     prisma.application.deleteMany({ where: { customerId } }),
+    prisma.trip.deleteMany({ where: { customerId } }),
     prisma.passport.deleteMany({ where: { customerId } }),
     prisma.customer.delete({ where: { id: customerId } }),
   ]);

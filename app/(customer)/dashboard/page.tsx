@@ -51,6 +51,8 @@ export default async function DashboardPage() {
       include: {
         country: { select: { name: true, flagUrl: true, code: true } },
         checklistItems: { select: { isRequired: true, status: true } },
+        passport: { select: { fullName: true } },
+        trip: { select: { id: true, name: true, _count: { select: { applications: true } } } },
       },
       orderBy: { createdAt: "desc" },
     }),
@@ -93,6 +95,8 @@ export default async function DashboardPage() {
       approved,
       progressPct,
       next: nextAction(app.status, app.id),
+      traveller: app.passport.fullName,
+      trip: app.trip ? { id: app.trip.id, name: app.trip.name, count: app.trip._count.applications } : null,
     };
   });
 

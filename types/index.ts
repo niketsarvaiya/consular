@@ -134,6 +134,7 @@ export type NotificationEventType =
   | "case_update"
   | "additional_docs_requested"
   | "visa_outcome"
+  | "trip_traveller_added"
   | "policy_refresh_alert";
 
 export interface NotificationPayload {

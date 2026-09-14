@@ -7,6 +7,7 @@ import { ArrowLeft, CreditCard, CheckCircle2 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ChecklistSection } from "@/components/customer/ChecklistSection";
 import { VisaReadyCard } from "@/components/customer/VisaReadyCard";
+import { AddTravellerButton } from "@/components/customer/AddTravellerButton";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -27,6 +28,8 @@ export default async function ApplicationDetailPage({ params }: Props) {
     where: { id: params.id, customerId: session.user.id },
     include: {
       country: true,
+      passport: { select: { fullName: true } },
+      trip: { include: { applications: { select: { id: true, status: true, passport: { select: { fullName: true } } }, orderBy: { createdAt: "asc" } } } },
       checklistItems: { orderBy: { sortOrder: "asc" } },
       paymentOrder: true,
       statusHistory: { orderBy: { changedAt: "asc" }, take: 20 },
@@ -62,9 +65,41 @@ export default async function ApplicationDetailPage({ params }: Props) {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900">{app.country.name} – {app.visaType.charAt(0) + app.visaType.slice(1).toLowerCase()} Visa</h1>
-          <p className="mt-1 text-sm text-slate-400">Ref: {app.id.slice(-8).toUpperCase()} · Applied {new Date(app.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
+          <p className="mt-1 text-sm text-slate-400">
+            {app.passport.fullName} · Ref: {app.id.slice(-8).toUpperCase()} · Applied {new Date(app.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+          </p>
         </div>
         <StatusBadge status={app.status} type="application" />
+      </div>
+
+      {/* Group travel */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm">
+        <div className="min-w-0">
+          {app.trip ? (
+            <>
+              <p className="text-sm font-semibold text-slate-900">
+                {app.trip.name} · {app.trip.applications.length} traveller{app.trip.applications.length === 1 ? "" : "s"}
+              </p>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {app.trip.applications.map((t) => (
+                  <Link key={t.id} href={`/dashboard/application/${t.id}`}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${t.id === app.id ? "bg-ink text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>
+                    {t.passport.fullName.split(" ")[0]}
+                  </Link>
+                ))}
+                <Link href={`/dashboard/trip/${app.trip.id}`} className="rounded-full px-2.5 py-1 text-xs font-semibold text-iris hover:underline">
+                  View trip →
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-semibold text-slate-900">Travelling with family?</p>
+              <p className="mt-0.5 text-xs text-slate-500">Apply for everyone on one trip and track all the visas together.</p>
+            </>
+          )}
+        </div>
+        <AddTravellerButton applicationId={app.id} countryCode={app.country.code} visaType={app.visaType} tripId={app.trip?.id ?? null} />
       </div>
 
       {/* Issued visa — shown prominently once ops uploads it */}

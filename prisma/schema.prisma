@@ -15,18 +15,18 @@ enum VisaType {
 }
 
 enum VisaCategory {
-  REQUIRED        // Traditional sticker/stamp visa
-  E_VISA          // Electronic visa
-  ETA             // Electronic Travel Authorization
-  VISA_EXEMPT     // No visa required
+  REQUIRED // Traditional sticker/stamp visa
+  E_VISA // Electronic visa
+  ETA // Electronic Travel Authorization
+  VISA_EXEMPT // No visa required
   VISA_ON_ARRIVAL // Visa granted at the port of entry
 }
 
 enum PolicyStatus {
-  ACTIVE        // Live, shown to customers
-  DRAFT         // Being edited, not published
-  NEEDS_REVIEW  // Auto-refresh detected changes
-  ARCHIVED      // Old version, kept for history
+  ACTIVE // Live, shown to customers
+  DRAFT // Being edited, not published
+  NEEDS_REVIEW // Auto-refresh detected changes
+  ARCHIVED // Old version, kept for history
 }
 
 enum ApplicationStatus {
@@ -75,9 +75,9 @@ enum NotificationStatus {
 }
 
 enum OpsRole {
-  ADMIN   // Full access, can manage team and policies
-  OPS     // Can manage cases and review docs
-  VIEWER  // Read-only access to cases
+  ADMIN // Full access, can manage team and policies
+  OPS // Can manage cases and review docs
+  VIEWER // Read-only access to cases
 }
 
 enum AuditAction {
@@ -100,22 +100,22 @@ enum AuditAction {
 // ─── Core Reference Data ──────────────────────────────────────────────────────
 
 model Country {
-  id          String  @id @default(cuid())
-  code        String  @unique // ISO 3166-1 alpha-2, e.g. "NZ", "AE"
-  name        String
-  flagUrl     String? // e.g. "https://flagcdn.com/w80/nz.png"
-  isActive    Boolean @default(true)
-  sortOrder   Int     @default(0)
+  id        String  @id @default(cuid())
+  code      String  @unique // ISO 3166-1 alpha-2, e.g. "NZ", "AE"
+  name      String
+  flagUrl   String? // e.g. "https://flagcdn.com/w80/nz.png"
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
 
   // Verified launch dataset fields
-  priorityRank   Int?    // 1 = highest priority
-  launchBucket   String? // e.g. "low_friction_volume", "premium_vac"
+  priorityRank    Int? // 1 = highest priority
+  launchBucket    String? // e.g. "low_friction_volume", "premium_vac"
   refreshPriority String? // "high" | "medium" | "low"
   refreshCadence  String? // "weekly" | "biweekly" | "monthly"
 
   policies     VisaPolicy[]
   applications Application[]
-  agents       OpsUser[]    @relation("AgentCountries")
+  agents       OpsUser[]     @relation("AgentCountries")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,25 +127,25 @@ model Country {
 // ─── Policy Engine ────────────────────────────────────────────────────────────
 
 model VisaPolicy {
-  id          String       @id @default(cuid())
+  id          String   @id @default(cuid())
   countryId   String
-  country     Country      @relation(fields: [countryId], references: [id])
+  country     Country  @relation(fields: [countryId], references: [id])
   visaType    VisaType
-  nationality String       @default("IND") // ISO 3166-1 alpha-3
+  nationality String   @default("IND") // ISO 3166-1 alpha-3
 
-  visaCategory         VisaCategory
-  eligibilityRules     Json   // structured rules array
-  requiredDocuments    Json   // document template array
-  optionalDocuments    Json   // document template array
-  feeDetails           Json   // { currency, govFee, serviceFee, notes }
-  processingTimeMin    Int?   // business days
-  processingTimeMax    Int?   // business days
-  processingNotes      String?
-  appointmentNotes     String?
-  biometricsNotes      String?
-  embassyLinks         Json   // array of { label, url }
-  vacNotes             String?
-  internalOpsNotes     String?
+  visaCategory      VisaCategory
+  eligibilityRules  Json // structured rules array
+  requiredDocuments Json // document template array
+  optionalDocuments Json // document template array
+  feeDetails        Json // { currency, govFee, serviceFee, notes }
+  processingTimeMin Int? // business days
+  processingTimeMax Int? // business days
+  processingNotes   String?
+  appointmentNotes  String?
+  biometricsNotes   String?
+  embassyLinks      Json // array of { label, url }
+  vacNotes          String?
+  internalOpsNotes  String?
 
   // Verified launch dataset fields (source-of-truth layer)
   productLabel          String? // human-readable label, separate from enum (e.g. "Singapore entry visa via authorised agent")
@@ -153,36 +153,36 @@ model VisaPolicy {
   officialSourceSummary String?
   applyMode             String? // how customer actually applies
   stayValiditySummary   String?
-  coreCustomerInputs    Json?   // string[]
-  coreChecklist         Json?   // string[]
+  coreCustomerInputs    Json? // string[]
+  coreChecklist         Json? // string[]
   opsRouting            String? // "digital_processing_case" | "manual_ops_with_partner_or_agent" etc.
   paymentModelHint      String?
   caseComplexity        String? // "low" | "medium" | "medium_high" | "high"
-  humanReviewRequired   Boolean @default(false)
+  humanReviewRequired   Boolean   @default(false)
   sourceConfidence      String? // "high" | "medium" | "low"
   lastVerifiedAt        DateTime?
   nextRefreshDueAt      DateTime?
-  freshnessStatus       String  @default("unverified") // "fresh" | "stale" | "needs_review" | "unverified"
+  freshnessStatus       String    @default("unverified") // "fresh" | "stale" | "needs_review" | "unverified"
   // Branch flow support (e.g. UAE has regular tourist route AND VOA-eligibility branch)
-  flowBranches          Json?   // { id, label, description, conditions, checklist }[]
+  flowBranches          Json? // { id, label, description, conditions, checklist }[]
 
   // Source traceability
-  verifiedFrom          String? // e.g. "official portal", "embassy page"
-  policyVersion         String? // e.g. "2026-04-22-p2"
-  reviewStatus          String  @default("unverified") // "verified_seed" | "approved" | "needs_review" | "unverified"
-  phase                 String? // "phase_1" | "phase_2" | "phase_3"
+  verifiedFrom  String? // e.g. "official portal", "embassy page"
+  policyVersion String? // e.g. "2026-04-22-p2"
+  reviewStatus  String  @default("unverified") // "verified_seed" | "approved" | "needs_review" | "unverified"
+  phase         String? // "phase_1" | "phase_2" | "phase_3"
 
   // Shared rules engine (Phase 3 — Schengen and future shared-rule groups)
-  sharedRulesUrl        String? // Link to the shared rules document (e.g. EU Commission Schengen page)
-  ruleGroupId           String? // "schengen_short_stay" — links all policies in a group
-  applicationChannel    String? // "Consulate/VAC/official visa portal"
+  sharedRulesUrl     String? // Link to the shared rules document (e.g. EU Commission Schengen page)
+  ruleGroupId        String? // "schengen_short_stay" — links all policies in a group
+  applicationChannel String? // "Consulate/VAC/official visa portal"
 
-  versionNumber        Int      @default(1)
-  status               PolicyStatus @default(DRAFT)
-  lastRefreshedAt      DateTime?
-  lastApprovedAt       DateTime?
-  approvedById         String?
-  approvedBy           OpsUser? @relation("PolicyApprovedBy", fields: [approvedById], references: [id])
+  versionNumber   Int          @default(1)
+  status          PolicyStatus @default(DRAFT)
+  lastRefreshedAt DateTime?
+  lastApprovedAt  DateTime?
+  approvedById    String?
+  approvedBy      OpsUser?     @relation("PolicyApprovedBy", fields: [approvedById], references: [id])
 
   sources      PolicySource[]
   snapshots    PolicySnapshot[]
@@ -197,14 +197,14 @@ model VisaPolicy {
 }
 
 model PolicySource {
-  id          String     @id @default(cuid())
-  policyId    String
-  policy      VisaPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  id       String     @id @default(cuid())
+  policyId String
+  policy   VisaPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
 
   sourceUrl       String
-  sourceType      String  // "embassy" | "vac" | "gov" | "consulate"
+  sourceType      String // "embassy" | "vac" | "gov" | "consulate"
   cssSelector     String? // optional selector to extract relevant content
-  label           String  // human label e.g. "Main Requirements Page"
+  label           String // human label e.g. "Main Requirements Page"
   lastFetchedAt   DateTime?
   lastContentHash String? // SHA-256 of last fetched content
 
@@ -216,20 +216,20 @@ model PolicySource {
 
 // Full snapshot of a policy at a point in time (version history)
 model PolicySnapshot {
-  id          String     @id @default(cuid())
-  policyId    String
-  policy      VisaPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  id       String     @id @default(cuid())
+  policyId String
+  policy   VisaPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
 
   versionNumber Int
-  snapshot      Json   // full policy data at this point
-  diff          Json?  // structured diff from previous version
+  snapshot      Json // full policy data at this point
+  diff          Json? // structured diff from previous version
   changeTypes   String[] // ["fees", "timeline", "requirements", "eligibility", "appointment"]
-  changeSource  String   // "auto_refresh" | "manual_edit" | "initial"
+  changeSource  String // "auto_refresh" | "manual_edit" | "initial"
 
-  status        String   // "pending_review" | "approved" | "rejected"
-  reviewedById  String?
-  reviewedAt    DateTime?
-  reviewNotes   String?
+  status       String // "pending_review" | "approved" | "rejected"
+  reviewedById String?
+  reviewedAt   DateTime?
+  reviewNotes  String?
 
   createdAt DateTime @default(now())
 
@@ -240,23 +240,24 @@ model PolicySnapshot {
 // ─── Customers ────────────────────────────────────────────────────────────────
 
 model Customer {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  phone         String?
-  fullName      String
-  passwordHash  String
-  isVerified    Boolean  @default(false)
-  verifyToken   String?
+  id                   String    @id @default(cuid())
+  email                String    @unique
+  phone                String?
+  fullName             String
+  passwordHash         String
+  isVerified           Boolean   @default(false)
+  verifyToken          String?
   verifyTokenExpiresAt DateTime?
-  consentGivenAt DateTime?
-  deletedAt     DateTime? // soft delete
+  consentGivenAt       DateTime?
+  deletedAt            DateTime? // soft delete
 
   // ISO numeric country codes (world-atlas geo.id) the user marked as visited
   visitedCountries String[] @default([])
 
-  passports    Passport[]
-  applications Application[]
-  documents    Document[]
+  passports      Passport[]
+  applications   Application[]
+  trips          Trip[]
+  documents      Document[]
   communications Communication[]
 
   createdAt DateTime @default(now())
@@ -267,25 +268,25 @@ model Customer {
 }
 
 model Passport {
-  id          String   @id @default(cuid())
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id])
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
 
   // Stored values (passport number encrypted at app layer)
-  fullName        String
-  passportNumber  String  // AES-256 encrypted
-  nationality     String  @default("IND")
-  dateOfBirth     DateTime
-  expiryDate      DateTime
-  issueDate       DateTime?
-  issuePlace      String?
-  gender          String?
+  fullName       String
+  passportNumber String // AES-256 encrypted
+  nationality    String    @default("IND")
+  dateOfBirth    DateTime
+  expiryDate     DateTime
+  issueDate      DateTime?
+  issuePlace     String?
+  gender         String?
 
   // OCR metadata
-  frontPageFileKey String?  // S3 key
-  ocrRaw           Json?    // raw OCR response
-  ocrConfidence    Float?   // overall confidence score
-  manuallyVerified Boolean  @default(false)
+  frontPageFileKey String? // S3 key
+  ocrRaw           Json? // raw OCR response
+  ocrConfidence    Float? // overall confidence score
+  manuallyVerified Boolean @default(false)
 
   isActive Boolean @default(true)
 
@@ -300,39 +301,61 @@ model Passport {
 
 // ─── Applications ─────────────────────────────────────────────────────────────
 
+// A group of applications the same customer files together (family / group travel).
+model Trip {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  name       String // e.g. "Mehta family — Dubai"
+
+  applications Application[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@map("trips")
+}
+
 model Application {
-  id          String   @id @default(cuid())
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id])
-  passportId  String
-  passport    Passport @relation(fields: [passportId], references: [id])
-  countryId   String
-  country     Country  @relation(fields: [countryId], references: [id])
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  passportId String
+  passport   Passport @relation(fields: [passportId], references: [id])
+  countryId  String
+  country    Country  @relation(fields: [countryId], references: [id])
 
-  visaType         VisaType
-  policyId         String
-  policy           VisaPolicy @relation(fields: [policyId], references: [id])
-  policyVersionNumber Int     // snapshot of version used — immutable after creation
+  visaType            VisaType
+  policyId            String
+  policy              VisaPolicy @relation(fields: [policyId], references: [id])
+  policyVersionNumber Int // snapshot of version used — immutable after creation
 
-  status           ApplicationStatus @default(NEW_LEAD)
-  assignedToId     String?
-  assignedTo       OpsUser?  @relation("AssignedCases", fields: [assignedToId], references: [id])
+  status       ApplicationStatus @default(NEW_LEAD)
+  assignedToId String?
+  assignedTo   OpsUser?          @relation("AssignedCases", fields: [assignedToId], references: [id])
 
-  travelDateFrom   DateTime?
-  travelDateTo     DateTime?
-  purposeNotes     String?
+  travelDateFrom DateTime?
+  travelDateTo   DateTime?
+  purposeNotes   String?
+
+  // Group travel: the trip this application belongs to, and the traveller's own
+  // email (differs from the account holder when applying for family members).
+  tripId         String?
+  trip           Trip?   @relation(fields: [tripId], references: [id])
+  travellerEmail String?
 
   // Final issued visa document (uploaded by ops after the embassy issues it)
-  visaFileKey      String?
-  visaFileName     String?
-  visaIssuedAt     DateTime?
+  visaFileKey  String?
+  visaFileName String?
+  visaIssuedAt DateTime?
 
-  checklistItems  ChecklistItem[]
-  documents       Document[]
-  statusHistory   CaseStatusHistory[]
-  notes           CaseNote[]
-  paymentOrder    PaymentOrder?
-  communications  Communication[]
+  checklistItems ChecklistItem[]
+  documents      Document[]
+  statusHistory  CaseStatusHistory[]
+  notes          CaseNote[]
+  paymentOrder   PaymentOrder?
+  communications Communication[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -340,6 +363,7 @@ model Application {
   @@index([customerId])
   @@index([status])
   @@index([countryId, visaType])
+  @@index([tripId])
   @@map("applications")
 }
 
@@ -348,26 +372,26 @@ model ChecklistItem {
   applicationId String
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  itemKey         String  // e.g. "passport_front", "bank_statement", "photo"
+  itemKey         String // e.g. "passport_front", "bank_statement", "photo"
   title           String
   description     String?
-  isRequired      Boolean @default(true)
+  isRequired      Boolean  @default(true)
   acceptedFormats String[] // ["PDF", "JPEG", "PNG"]
-  maxFileSizeMb   Int     @default(5)
+  maxFileSizeMb   Int      @default(5)
 
   status          ChecklistItemStatus @default(PENDING)
   internalNote    String?
   customerNote    String?
   rejectionReason String?
 
-  uploadedAt  DateTime?
-  reviewedAt  DateTime?
+  uploadedAt   DateTime?
+  reviewedAt   DateTime?
   reviewedById String?
-  reviewedBy  OpsUser?  @relation("ChecklistReviewer", fields: [reviewedById], references: [id])
+  reviewedBy   OpsUser?  @relation("ChecklistReviewer", fields: [reviewedById], references: [id])
 
-  documents   Document[]
+  documents Document[]
 
-  sortOrder   Int @default(0)
+  sortOrder Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -376,19 +400,19 @@ model ChecklistItem {
 }
 
 model Document {
-  id              String        @id @default(cuid())
+  id              String         @id @default(cuid())
   applicationId   String
-  application     Application   @relation(fields: [applicationId], references: [id])
+  application     Application    @relation(fields: [applicationId], references: [id])
   customerId      String
-  customer        Customer      @relation(fields: [customerId], references: [id])
+  customer        Customer       @relation(fields: [customerId], references: [id])
   checklistItemId String?
   checklistItem   ChecklistItem? @relation(fields: [checklistItemId], references: [id])
 
-  fileKey     String   // S3 object key
-  fileName    String   // original filename
-  fileSize    Int      // bytes
-  mimeType    String
-  isActive    Boolean  @default(true)  // false = superseded by re-upload
+  fileKey  String // S3 object key
+  fileName String // original filename
+  fileSize Int // bytes
+  mimeType String
+  isActive Boolean @default(true) // false = superseded by re-upload
 
   uploadedAt DateTime @default(now())
 
@@ -405,15 +429,15 @@ model PaymentOrder {
   application   Application @relation(fields: [applicationId], references: [id])
 
   // Column names kept as-is (@map) so renaming these needs no data migration.
-  provider          String  @default("razorpay") // "razorpay" | "payu"
-  gatewayOrderId    String  @unique @map("razorpayOrderId")   // PayU: txnid
-  amount            Int     // paise (INR * 100)
-  currency          String  @default("INR")
-  status            PaymentStatus @default(CREATED)
+  provider       String        @default("razorpay") // "razorpay" | "payu"
+  gatewayOrderId String        @unique @map("razorpayOrderId") // PayU: txnid
+  amount         Int // paise (INR * 100)
+  currency       String        @default("INR")
+  status         PaymentStatus @default(CREATED)
 
-  gatewayPaymentId  String? @map("razorpayPaymentId")         // PayU: mihpayid
-  gatewaySignature  String? @map("razorpaySignature")         // PayU: response hash
-  paidAt            DateTime?
+  gatewayPaymentId String?   @map("razorpayPaymentId") // PayU: mihpayid
+  gatewaySignature String?   @map("razorpaySignature") // PayU: response hash
+  paidAt           DateTime?
 
   breakdown Json? // { govFee, serviceFee, taxes, total }
 
@@ -434,7 +458,7 @@ model CaseStatusHistory {
   fromStatus  ApplicationStatus?
   toStatus    ApplicationStatus
   changedById String?
-  changedBy   OpsUser?    @relation("StatusChanges", fields: [changedById], references: [id])
+  changedBy   OpsUser?           @relation("StatusChanges", fields: [changedById], references: [id])
   notes       String?
 
   changedAt DateTime @default(now())
@@ -448,10 +472,10 @@ model CaseNote {
   applicationId String
   application   Application @relation(fields: [applicationId], references: [id])
 
-  authorId        String?
-  author          OpsUser?  @relation("CaseNotes", fields: [authorId], references: [id])
-  noteType        String    // "internal" | "customer_visible"
-  content         String
+  authorId String?
+  author   OpsUser? @relation("CaseNotes", fields: [authorId], references: [id])
+  noteType String // "internal" | "customer_visible"
+  content  String
 
   createdAt DateTime @default(now())
 
@@ -462,21 +486,21 @@ model CaseNote {
 // ─── Ops Team ─────────────────────────────────────────────────────────────────
 
 model OpsUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   fullName     String
   passwordHash String
-  role         OpsRole  @default(OPS)
-  isActive     Boolean  @default(true)
+  role         OpsRole   @default(OPS)
+  isActive     Boolean   @default(true)
   deletedAt    DateTime?
 
-  assignedCases     Application[]      @relation("AssignedCases")
-  countries         Country[]          @relation("AgentCountries")
-  approvedPolicies  VisaPolicy[]       @relation("PolicyApprovedBy")
-  statusChanges     CaseStatusHistory[] @relation("StatusChanges")
-  caseNotes         CaseNote[]         @relation("CaseNotes")
-  checklistReviews  ChecklistItem[]    @relation("ChecklistReviewer")
-  auditLogs         AuditLog[]
+  assignedCases    Application[]       @relation("AssignedCases")
+  countries        Country[]           @relation("AgentCountries")
+  approvedPolicies VisaPolicy[]        @relation("PolicyApprovedBy")
+  statusChanges    CaseStatusHistory[] @relation("StatusChanges")
+  caseNotes        CaseNote[]          @relation("CaseNotes")
+  checklistReviews ChecklistItem[]     @relation("ChecklistReviewer")
+  auditLogs        AuditLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -487,23 +511,23 @@ model OpsUser {
 // ─── Communications ───────────────────────────────────────────────────────────
 
 model Communication {
-  id            String   @id @default(cuid())
+  id            String       @id @default(cuid())
   applicationId String?
   application   Application? @relation(fields: [applicationId], references: [id])
   customerId    String?
   customer      Customer?    @relation(fields: [customerId], references: [id])
 
-  eventType   String   // "application_created" | "doc_rejected" | etc.
-  channel     NotificationChannel
-  status      NotificationStatus  @default(QUEUED)
+  eventType String // "application_created" | "doc_rejected" | etc.
+  channel   NotificationChannel
+  status    NotificationStatus  @default(QUEUED)
 
-  recipient   String   // email address / phone number
-  subject     String?
-  templateId  String?
-  metadata    Json?    // template variables
+  recipient  String // email address / phone number
+  subject    String?
+  templateId String?
+  metadata   Json? // template variables
 
-  sentAt      DateTime?
-  deliveredAt DateTime?
+  sentAt        DateTime?
+  deliveredAt   DateTime?
   failureReason String?
 
   createdAt DateTime @default(now())
@@ -516,21 +540,21 @@ model Communication {
 // ─── Audit Logs ───────────────────────────────────────────────────────────────
 
 model AuditLog {
-  id          String  @id @default(cuid())
-  actorId     String?
-  actor       OpsUser? @relation(fields: [actorId], references: [id])
-  actorType   String  // "ops_user" | "system" | "customer"
-  actorEmail  String? // denormalized for display even after deletion
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      OpsUser? @relation(fields: [actorId], references: [id])
+  actorType  String // "ops_user" | "system" | "customer"
+  actorEmail String? // denormalized for display even after deletion
 
   action       AuditAction
-  resourceType String      // "application" | "policy" | "document" | etc.
+  resourceType String // "application" | "policy" | "document" | etc.
   resourceId   String
 
-  oldValue     Json?
-  newValue     Json?
-  metadata     Json?       // extra context
-  ipAddress    String?
-  userAgent    String?
+  oldValue  Json?
+  newValue  Json?
+  metadata  Json? // extra context
+  ipAddress String?
+  userAgent String?
 
   createdAt DateTime @default(now())
 

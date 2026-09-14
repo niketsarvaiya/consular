@@ -35,6 +35,9 @@ export default function PassportStepPage() {
 
   // ── Passport OCR autofill ──
   const [ocrState, setOcrState] = useState<"idle" | "reading" | "done" | "error">("idle");
+  // Adding a family member to an existing trip: /passport?trip=<id>
+  const [tripId, setTripId] = useState<string | null>(null);
+  useEffect(() => { setTripId(new URLSearchParams(window.location.search).get("trip")); }, []);
   const [ocrMsg, setOcrMsg] = useState("");
 
   const handleAutofill = async (file: File | undefined) => {
@@ -82,13 +85,14 @@ export default function PassportStepPage() {
     travelDateFrom: "",
     travelDateTo: "",
     purposeNotes: "",
+    travellerEmail: "",
   });
 
   useEffect(() => {
     fetch("/api/passports")
       .then((r) => r.json())
       .then((data) => {
-        if (data.success && data.data) {
+        if (data.success && data.data && !new URLSearchParams(window.location.search).get("trip")) {
           setSaved(data.data);
           setUseSaved(true);
         }
@@ -150,6 +154,8 @@ export default function PassportStepPage() {
           travelDateFrom: form.travelDateFrom ? new Date(form.travelDateFrom).toISOString() : undefined,
           travelDateTo: form.travelDateTo ? new Date(form.travelDateTo).toISOString() : undefined,
           purposeNotes: form.purposeNotes || undefined,
+          tripId: tripId ?? undefined,
+          travellerEmail: form.travellerEmail.trim() || undefined,
         }),
       });
 
@@ -160,7 +166,7 @@ export default function PassportStepPage() {
         return;
       }
 
-      router.push(`/dashboard/application/${appData.data.applicationId}`);
+      router.push(tripId ? `/dashboard/trip/${tripId}` : `/dashboard/application/${appData.data.applicationId}`);
     } catch {
       setError("Something went wrong. Please try again.");
       setSubmitting(false);
@@ -213,7 +219,7 @@ export default function PassportStepPage() {
 
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-ink">Passport details</h1>
+          <h1 className="text-2xl font-bold text-ink">{tripId ? "Add a traveller" : "Passport details"}</h1>
           <p className="mt-1 text-sm text-slate-500">Enter exactly as printed on your passport. Your data is encrypted and stored securely.</p>
         </div>
 
@@ -416,6 +422,22 @@ export default function PassportStepPage() {
                 />
               </div>
             </div>
+
+            {tripId && (
+              <div>
+                <label htmlFor="travellerEmail" className="mb-1.5 block text-sm font-medium text-slate-700">
+                  Traveller&apos;s email <span className="text-slate-400 font-normal">(optional)</span>
+                </label>
+                <input
+                  id="travellerEmail"
+                  type="email"
+                  value={form.travellerEmail}
+                  onChange={(e) => setForm({ ...form, travellerEmail: e.target.value })}
+                  className={inputCls}
+                  placeholder="They'll get a link to track their own visa status"
+                />
+              </div>
+            )}
 
             <div>
               <label className="mb-1.5 block text-sm font-medium text-slate-700">Purpose of travel <span className="text-slate-400 font-normal">(optional)</span></label>

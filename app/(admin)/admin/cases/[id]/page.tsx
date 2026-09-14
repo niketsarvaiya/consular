@@ -49,6 +49,7 @@ export default async function AdminCaseDetailPage({ params }: Props) {
         include: { author: { select: { fullName: true } } },
       },
       assignedTo: { select: { id: true, fullName: true } },
+      trip: { include: { applications: { select: { id: true, status: true, passport: { select: { fullName: true } } }, orderBy: { createdAt: "asc" } } } },
     },
   });
 
@@ -157,6 +158,22 @@ export default async function AdminCaseDetailPage({ params }: Props) {
             initialFileName={app.visaFileName}
             initialIssuedAt={app.visaIssuedAt ? app.visaIssuedAt.toISOString() : null}
           />
+
+          {app.trip && (
+            <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Trip · {app.trip.applications.length} travellers</h3>
+              <p className="mb-2 text-xs text-slate-500">{app.trip.name}</p>
+              <div className="space-y-1">
+                {app.trip.applications.map((t) => (
+                  <Link key={t.id} href={`/admin/cases/${t.id}`}
+                    className={`flex items-center justify-between rounded-lg px-2 py-1.5 text-xs ${t.id === app.id ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-600 hover:bg-slate-50"}`}>
+                    <span className="truncate">{t.passport.fullName}</span>
+                    <span className="ml-2 shrink-0 text-[10px] text-slate-400">{t.status.replace(/_/g, " ")}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">Customer</h3>

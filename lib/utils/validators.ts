@@ -41,6 +41,9 @@ export const createApplicationSchema = z.object({
   travelDateFrom: z.string().datetime().optional(),
   travelDateTo: z.string().datetime().optional(),
   purposeNotes: z.string().max(500).optional(),
+  // Group travel
+  tripId: z.string().cuid().optional(),
+  travellerEmail: z.string().email().optional(),
 });
 
 export const updateCaseStatusSchema = z.object({

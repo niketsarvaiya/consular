@@ -1,4 +1,5 @@
-import { notificationQueue } from "@/lib/jobs/queue";
+import nodemailer from "nodemailer";
+import { prisma } from "@/lib/db/prisma";
 import type { NotificationChannel } from "@prisma/client";
 import type { NotificationEventType } from "@/types";
 
@@ -12,22 +13,70 @@ interface EnqueueParams {
   templateVars: Record<string, string | number>;
 }
 
+/**
+ * Sends the notification immediately.
+ * Runs inline (not via BullMQ) because the worker process cannot run on Vercel —
+ * queued jobs were silently never delivered. Name kept so existing callers don't change.
+ * Never throws: a failed email must not fail the request that triggered it.
+ */
 export async function enqueueNotification(params: EnqueueParams): Promise<void> {
   try {
-    await notificationQueue.add(
-      params.eventType,
-      { ...params },
-      {
-        // Deduplicate notifications for the same event + application within 5 minutes
-        jobId: params.applicationId
-          ? `notif-${params.eventType}-${params.applicationId}-${Math.floor(Date.now() / 300000)}`
-          : undefined,
-      }
-    );
+    await sendNotificationNow(params);
   } catch (err) {
-    // Notifications are non-critical — log and continue if Redis is unavailable
-    console.warn("[enqueueNotification] Failed to enqueue (Redis unavailable?):", (err as Error).message);
+    console.warn("[notification] send failed:", (err as Error).message);
   }
+}
+
+let transporter: nodemailer.Transporter | null = null;
+function getTransporter() {
+  if (!process.env.SMTP_HOST) return null;
+  transporter ??= nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT ?? "465"),
+    secure: parseInt(process.env.SMTP_PORT ?? "465") === 465,
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+  return transporter;
+}
+
+/** Renders, sends, and records a Communication row. Throws on send failure. */
+export async function sendNotificationNow(params: EnqueueParams): Promise<void> {
+  const { eventType, customerId, applicationId, channel, recipient, templateVars } = params;
+  if (channel !== "EMAIL") return; // SMS/WhatsApp not wired yet
+
+  const transport = getTransporter();
+  if (!transport) {
+    console.warn(`[notification] SMTP not configured — dropping "${eventType}" to ${recipient}`);
+    return;
+  }
+
+  const communication = await prisma.communication.create({
+    data: { eventType, channel: "EMAIL", status: "QUEUED", recipient, customerId, applicationId, templateId: eventType, metadata: templateVars as object },
+  });
+
+  try {
+    const { subject, html } = renderEmailTemplate(eventType, templateVars);
+    await transport.sendMail({ from: `"VisaSetGo" <${process.env.EMAIL_FROM}>`, to: recipient, subject, html: wrapEmailInLayout(html) });
+    await prisma.communication.update({ where: { id: communication.id }, data: { status: "SENT", sentAt: new Date() } });
+  } catch (error) {
+    await prisma.communication.update({ where: { id: communication.id }, data: { status: "FAILED", failureReason: String(error).slice(0, 500) } });
+    throw error;
+  }
+}
+
+export function wrapEmailInLayout(bodyHtml: string): string {
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1a1a1a;line-height:1.6;margin:0;padding:0;background:#f5f5f5;}
+    .wrapper{max-width:580px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+    .header{background:#0f172a;padding:24px 32px;} .header h1{color:#fff;font-size:18px;font-weight:600;margin:0;}
+    .header span{color:#94a3b8;font-size:12px;} .body{padding:32px;} .body p{margin:0 0 16px;font-size:15px;}
+    .body a{color:#2563eb;} blockquote{border-left:3px solid #e2e8f0;margin:0 0 16px;padding:8px 16px;color:#64748b;}
+    .footer{border-top:1px solid #f1f5f9;padding:20px 32px;font-size:12px;color:#94a3b8;}
+  </style></head><body><div class="wrapper">
+    <div class="header"><h1>VisaSetGo</h1><span>Visas made simple</span></div>
+    <div class="body">${bodyHtml}</div>
+    <div class="footer"><p>Visa approval is at the sole discretion of the respective embassy or government authority.</p></div>
+  </div></body></html>`;
 }
 
 // ─── Email Templates ──────────────────────────────────────────────────────────
@@ -120,6 +169,16 @@ export function renderEmailTemplate(
         <p>${vars.message ?? ""}</p>
         <p><a href="${appUrl}/dashboard/application/${vars.applicationId}">View Details</a></p>
         <p style="font-size:12px;color:#888;">Visa approval is at the sole discretion of the respective embassy or government authority.</p>
+      `,
+    },
+    trip_traveller_added: {
+      subject: `${vars.appliedBy} has started your ${vars.countryName} visa application`,
+      html: `
+        <p>Hi ${vars.travellerName},</p>
+        <p><strong>${vars.appliedBy}</strong> has applied for your <strong>${vars.countryName} ${vars.visaType} visa</strong> through VisaSetGo as part of their trip.</p>
+        <p>You can follow the real-time status of your application here — no account needed:</p>
+        <p><a href="${vars.trackingUrl}">Track my visa application</a></p>
+        <p>Want to manage your own travel and visas? <a href="${appUrl}/auth/register">Create a free VisaSetGo account</a>.</p>
       `,
     },
     policy_refresh_alert: {

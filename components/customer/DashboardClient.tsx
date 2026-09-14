@@ -22,6 +22,8 @@ export interface DashboardApp {
   approved: number;
   progressPct: number;
   next: { label: string; href: string };
+  traveller: string;
+  trip: { id: string; name: string; count: number } | null;
 }
 
 interface DashboardClientProps {
@@ -247,7 +249,14 @@ export function DashboardClient({
                     </span>
                     <StatusBadge status={primary.status as BadgeStatus} type="application" />
                     <span className="font-mono text-[11px] text-slate-400">#{primary.ref}</span>
+                    {primary.trip && (
+                      <Link href={`/dashboard/trip/${primary.trip.id}`} onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center rounded-full bg-iris/10 px-2.5 py-0.5 text-xs font-semibold text-iris hover:bg-iris/15">
+                        👨‍👩‍👧 {primary.trip.count} travellers
+                      </Link>
+                    )}
                   </div>
+                  <p className="mt-1 truncate text-xs text-slate-500">{primary.traveller}</p>
                 </div>
               </div>
 
@@ -312,6 +321,7 @@ export function DashboardClient({
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-bold text-ink">{app.countryName}</p>
+                    <p className="truncate text-xs text-slate-500">{app.traveller}{app.trip ? ` · ${app.trip.name}` : ""}</p>
                     <div className="mt-1"><StatusBadge status={app.status as BadgeStatus} type="application" /></div>
                   </div>
                   <ChevronRight className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-gold-600" />
