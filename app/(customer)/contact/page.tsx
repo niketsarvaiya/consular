@@ -1,4 +1,5 @@
 "use client";
+import { SUPPORT_PHONE_DISPLAY, SUPPORT_PHONE_E164, SUPPORT_WHATSAPP } from "@/lib/site";
 import { useState } from "react";
 import { Mail, Clock, MessageCircle, Phone, CheckCircle } from "lucide-react";
 import { Reveal } from "@/components/shared/Reveal";
@@ -71,7 +72,7 @@ export default function ContactPage() {
               </div>
               <h3 className="font-semibold text-ink">WhatsApp</h3>
               <p className="mt-1 text-sm text-slate-500">Quick questions? Ping us on WhatsApp for faster responses.</p>
-              <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" className="mt-2 block text-sm font-semibold text-iris-600 hover:text-iris-700">
+              <a href={`https://wa.me/${SUPPORT_WHATSAPP}`} target="_blank" rel="noopener noreferrer" className="mt-2 block text-sm font-semibold text-iris-600 hover:text-iris-700">
                 Open WhatsApp chat →
               </a>
             </div>
@@ -82,8 +83,8 @@ export default function ContactPage() {
               </div>
               <h3 className="font-semibold text-ink">Phone</h3>
               <p className="mt-1 text-sm text-slate-500">For urgent matters only. Mon–Fri, 10am–6pm IST.</p>
-              <a href="tel:+919999999999" className="mt-2 block text-sm font-semibold text-amber-600 hover:text-amber-700">
-                +91 99999 99999
+              <a href={`tel:${SUPPORT_PHONE_E164}`} className="mt-2 block text-sm font-semibold text-amber-600 hover:text-amber-700">
+                {SUPPORT_PHONE_DISPLAY}
               </a>
             </div>
 
