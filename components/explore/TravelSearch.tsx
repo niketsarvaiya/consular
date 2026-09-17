@@ -1,6 +1,6 @@
 "use client";
 
-import { SUPPORT_WHATSAPP } from "@/lib/site";
+import { SUPPORT_WHATSAPP, whatsappUrl } from "@/lib/site";
 import { useState } from "react";
 import {
   Plane, Hotel, MessageCircle,
@@ -77,8 +77,8 @@ function agodaHotel(city: string, checkIn: string, checkOut: string, adults: str
 /** Agency WhatsApp */
 function agencyWA(countryName: string, originCity: string, date: string) {
   const phone = process.env.NEXT_PUBLIC_AGENCY_WHATSAPP ?? SUPPORT_WHATSAPP;
-  const msg   = `Hi! I'm planning a trip to ${countryName} departing from ${originCity} around ${date}. Can you help with flights & hotels?`;
-  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  const msg   = `Hi VisaSetGo 👋 I'm planning a trip to ${countryName} from ${originCity} around ${date}. Can you help with the visa, flights & hotels?`;
+  return whatsappUrl(msg, phone);
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
