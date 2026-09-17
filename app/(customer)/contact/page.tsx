@@ -62,7 +62,7 @@ export default function ContactPage() {
               </div>
               <h3 className="font-semibold text-ink">Response time</h3>
               <p className="mt-1 text-sm text-slate-500">
-                We reply within <span className="font-semibold text-slate-800">2 hours</span> during business hours (Mon–Sat, 9am–8pm IST).
+                We reply within <span className="font-semibold text-slate-800">2 hours</span> during business hours (Mon–Sat, 11am–7pm IST).
               </p>
             </div>
 
@@ -168,7 +168,7 @@ export default function ContactPage() {
                 </button>
 
                 <p className="text-center text-xs text-slate-400">
-                  We respond within 2 hours · Mon–Sat, 9am–8pm IST
+                  We respond within 2 hours · Mon–Sat, 11am–7pm IST
                 </p>
               </form>
             )}
