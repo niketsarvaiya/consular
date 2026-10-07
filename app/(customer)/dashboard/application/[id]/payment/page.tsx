@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, CreditCard, Shield, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CreditCard, Shield, Loader2, CheckCircle2, Coins } from "lucide-react";
 import Link from "next/link";
 
 declare global {
@@ -32,6 +32,7 @@ export default function PaymentPage() {
   const [order, setOrder] = useState<OrderData | null>(null);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [wallet, setWallet] = useState<{ isAgent: boolean; coinBalance: number } | null>(null);
 
   // PayU redirects back here with ?status= when a payment fails or fails verification.
   useEffect(() => {
@@ -43,6 +44,11 @@ export default function PaymentPage() {
 
   useEffect(() => {
     // Load customer details
+    fetch("/api/wallet")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.success) setWallet(d.data); })
+      .catch(() => {});
+
     fetch("/api/applications/" + id).then((r) => r.json()).then((data) => {
       if (data.success) {
         setCustomerName(data.data.customer?.fullName ?? "");
@@ -65,6 +71,21 @@ export default function PaymentPage() {
     setCreating(false);
     if (!data.success) { setError(data.error ?? "Failed to create order."); return; }
     setOrder(data.data);
+  };
+
+  const payWithCoins = async () => {
+    if (!order) return;
+    setLoading(true); setError("");
+    try {
+      const res = await fetch(`/api/applications/${id}/pay-with-coins`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || "Payment failed.");
+      setPaid(true);
+      setTimeout(() => router.push(`/dashboard/application/${id}`), 2000);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Payment failed.");
+      setLoading(false);
+    }
   };
 
   const handlePay = () => {
@@ -171,9 +192,36 @@ export default function PaymentPage() {
             Secured by {order.provider === "payu" ? "PayU" : "Razorpay"}. UPI, cards, net banking, and wallets accepted.
           </div>
 
+          {wallet?.isAgent && (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Pay from your coin wallet</p>
+                  <p className="mt-0.5 text-xs text-slate-500">
+                    Balance {wallet.coinBalance.toLocaleString("en-IN")} coins ·
+                    this costs {order.breakdown.total.toLocaleString("en-IN")} coins
+                  </p>
+                </div>
+                <Coins className="h-5 w-5 shrink-0 text-amber-500" />
+              </div>
+              {wallet.coinBalance >= order.breakdown.total ? (
+                <button onClick={payWithCoins} disabled={loading}
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Coins className="h-4 w-4" />}
+                  Pay {order.breakdown.total.toLocaleString("en-IN")} coins
+                </button>
+              ) : (
+                <p className="mt-3 text-xs font-medium text-amber-800">
+                  Short by {(order.breakdown.total - wallet.coinBalance).toLocaleString("en-IN")} coins —{" "}
+                  <Link href="/dashboard/wallet" className="underline">top up your wallet</Link>.
+                </p>
+              )}
+            </div>
+          )}
+
           <button onClick={handlePay} disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-60">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
-            Pay ₹{order.breakdown.total.toLocaleString("en-IN")}
+            {wallet?.isAgent ? "Pay by card / UPI instead" : `Pay ₹${order.breakdown.total.toLocaleString("en-IN")}`}
           </button>
 
           <p className="text-center text-xs text-slate-400">Visa approval is at embassy discretion. Payment is non-refundable once the application is filed.</p>

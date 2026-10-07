@@ -3,7 +3,7 @@
 import { useState, useMemo, useRef, useEffect, useCallback, type ComponentProps } from "react";
 import Link from "next/link";
 import {
-  Search, X, Plus, Globe2, Plane, ArrowRight, MapPin, Sparkles, ChevronRight,
+  Search, X, Plus, Globe2, Plane, ArrowRight, MapPin, Sparkles, ChevronRight, Coins,
 } from "lucide-react";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { ProfileMap, type PlannedTrip } from "@/components/customer/ProfileMap";
@@ -27,6 +27,7 @@ export interface DashboardApp {
 }
 
 interface DashboardClientProps {
+  agent?: { coinBalance: number; agencyName: string | null } | null;
   greeting: string;
   firstName: string;
   fullName: string;
@@ -54,7 +55,7 @@ function norm(id: string | number): string {
 
 export function DashboardClient({
   greeting, firstName, fullName, initials, memberSince,
-  initialVisited, planned, apps,
+  initialVisited, planned, apps, agent,
 }: DashboardClientProps) {
   const [visited, setVisited] = useState<Set<string>>(() => new Set(initialVisited.map(norm)));
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -227,6 +228,23 @@ export function DashboardClient({
         </div>
 
         {/* ── Spotlight active application ── */}
+        {agent && (
+          <Link href="/dashboard/wallet"
+            className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-amber-200 bg-amber-50/70 px-5 py-4 transition-colors hover:bg-amber-50">
+            <div className="flex items-center gap-3">
+              <Coins className="h-5 w-5 shrink-0 text-amber-500" />
+              <div>
+                <p className="text-sm font-bold text-ink">{agent.agencyName ?? "Agent wallet"}</p>
+                <p className="text-xs text-slate-500">Pay for applications from your coin balance</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-xl font-black tabular-nums text-ink">{agent.coinBalance.toLocaleString("en-IN")}</p>
+              <p className="text-[11px] text-slate-400">coins</p>
+            </div>
+          </Link>
+        )}
+
         {primary ? (
           <div className="overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-xl shadow-slate-900/5">
             <div className="relative flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:gap-6 sm:p-7">

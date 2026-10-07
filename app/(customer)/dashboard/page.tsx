@@ -44,7 +44,7 @@ export default async function DashboardPage() {
   const [customer, applications] = await Promise.all([
     prisma.customer.findUnique({
       where: { id: session.user.id },
-      select: { visitedCountries: true, createdAt: true },
+      select: { visitedCountries: true, createdAt: true, isAgent: true, coinBalance: true, agencyName: true },
     }),
     prisma.application.findMany({
       where: { customerId: session.user.id },
@@ -114,6 +114,7 @@ export default async function DashboardPage() {
       initialVisited={visited}
       planned={planned}
       apps={apps}
+      agent={customer?.isAgent ? { coinBalance: customer.coinBalance, agencyName: customer.agencyName } : null}
     />
   );
 }

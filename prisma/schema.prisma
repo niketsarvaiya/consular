@@ -237,6 +237,49 @@ model PolicySnapshot {
   @@map("policy_snapshots")
 }
 
+// ─── Agent coin wallet ────────────────────────────────────────────────────────
+
+// Immutable audit trail of every coin movement. Never updated, only appended.
+model CoinLedger {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  delta          Int // + credit, - debit (coins)
+  balanceAfter   Int // snapshot, so drift against Customer.coinBalance is detectable
+  reason         String // "purchase" | "application_payment" | "admin_credit" | "admin_debit" | "refund"
+  applicationId  String?
+  coinPurchaseId String?
+  note           String?
+  createdById    String? // ops user, for manual adjustments
+
+  createdAt DateTime @default(now())
+
+  @@index([customerId, createdAt])
+  @@map("coin_ledger")
+}
+
+// An agent buying coins through the payment gateway.
+model CoinPurchase {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  coins            Int // coins credited on success
+  amount           Int // paise charged
+  provider         String        @default("razorpay")
+  gatewayOrderId   String        @unique
+  gatewayPaymentId String?
+  status           PaymentStatus @default(CREATED)
+  paidAt           DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@map("coin_purchases")
+}
+
 // ─── Customers ────────────────────────────────────────────────────────────────
 
 model Customer {
@@ -248,7 +291,7 @@ model Customer {
   isVerified           Boolean   @default(false)
   verifyToken          String?
   verifyTokenExpiresAt DateTime?
-  resetTokenHash       String?   // sha256 of the emailed token
+  resetTokenHash       String? // sha256 of the emailed token
   resetTokenExpiresAt  DateTime?
   consentGivenAt       DateTime?
   deletedAt            DateTime? // soft delete
@@ -256,14 +299,22 @@ model Customer {
   // ISO numeric country codes (world-atlas geo.id) the user marked as visited
   visitedCountries String[] @default([])
 
+  // Travel-agent partners prepay a coin float and spend it per application.
+  // 1 coin = ₹1. Balance is denormalised for fast reads; coinLedger is the source of truth.
+  isAgent     Boolean @default(false)
+  agencyName  String?
+  coinBalance Int     @default(0)
+
   passports      Passport[]
   applications   Application[]
   trips          Trip[]
   documents      Document[]
   communications Communication[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  coinLedger    CoinLedger[]
+  coinPurchases CoinPurchase[]
 
   @@index([email])
   @@map("customers")

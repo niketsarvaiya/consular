@@ -1,6 +1,7 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { buildPayuRequest, payuTxnId, verifyPayuResponse } from "@/lib/payments/payu";
+import { moveCoins, coinsForPaise, InsufficientCoinsError } from "@/lib/services/wallet.service";
 import { prisma } from "@/lib/db/prisma";
 import { logAction } from "@/lib/services/audit.service";
 import { updateApplicationStatus } from "@/lib/services/application.service";
@@ -244,4 +245,56 @@ export async function markOrderPaid(params: {
   }
 
   return { success: true, applicationId: paymentOrder.applicationId };
+}
+
+
+/**
+ * Settles an application from the agent's coin wallet instead of a gateway.
+ * Debit, payment record, status change and history all happen in one transaction —
+ * a failure anywhere refunds nothing because nothing was committed.
+ */
+export async function payApplicationWithCoins(applicationId: string, customerId: string) {
+  const order = await createPaymentOrder(applicationId);
+  const coins = coinsForPaise(order.amount);
+
+  const customer = await prisma.customer.findUniqueOrThrow({
+    where: { id: customerId },
+    select: { isAgent: true, coinBalance: true },
+  });
+  if (!customer.isAgent) throw new Error("Coin payments are only available to agent accounts.");
+  if (customer.coinBalance < coins) throw new InsufficientCoinsError(coins, customer.coinBalance);
+
+  await prisma.$transaction(async (tx) => {
+    await moveCoins({
+      customerId,
+      delta: -coins,
+      reason: "application_payment",
+      applicationId,
+      note: `Visa application ${applicationId.slice(-8).toUpperCase()}`,
+    }, tx);
+
+    await tx.paymentOrder.update({
+      where: { applicationId },
+      data: {
+        provider: "coins",
+        status: "PAID",
+        gatewayPaymentId: `coins:${coins}`,
+        paidAt: new Date(),
+      },
+    });
+    await tx.application.update({
+      where: { id: applicationId },
+      data: { status: "PAYMENT_RECEIVED" },
+    });
+    await tx.caseStatusHistory.create({
+      data: {
+        applicationId,
+        fromStatus: "PAYMENT_PENDING",
+        toStatus: "PAYMENT_RECEIVED",
+        notes: `Paid with ${coins} coins from the agent wallet.`,
+      },
+    });
+  });
+
+  return { coinsSpent: coins };
 }
